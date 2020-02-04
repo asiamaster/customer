@@ -4,6 +4,7 @@ import com.dili.customer.domain.Address;
 import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
+import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.ss.domain.BaseOutput;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +46,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/customer/registerIndividual.action", method = RequestMethod.POST)
-    BaseOutput registerIndividual(Customer baseInfo);
+    BaseOutput registerIndividual(IndividualCustomer baseInfo);
 
 
     /**

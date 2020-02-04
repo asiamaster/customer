@@ -1,11 +1,13 @@
 package com.dili.customer.controller;
 
 import com.dili.customer.domain.dto.EnterpriseCustomer;
+import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +30,16 @@ public class CustomerController {
     private CustomerRpc customerRpc;
 
     /**
+     * 跳转到Customer页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value="/enterprise/index.html", method = RequestMethod.GET)
+    public String index(ModelMap modelMap) {
+        return "customer/enterprise/list";
+    }
+
+    /**
      * 企业客户注册
      * @param customer
      * @return BaseOutput
@@ -39,6 +51,20 @@ public class CustomerController {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         return customerRpc.registerEnterprise(customer);
+    }
+
+    /**
+     * 客人客户注册
+     * @param customer
+     * @return BaseOutput
+     */
+    @RequestMapping(value="/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()){
+            return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+        return customerRpc.registerIndividual(customer);
     }
 
 }
