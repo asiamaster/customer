@@ -11,13 +11,11 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.client.RestTemplate;
-import tk.mybatis.spring.annotation.MapperScan;
 
 /**
  * 由MyBatis Generator工具自动生成
  */
 @SpringBootApplication
-@MapperScan(basePackages = {"com.dili.customer.mapper", "com.dili.ss.dao"})
 @ComponentScan(basePackages={"com.dili.ss","com.dili.customer"})
 @RestfulScan({"com.dili.customer.rpc"})
 @DTOScan(value={"com.dili.ss", "com.dili.customer.domain"})

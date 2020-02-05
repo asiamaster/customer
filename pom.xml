@@ -107,21 +107,48 @@
     <dependencies>
 
         <!-- spring boot 基类  -->
-		<dependency>
-			<groupId>com.dili</groupId>
-			<artifactId>ss-beetl</artifactId>
-			<version>${sharp-sword.version}</version>
-		</dependency>
+        <dependency>
+            <groupId>com.dili</groupId>
+            <artifactId>ss-beetl</artifactId>
+            <version>${sharp-sword.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>tk.mybatis</groupId>
+                    <artifactId>mapper-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.github.pagehelper</groupId>
+                    <artifactId>pagehelper-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>druid-spring-boot-starter</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>mysql</groupId>
+                    <artifactId>mysql-connector-java</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>druid</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
         <dependency>
             <groupId>com.dili</groupId>
             <artifactId>ss-processor</artifactId>
             <version>${sharp-sword.version}</version>
-           <exclusions>
-               <exclusion>
-                   <groupId>com.sun</groupId>
-                   <artifactId>tools</artifactId>
-               </exclusion>
-           </exclusions>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.dili</groupId>
+                    <artifactId>ss-core</artifactId>
+                </exclusion>
+            </exclusions>
+            <scope>provided</scope>
         </dependency>
         <!-- if you enable json support in spring mvc. -->
         <dependency>
@@ -182,7 +209,6 @@
         </dependency>
 
     </dependencies>
-
 
 
 </project>

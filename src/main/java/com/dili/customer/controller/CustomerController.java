@@ -1,10 +1,15 @@
 package com.dili.customer.controller;
 
+import com.dili.customer.domain.Customer;
+import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
+import com.dili.ss.domain.EasyuiPageOutput;
+import com.dili.ss.domain.PageOutput;
+import com.dili.ss.metadata.ValueProviderUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,6 +18,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <B>Description</B>
@@ -37,6 +45,22 @@ public class CustomerController {
     @RequestMapping(value="/enterprise/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
         return "customer/enterprise/list";
+    }
+
+
+    /**
+     * 分页查询客户列表信息
+     * @param customer
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
+        PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
+        List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
+        return new EasyuiPageOutput(listPage.getTotal(), results).toString();
     }
 
     /**
