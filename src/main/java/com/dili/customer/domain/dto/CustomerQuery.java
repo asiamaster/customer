@@ -26,4 +26,9 @@ public class CustomerQuery extends Customer {
      * 创建时间区间查询-结束
      */
     private LocalDateTime createTimeEnd;
+
+    /**
+     * 客户所属组织
+     */
+    private Long firmId;
 }

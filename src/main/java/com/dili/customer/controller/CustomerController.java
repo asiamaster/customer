@@ -4,12 +4,15 @@ import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
+import com.dili.customer.enums.CustomerEnum;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.session.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -74,6 +77,9 @@ public class CustomerController {
         if (bindingResult.hasErrors()){
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+
+        customer.setState(CustomerEnum.State.NORMAL.getCode());
         return customerRpc.registerEnterprise(customer);
     }
 
@@ -88,6 +94,7 @@ public class CustomerController {
         if (bindingResult.hasErrors()){
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        customer.setState(CustomerEnum.State.NORMAL.getCode());
         return customerRpc.registerIndividual(customer);
     }
 
