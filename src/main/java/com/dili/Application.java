@@ -18,7 +18,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 @ComponentScan(basePackages={"com.dili.ss","com.dili.customer"})
 @RestfulScan({"com.dili.customer.rpc"})
-@DTOScan(value={"com.dili.ss", "com.dili.customer.domain"})
+@DTOScan(value={ "com.dili.customer.domain"})
 @EnableDiscoveryClient
 @EnableFeignClients
 public class Application extends SpringBootServletInitializer {
