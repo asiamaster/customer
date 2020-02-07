@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * <B>Description</B>
@@ -30,5 +31,10 @@ public class CustomerQuery extends Customer {
     /**
      * 客户所属组织
      */
-    private Long firmId;
+    private Long marketId;
+
+    /**
+     * 客户所属组织集
+     */
+    private List<Long> marketIdList;
 }

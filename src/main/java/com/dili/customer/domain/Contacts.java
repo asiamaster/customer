@@ -32,6 +32,11 @@ public class Contacts extends BaseDomain {
     private Long customerId;
 
     /**
+     * 所属市场
+     */
+    private Long marketId;
+
+    /**
      * 姓名
      */
     @NotBlank(message = "联系人姓名不能为空")

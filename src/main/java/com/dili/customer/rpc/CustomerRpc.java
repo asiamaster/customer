@@ -31,7 +31,7 @@ public interface CustomerRpc {
      * @param customer
      * @return
      */
-    @RequestMapping(value = "/api/customer/listPage.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/listPage", method = RequestMethod.POST)
     PageOutput<List<Customer>> listPage(CustomerQuery customer);
 
     /**
@@ -39,7 +39,7 @@ public interface CustomerRpc {
      * @param customer
      * @return
      */
-    @RequestMapping(value = "/api/customer/list.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/list", method = RequestMethod.POST)
     BaseOutput<List<Customer>> list(CustomerQuery customer);
 
     /**
@@ -47,7 +47,7 @@ public interface CustomerRpc {
      * @param baseInfo
      * @return
      */
-    @RequestMapping(value = "/api/customer/registerEnterprise.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/registerEnterprise", method = RequestMethod.POST)
     BaseOutput registerEnterprise(EnterpriseCustomer baseInfo);
 
     /**
@@ -55,7 +55,7 @@ public interface CustomerRpc {
      * @param baseInfo
      * @return
      */
-    @RequestMapping(value = "/api/customer/registerIndividual.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/registerIndividual", method = RequestMethod.POST)
     BaseOutput registerIndividual(IndividualCustomer baseInfo);
 
 
@@ -64,7 +64,7 @@ public interface CustomerRpc {
      * @param baseInfo 客户基本信息
      * @return
      */
-    @RequestMapping(value = "/api/customer/saveBaseInfo.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/saveBaseInfo", method = RequestMethod.POST)
     BaseOutput saveBaseInfo(Customer baseInfo);
 
     /**
@@ -72,15 +72,25 @@ public interface CustomerRpc {
      * @param certificateInfo 客户证件相关信息
      * @return
      */
-    @RequestMapping(value = "/api/customer/saveCertificateInfo.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/customer/saveCertificateInfo", method = RequestMethod.POST)
     BaseOutput saveCertificateInfo(Customer certificateInfo);
+
+
+    /**
+     * 根据证件号检测某个客户在某市场是否已存在
+     * @param certificateNumber 客户证件号
+     * @param marketId 市场ID
+     * @return 如果客户在当前市场已存在，则返回错误信息，如果不存在，则返回客户信息(若客户信息存在)
+     */
+    @RequestMapping(value = "/api/customer/checkExistByNoAndMarket", method = RequestMethod.POST)
+    BaseOutput checkExistByNoAndMarket(@RequestParam(value = "certificateNumber") String certificateNumber,@RequestParam(value = "marketId") Long marketId);
 
     /**
      * 保存客户联系人信息
      * @param customerContacts 客户联系人
      * @return
      */
-    @RequestMapping(value = "/api/contacts/saveContacts.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/contacts/saveContacts", method = RequestMethod.POST)
     List<Contacts> saveContacts(Contacts customerContacts);
 
     /**
@@ -88,7 +98,7 @@ public interface CustomerRpc {
      * @param customerId 客户ID
      * @return
      */
-    @RequestMapping(value = "/api/contacts/listAllContacts.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/contacts/listAllContacts", method = RequestMethod.POST)
     List<Contacts> listAllContacts(@RequestParam("customerId") Long customerId);
 
     /**
@@ -96,7 +106,7 @@ public interface CustomerRpc {
      * @param customerAddress 客户地址
      * @return
      */
-    @RequestMapping(value = "/api/address/saveAddress.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/address/saveAddress", method = RequestMethod.POST)
     List<Contacts> saveAddress(Address customerAddress);
 
     /**
@@ -104,6 +114,6 @@ public interface CustomerRpc {
      * @param customerId 客户ID
      * @return
      */
-    @RequestMapping(value = "/api/address/listAllAddress.action", method = RequestMethod.POST)
+    @RequestMapping(value = "/api/address/listAllAddress", method = RequestMethod.POST)
     List<Address> listAllAddress(@RequestParam("customerId") Long customerId);
 }

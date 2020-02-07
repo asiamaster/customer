@@ -67,7 +67,7 @@ public class IndividualCustomer implements Serializable {
      * 联系电话
      */
     @NotBlank(message = "联系电话不能为空", groups = {AddView.class,UpdateView.class})
-    @Pattern(regexp = "^((0\\d{2,3}-\\d{7,8})|(1[3456789]\\d{9}))$", message = "请输入正确的联系方式", groups = {AddView.class,UpdateView.class})
+    @Pattern(regexp = "^(1[3456789]\\d{9})$", message = "请输入正确的联系方式", groups = {AddView.class,UpdateView.class})
     private String contactsPhone;
 
     /**
@@ -83,7 +83,7 @@ public class IndividualCustomer implements Serializable {
     /**
      * 客户所属市场
      */
-    private String firmId;
+    private String marketId;
 
     /**
      * 客户状态
@@ -107,7 +107,7 @@ public class IndividualCustomer implements Serializable {
                 .add("contactsPhone", contactsPhone)
                 .add("operatorId", operatorId)
                 .add("ownerId", ownerId)
-                .add("firmId", firmId)
+                .add("marketId", marketId)
                 .add("state", state)
                 .add("departmentId", departmentId)
                 .toString();
