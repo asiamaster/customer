@@ -84,6 +84,36 @@ public class CustomerController {
     }
 
     /**
+     * 跳转到注册页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value="/enterprise/register.html", method = RequestMethod.GET)
+    public String register(ModelMap modelMap) {
+        return "customer/enterprise/register";
+    }
+
+    /**
+     * 跳转到更新页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value="/enterprise/update.html", method = RequestMethod.GET)
+    public String update(ModelMap modelMap) {
+        return "customer/enterprise/update";
+    }
+
+    /**
+     * 跳转到详情页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value="/enterprise/detail.html", method = RequestMethod.GET)
+    public String detail(ModelMap modelMap) {
+        return "customer/enterprise/detail";
+    }
+
+    /**
      * 客人客户注册
      * @param customer
      * @return BaseOutput
