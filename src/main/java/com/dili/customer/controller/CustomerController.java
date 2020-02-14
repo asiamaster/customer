@@ -114,6 +114,16 @@ public class CustomerController {
     }
 
     /**
+     * 跳转到安全认证页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value="/enterprise/security.html", method = RequestMethod.GET)
+    public String security(ModelMap modelMap) {
+        return "customer/enterprise/security";
+    }
+
+    /**
      * 客人客户注册
      * @param customer
      * @return BaseOutput
