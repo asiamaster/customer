@@ -68,6 +68,11 @@ public class Customer extends BaseDomain {
     private String photo;
 
     /**
+     * 客户等级
+     */
+    private Integer grade;
+
+    /**
      * 手机号
      */
     private String cellphone;

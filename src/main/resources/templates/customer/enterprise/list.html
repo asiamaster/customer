@@ -95,44 +95,37 @@
                             onclick="doEnableHandler(false)"><i class="fa fa-stop"></i> 禁用
                     </button>
                 </div>
-                <table id="grid" data-toggle="table" data-title="摊位列表" class="table" data-toolbar="#toolbar"
+                <table id="grid" data-toggle="table" data-title="客户列表" class="table" data-toolbar="#toolbar"
                        data-pagination="true" data-page-number="1" data-page-size="10" data-query-params="queryParams"
                        data-side-pagination="server" data-method="POST"
                        data-content-type="application/x-www-form-urlencoded" data-single-select="true"
                        data-click-to-select="true" data-checkbox-header="true" data-unique-id="id" data-sort-name="id"
                        data-sort-order="desc" data-icons="bui.variable.icons" data-buttons-class="primary"
-                       data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true"
-                       data-detail-view="true">
+                       data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
                     <thead>
                     <tr>
                         <th data-width-unit="%" data-width="10" data-field="code" data-align="center">
                             客户编号
                         </th>
-                        <th data-width-unit="%" data-width="20" data-field="cellphone" data-align="center">
+                        <th data-width-unit="%" data-width="20" data-field="name" data-align="center">
                             客户名称
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="certificateNumber"
-                            data-align="center">
+                        <th data-width-unit="%" data-width="10" data-field="grade" data-align="center">
                             客户级别
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="certificateType" data-align="center"
-                            data-provider="certificateTypeProvider">
+                        <th data-width-unit="%" data-width="10" data-field="sourceSystem" data-align="center">
                             客户来源
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="certificateAddr"
-                            data-align="center">
+                        <th data-width-unit="%" data-width="10" data-field="contactsPhone" data-align="center">
                             联系电话
                         </th>
-                        <th data-width-unit="%" data-width="15" data-field="birthdate" data-align="center"
-                            data-provider="datetimeProvider">
+                        <th data-width-unit="%" data-width="15" data-field="createTime" data-align="center">
                             注册时间
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="state" data-align="center"
-                            data-provider="enabledStateProvider">
+                        <th data-width-unit="%" data-width="10" data-field="creatorId" data-align="center">
                             创建人
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="state" data-align="center"
-                            data-provider="enabledStateProvider">
+                        <th data-width-unit="%" data-width="10" data-field="state" data-align="center">
                             状态
                         </th>
                     </tr>

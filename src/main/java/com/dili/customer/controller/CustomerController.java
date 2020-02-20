@@ -58,9 +58,10 @@ public class CustomerController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value="/enterprise/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
+        customer.setOrganizationType(CustomerEnum.OrganizationType.ENTERPRISE.getCode());
         PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
         List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
         return new EasyuiPageOutput(listPage.getTotal(), results).toString();

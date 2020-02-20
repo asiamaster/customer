@@ -99,7 +99,7 @@
     function queryDataHandler() {
         currentSelectRowIndex = undefined;
         $('#toolbar button').attr('disabled', false);
-        _grid.bootstrapTable('refreshOptions', {url: '/customer/listPage.action'});
+        _grid.bootstrapTable('refreshOptions', {url: '/customer/enterprise/listPage.action'});
     }
 
     /**
