@@ -83,7 +83,7 @@ public class IndividualCustomer implements Serializable {
     /**
      * 客户所属市场
      */
-    private String marketId;
+    private Long marketId;
 
     /**
      * 客户状态

@@ -134,7 +134,7 @@ public class Customer extends BaseDomain {
     private String employeeNumber;
 
     /**
-     * 证件类型
+     * 法人证件类型
      */
     private String corporationCertificateType;
 

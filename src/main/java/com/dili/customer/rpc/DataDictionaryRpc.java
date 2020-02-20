@@ -19,7 +19,7 @@ import java.util.List;
 @Restful("${uap.contextPath}")
 public interface DataDictionaryRpc {
 
-    @POST("/dataDictionaryApi/list.api")
+    @POST("/dataDictionaryApi/listDataDictionaryValue.api")
     BaseOutput<List<DataDictionaryValue>> list(@VOBody DataDictionaryValue dataDictionaryValue);
 
 }

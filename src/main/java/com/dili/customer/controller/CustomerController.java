@@ -5,14 +5,19 @@ import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.enums.CustomerEnum;
+import com.dili.customer.enums.CustomerEnum.OrganizationType;
 import com.dili.customer.rpc.CustomerRpc;
+import com.dili.customer.rpc.DataDictionaryRpc;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
+import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
+import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.session.SessionContext;
+import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -23,7 +28,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Objects;
+
+import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
 
 /**
  * <B>Description</B>
@@ -39,6 +48,9 @@ public class CustomerController {
 
     @Autowired
     private CustomerRpc customerRpc;
+
+    @Autowired
+    private DataDictionaryRpc dataDictionaryRpc;
 
     /**
      * 跳转到Customer页面
@@ -61,7 +73,7 @@ public class CustomerController {
     @RequestMapping(value="/enterprise/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
-        customer.setOrganizationType(CustomerEnum.OrganizationType.ENTERPRISE.getCode());
+        customer.setOrganizationType(ENTERPRISE.getCode());
         PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
         List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
         return new EasyuiPageOutput(listPage.getTotal(), results).toString();
@@ -79,7 +91,8 @@ public class CustomerController {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-
+        customer.setOperatorId(userTicket.getId());
+        customer.setMarketId(userTicket.getFirmId());
         customer.setState(CustomerEnum.State.NORMAL.getCode());
         return customerRpc.registerEnterprise(customer);
     }
@@ -135,8 +148,39 @@ public class CustomerController {
         if (bindingResult.hasErrors()){
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        customer.setOperatorId(userTicket.getId());
+        customer.setMarketId(userTicket.getFirmId());
+        customer.setState(CustomerEnum.State.NORMAL.getCode());
         customer.setState(CustomerEnum.State.NORMAL.getCode());
         return customerRpc.registerIndividual(customer);
+    }
+
+    /**
+     * 根据客户类型获取对应的证件类型
+     * @param organizationType
+     * @return BaseOutput
+     */
+    @RequestMapping(value="/getCertificateType.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput getCertificateType(@NotNull String organizationType) {
+        OrganizationType type = getInstance(organizationType);
+        if (Objects.isNull(type)) {
+            return BaseOutput.failure("未知的客户类型");
+        }
+        String ddCode = "";
+        switch (type) {
+            case ENTERPRISE:
+                ddCode = "enterprise_certificate";
+                break;
+            case INDIVIDUAL:
+                ddCode = "individual_certificate";
+                break;
+            default:
+        }
+        DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
+        condition.setDdCode(ddCode);
+        return dataDictionaryRpc.list(condition);
     }
 
 }

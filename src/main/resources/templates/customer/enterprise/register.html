@@ -2,24 +2,21 @@
 
 <div class="container-fluid">
     <form id="addForm" role="form" novalidate>
+        <input type="hidden" name="sourceSystem" value="11">
         <div class="row row-cols-1">
             <div class="form-group col">
-                <label for="" class="">客户类型<i class="red">*</i></label>
-                <select id="" name="customerType" class="form-control" required>
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                </select>
+                <label for="organizationType" class="">客户类型<i class="red">*</i></label>
+                <select id="organizationType" name="organizationType" class="form-control" required></select>
+                <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider" _queryParams='{required:true}' _valueField="value" _textField="text" _value=""/>
             </div>
             <div class="form-group col">
                 <label for="" class="">证件<i class="red">*</i></label>
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <select id="" name="aa" class="form-control" required>
-                            <option value="1">企业</option>
-                            <option value="1">个人</option>
+                        <select id="certificateType" name="certificateType" class="form-control" required>
                         </select>
                     </div>
-                    <input type="text" class="form-control isChinese" name="bb" required/>
+                    <input type="text" class="form-control" name="certificateNumber" required/>
                     <div class="input-group-append">
                         <span class="input-group-text"><a href="javascript:;">读卡</a></span>
                     </div>
@@ -28,19 +25,19 @@
             </div>
             <div class="form-group col">
                 <label for="" class="">客户名称<i class="red">*</i></label>
-                <input type="text" class="form-control isChinese" name="2" required/>
+                <input type="text" class="form-control isChinese" name="name" required/>
             </div>
             <div class="form-group col" data-type="company">
                 <label for="" class="">法人代表<i class="red">*</i></label>
-                <input type="text" class="form-control isChinese" name="3" required/>
+                <input type="text" class="form-control isChinese" name="corporationName" required/>
             </div>
             <div class="form-group col" data-type="company">
                 <label for="" class="">联系人<i class="red">*</i></label>
-                <input type="text" class="form-control isChinese" name="4" required/>
+                <input type="text" class="form-control isChinese" name="contactsName" required/>
             </div>
             <div class="form-group col">
                 <label for="" class="">联系电话<i class="red">*</i></label>
-                <input type="text" class="form-control isMobile" name="5" required/>
+                <input type="text" class="form-control isMobile" name="contactsPhone" required/>
             </div>
         </div>
 
