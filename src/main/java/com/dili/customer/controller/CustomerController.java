@@ -1,5 +1,6 @@
 package com.dili.customer.controller;
 
+import cn.hutool.core.util.StrUtil;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
@@ -57,8 +58,9 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value="/enterprise/index.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/enterprise/index.html", method = RequestMethod.GET)
     public String index(ModelMap modelMap) {
+        modelMap.put("organizationType", ENTERPRISE.getCode());
         return "customer/enterprise/list";
     }
 
@@ -70,13 +72,12 @@ public class CustomerController {
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/enterprise/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
-        customer.setOrganizationType(ENTERPRISE.getCode());
         customer.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
         //传入的查询时间处理，如传入的是2020-01-01 则默认加1天，不然当天的数据查询不到
-        if (Objects.nonNull(customer.getCreateTimeEnd())){
+        if (Objects.nonNull(customer.getCreateTimeEnd())) {
             customer.setCreateTimeEnd(customer.getCreateTimeEnd().plusDays(1));
         }
         PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
@@ -89,20 +90,13 @@ public class CustomerController {
      * @param customer
      * @return BaseOutput
      */
-    @RequestMapping(value="/registerEnterprise.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/registerEnterprise.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput registerEnterprise(@Validated({AddView.class}) EnterpriseCustomer customer, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-        customer.setOperatorId(userTicket.getId());
-        customer.setMarketId(userTicket.getFirmId());
-        customer.setOwnerId(userTicket.getId());
-        customer.setDepartmentId(userTicket.getDepartmentId());
-        customer.setState(CustomerEnum.State.NORMAL.getCode());
-        customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
-
+        setDefaultStorageValue(customer);
         return customerRpc.registerEnterprise(customer);
     }
 
@@ -122,7 +116,7 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value="/enterprise/update.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/enterprise/update.html", method = RequestMethod.GET)
     public String update(ModelMap modelMap) {
         return "customer/enterprise/update";
     }
@@ -132,7 +126,7 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value="/enterprise/detail.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/enterprise/detail.html", method = RequestMethod.GET)
     public String detail(ModelMap modelMap) {
         return "customer/enterprise/detail";
     }
@@ -142,7 +136,7 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value="/enterprise/security.html", method = RequestMethod.GET)
+    @RequestMapping(value = "/enterprise/security.html", method = RequestMethod.GET)
     public String security(ModelMap modelMap) {
         return "customer/enterprise/security";
     }
@@ -152,20 +146,14 @@ public class CustomerController {
      * @param customer
      * @return BaseOutput
      */
-    @RequestMapping(value="/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
 //        Validation.buildDefaultValidatorFactory().getValidator().validate()
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-        customer.setOperatorId(userTicket.getId());
-        customer.setMarketId(userTicket.getFirmId());
-        customer.setOwnerId(userTicket.getId());
-        customer.setDepartmentId(userTicket.getDepartmentId());
-        customer.setState(CustomerEnum.State.NORMAL.getCode());
-        customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
+        setDefaultStorageValue(customer);
         return customerRpc.registerIndividual(customer);
     }
 
@@ -174,7 +162,7 @@ public class CustomerController {
      * @param organizationType
      * @return BaseOutput
      */
-    @RequestMapping(value="/getCertificateType.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/getCertificateType.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public BaseOutput getCertificateType(@NotNull String organizationType) {
         OrganizationType type = getInstance(organizationType);
@@ -194,6 +182,36 @@ public class CustomerController {
         DataDictionaryValue condition = DTOUtils.newInstance(DataDictionaryValue.class);
         condition.setDdCode(ddCode);
         return dataDictionaryRpc.listDataDictionaryValue(condition);
+    }
+
+    /**
+     * 根据证件号检测某个客户在某市场是否已存在
+     * @param certificateNumber 客户证件号
+     * @return 如果客户在当前市场已存在，则返回错误(false)信息，如果不存在，则返回客户信息(若客户信息存在)
+     */
+    @RequestMapping(value = "/queryCustomerByNumber.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput<Customer> queryCustomerByNumber(String certificateNumber) {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        if (StrUtil.isBlank(certificateNumber) || Objects.isNull(userTicket)) {
+            return BaseOutput.failure("请登录后操作");
+        }
+        return customerRpc.checkExistByNoAndMarket(certificateNumber, userTicket.getFirmId());
+    }
+
+    /**
+     * 设置客户信息的默认存储数据
+     * @param customer
+     */
+    private void setDefaultStorageValue(IndividualCustomer customer) {
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        customer.setOperatorId(userTicket.getId());
+        customer.setMarketId(userTicket.getFirmId());
+        customer.setOwnerId(userTicket.getId());
+        customer.setDepartmentId(userTicket.getDepartmentId());
+        customer.setState(CustomerEnum.State.NORMAL.getCode());
+        customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
+        customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
     }
 
 }

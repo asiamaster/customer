@@ -83,6 +83,11 @@ public class Customer extends BaseDomain {
     private String contactsPhone;
 
     /**
+     * 联系人
+     */
+    private String contactsName;
+
+    /**
      * 组织类型,个人/企业
      */
     private String organizationType;

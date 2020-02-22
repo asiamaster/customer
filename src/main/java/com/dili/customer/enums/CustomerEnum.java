@@ -14,6 +14,9 @@ import javax.validation.constraints.Email;
  */
 public class CustomerEnum {
 
+    /**
+     * 客户状态枚举定义
+     */
     public enum State{
 
         NORMAL(1, "正常"),
@@ -107,6 +110,40 @@ public class CustomerEnum {
             for (Grade grade : Grade.values()) {
                 if (grade.getCode().equals(code)) {
                     return grade;
+                }
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 客户删除标识定义
+     */
+    public enum Deleted{
+
+        DELETED(1, "已删除"),
+        NOT_DELETED(0, "未删除"),
+        ;
+        @Getter
+        private Integer code;
+        @Getter
+        private String value;
+
+        Deleted(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+
+        /**
+         * 获取某个枚举值实例信息
+         * @param code
+         * @return
+         */
+        public static Deleted getInstance(Integer code){
+            for (Deleted d : Deleted.values()) {
+                if (d.getCode().equals(code)){
+                    return d;
                 }
             }
             return null;

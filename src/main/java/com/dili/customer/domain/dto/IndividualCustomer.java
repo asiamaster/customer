@@ -100,6 +100,11 @@ public class IndividualCustomer implements Serializable {
      */
     private Long departmentId;
 
+    /**
+     * 是否删除
+     */
+    private Integer isDelete;
+
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)

@@ -54,7 +54,7 @@
      */
     function doEnableHandler(enable) {
         //获取选中行的数据
-        let rows = _grid.bootstrapTable('getSelections');
+        let rows = _customerGrid.bootstrapTable('getSelections');
         if (null == rows || rows.length == 0) {
             bs4pop.alert('请选中一条数据');
             return;
@@ -77,7 +77,7 @@
                     success : function(data) {
                         bui.loading.hide();
                         if(data.success){
-                            _grid.bootstrapTable('refresh');
+                            _customerGrid.bootstrapTable('refresh');
                             _modal.modal('hide');
                         }else{
                             bs4pop.alert(data.result, {type: 'error'});
@@ -99,7 +99,7 @@
     function queryCustomerDataHandler() {
         currentSelectRowIndex = undefined;
         $('#toolbar button').attr('disabled', false);
-        _customerGrid.bootstrapTable('refreshOptions', {url: '/customer/enterprise/listPage.action'});
+        _customerGrid.bootstrapTable('refreshOptions', {url: '/customer/listPage.action'});
     }
 
     /**
@@ -135,7 +135,7 @@
     /*****************************************函数区 end**************************************/
 
     //选中行事件
-    _grid.on('uncheck.bs.table', function (e, row, $element) {
+    _customerGrid.on('uncheck.bs.table', function (e, row, $element) {
         currentSelectRowIndex = undefined;
     });
 
