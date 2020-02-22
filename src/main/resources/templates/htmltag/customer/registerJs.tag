@@ -4,23 +4,32 @@
      * 客户类型改变时，
     */
     $('[name="organizationType"]').change(function(){
-        let organizationType = $('#organizationType').val();
+        let organizationType = $(this).val();
         //如果选择的是企业，则显示企业需要的相关信息
         if (organizationType === 'enterprise') {
             $('[data-type="company"]').show();
         } else {
             $('[data-type="company"]').val('').hide();
         }
-        getCertificateType(organizationType);
+        getCertificateType();
     });
 
+    
+    function organizationTypeLoadSuccess() {
+        <%if (has(organizationType)){%>
+            let organizationType = '${organizationType}';
+            $('#organizationType').val(organizationType);
+        <%}%>
+        getCertificateType();
+    }
 
     /**
      *  客户类型改变时，的操作事件
      */
-    function getCertificateType(organizationType){
+    function getCertificateType(){
+        let organizationType = $('#organizationType').val();
+        $("#certificateType").empty();
         if (organizationType){
-            $("#certificateType").empty();
             //根据类型，加载不同的证件类型
             $.ajax({
                 type: "POST",
@@ -72,20 +81,24 @@
                 processData: false,
                 contentType: false,
                 async: true,
-                success: function (res) {
+                success: function (ret) {
                     bui.loading.hide();
                     if (ret.success) {
-                        bs4pop.alert('注册成功', {type: 'success '}, function () {
+                        bs4pop.alert('注册成功', {type: 'success',width: 400}, function () {
                             /* 应该要带条件刷新 */
                             window.location.reload();
                         });
                     } else {
-                        bs4pop.alert(res.result, {type: 'error'});
+                        bs4pop.alert(ret.result, {width: 400,type: 'error'},function () {
+
+                        });
                     }
                 },
                 error: function (error) {
                     bui.loading.hide();
-                    bs4pop.alert(error.result, {type: 'error'});
+                    bs4pop.alert(error.result, {width: 400,type: 'error'},function () {
+
+                    });
                 }
             });
         }
@@ -96,10 +109,6 @@
     */
     $('#formCancel').on('click', function () {
         parent.editCustomerDia.hide()
-    });
-
-    $(function () {
-        getCertificateType($('#organizationType').val());
     });
 
 </script>

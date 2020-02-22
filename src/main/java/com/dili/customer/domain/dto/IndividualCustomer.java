@@ -71,6 +71,11 @@ public class IndividualCustomer implements Serializable {
     private String contactsPhone;
 
     /**
+     * 客户等级
+     */
+    private Integer grade;
+
+    /**
      * 创建人
      */
     private Long operatorId;

@@ -3,7 +3,7 @@
     /*********************变量定义区 begin*************/
         //行索引计数器
         //如 let itemIndex = 0;
-    let _grid = $('#grid');
+    let _customerGrid = $('#customerGrid');
     let _form = $('#_form');
     let currentSelectRowIndex;
     var editCustomerDia;
@@ -13,9 +13,9 @@
     /******************************驱动执行区 begin***************************/
     $(function () {
         $(window).resize(function () {
-            _grid.bootstrapTable('resetView')
+            _customerGrid.bootstrapTable('resetView')
         });
-        queryDataHandler();
+        queryCustomerDataHandler();
     });
 
     /******************************驱动执行区 end****************************/
@@ -41,7 +41,7 @@
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '400',
+            width: '600',
             height: '700',
             btns: []
         });
@@ -96,10 +96,10 @@
     /**
      * 查询处理
      */
-    function queryDataHandler() {
+    function queryCustomerDataHandler() {
         currentSelectRowIndex = undefined;
         $('#toolbar button').attr('disabled', false);
-        _grid.bootstrapTable('refreshOptions', {url: '/customer/enterprise/listPage.action'});
+        _customerGrid.bootstrapTable('refreshOptions', {url: '/customer/enterprise/listPage.action'});
     }
 
     /**
@@ -114,7 +114,7 @@
             sort: params.sort,
             order: params.order
         }
-        return $.extend(temp, bui.util.bindGridMeta2Form('grid', 'queryForm'));
+        return $.extend(temp, bui.util.bindGridMeta2Form('customerGrid', 'customerQueryForm'));
     }
 
     /**

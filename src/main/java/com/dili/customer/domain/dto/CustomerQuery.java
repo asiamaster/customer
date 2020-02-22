@@ -4,6 +4,7 @@ import com.dili.customer.domain.Customer;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,11 +23,11 @@ public class CustomerQuery extends Customer {
     /**
      * 创建时间区间查询-开始
      */
-    private LocalDateTime createTimeStart;
+    private LocalDate createTimeStart;
     /**
      * 创建时间区间查询-结束
      */
-    private LocalDateTime createTimeEnd;
+    private LocalDate createTimeEnd;
 
     /**
      * 客户所属组织

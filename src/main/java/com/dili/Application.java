@@ -16,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
  * 由MyBatis Generator工具自动生成
  */
 @SpringBootApplication
-@ComponentScan(basePackages={"com.dili.ss","com.dili.customer"})
-@RestfulScan({"com.dili.customer.rpc"})
+@ComponentScan(basePackages={"com.dili.ss","com.dili.customer","com.dili.uap.sdk"})
+@RestfulScan({"com.dili.customer.rpc","com.dili.uap.sdk.rpc"})
 @DTOScan(value={ "com.dili.customer.domain"})
 @EnableDiscoveryClient
 @EnableFeignClients
