@@ -6,7 +6,6 @@
     let _customerGrid = $('#customerGrid');
     let _form = $('#_form');
     let currentSelectRowIndex;
-    var editCustomerDia;
 
     /*********************变量定义区 end***************/
 
@@ -35,7 +34,7 @@
     打开新增窗口
     */
     function openInsertHandler() {
-        editCustomerDia = bs4pop.dialog({
+         bs4pop.dialog({
             title: '新增客户',
             content: '/customer/enterprise/register.html',
             isIframe: true,
@@ -113,7 +112,7 @@
             page: ((params.offset / params.limit) + 1) || 1, //页码
             sort: params.sort,
             order: params.order
-        }
+        };
         return $.extend(temp, bui.util.bindGridMeta2Form('customerGrid', 'customerQueryForm'));
     }
 
@@ -128,7 +127,7 @@
             page: ((params.offset / params.limit) + 1) || 1, //页码
             sort: params.sort,
             order: params.order
-        }
+        };
         return $.extend(temp, bui.util.bindMetadata(this.id));
     }
 
@@ -145,7 +144,8 @@
 
         */
     /*****************************************自定义事件区 end**************************************/
-
-
+    window.addEventListener('message', function (e) {
+        queryCustomerDataHandler();
+    }, false)
 
 </script>

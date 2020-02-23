@@ -86,12 +86,16 @@
                     if (ret.success) {
                         bs4pop.alert('注册成功', {type: 'success',width: 400}, function () {
                             /* 应该要带条件刷新 */
-                            parent.window.location.reload();
-                        });
-                    } else {
-                        bs4pop.alert(ret.result, {width: 400,type: 'error'},function () {
+                            // parent.window.location.reload();
+                            var tmpJson = {};
+                            tmpJson.certificateNumber = $('#certificateNumber').val();
+                            tmpJson.name = $('#name').val();
+                            tmpJson.contactsPhone = $('#contactsPhone').val();
+                            window.parent.postMessage(JSON.stringify(tmpJson),'/');
 
                         });
+                    } else {
+                        bs4pop.alert(ret.result, {width: 400,type: 'error'},function () {});
                     }
                 },
                 error: function (error) {
@@ -105,10 +109,10 @@
     });
 
     /**
-    取消保存
+     * 取消保存
     */
     $('#formCancel').on('click', function () {
-        parent.editCustomerDia.hide()
+
     });
 
     /**
