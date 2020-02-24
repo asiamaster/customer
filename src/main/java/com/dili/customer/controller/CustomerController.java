@@ -1,6 +1,7 @@
 package com.dili.customer.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
@@ -126,8 +127,9 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value = "/enterprise/detail.html", method = RequestMethod.GET)
-    public String detail(ModelMap modelMap) {
+    @RequestMapping(value = "/enterprise/detail.action", method = RequestMethod.GET)
+    public String detail(@NotNull Long id, ModelMap modelMap) {
+        getCustomerDetail(id, modelMap);
         return "customer/enterprise/detail";
     }
 
@@ -212,6 +214,24 @@ public class CustomerController {
         customer.setState(CustomerEnum.State.NORMAL.getCode());
         customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
         customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
+    }
+
+    /**
+     * 获取客户的基本信息
+     * @param customerId 客户ID
+     * @param modelMap
+     */
+    private void getCustomerDetail(Long customerId,ModelMap modelMap){
+        CustomerQuery query = new CustomerQuery();
+        query.setId(customerId);
+        query.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
+        //获取客户基本信息
+        BaseOutput<List<Customer>> output = customerRpc.list(query);
+        if (output.isSuccess()){
+            Customer customer = output.getData().stream().findFirst().orElse(new Customer());
+            modelMap.put("customer",customer);
+
+        }
     }
 
 }

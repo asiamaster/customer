@@ -46,6 +46,45 @@
         });
     }
 
+    /**
+     * 打开客户更新
+     */
+    function openUpdateHandler() {
+        bs4pop.dialog({
+            title: '更新客户',
+            content: '/customer/enterprise/update.html',
+            isIframe: true,
+            closeBtn: true,
+            backdrop: 'static',
+            width: '100%',
+            height: '100%',
+            btns: []
+        });
+    }
+
+    /**
+     * 查看客户详情
+     */
+    function openDetailHandler() {
+        //获取选中行的数据
+        let rows = _customerGrid.bootstrapTable('getSelections');
+        if (null == rows || rows.length == 0) {
+            bs4pop.alert('请选中一条数据', {type: "warning"});
+            return;
+        }
+        //table选择模式是单选时可用
+        let selectedRow = rows[0];
+        bs4pop.dialog({
+            title: '客户详情',
+            content: '/customer/enterprise/detail.action?id='+selectedRow.id,
+            isIframe: true,
+            closeBtn: true,
+            backdrop: 'static',
+            width: '100%',
+            height: '100%',
+            btns: []
+        });
+    }
 
     /**
      * 禁启用操作
