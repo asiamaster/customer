@@ -80,10 +80,10 @@ public interface CustomerRpc {
      * 根据证件号检测某个客户在某市场是否已存在
      * @param certificateNumber 客户证件号
      * @param marketId 市场ID
-     * @return 如果客户在当前市场已存在，则返回错误信息，如果不存在，则返回客户信息(若客户信息存在)
+     * @return 如果客户在当前市场已存在，则返回错误(false)信息，如果不存在，则返回客户信息(若客户信息存在)
      */
     @RequestMapping(value = "/api/customer/checkExistByNoAndMarket", method = RequestMethod.POST)
-    BaseOutput checkExistByNoAndMarket(@RequestParam(value = "certificateNumber") String certificateNumber,@RequestParam(value = "marketId") Long marketId);
+    BaseOutput<Customer> checkExistByNoAndMarket(@RequestParam(value = "certificateNumber") String certificateNumber,@RequestParam(value = "marketId") Long marketId);
 
     /**
      * 保存客户联系人信息
@@ -99,7 +99,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/api/contacts/listAllContacts", method = RequestMethod.POST)
-    List<Contacts> listAllContacts(@RequestParam("customerId") Long customerId);
+    BaseOutput<List<Contacts>> listAllContacts(@RequestParam("customerId") Long customerId, @RequestParam("marketId") Long marketId);
 
     /**
      * 保存客户地址信息
