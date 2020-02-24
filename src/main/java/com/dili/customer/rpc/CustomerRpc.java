@@ -3,6 +3,7 @@ package com.dili.customer.rpc;
 import com.dili.customer.domain.Address;
 import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
+import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
@@ -96,6 +97,7 @@ public interface CustomerRpc {
     /**
      * 根据客户ID查询该客户的联系人信息
      * @param customerId 客户ID
+     * @param marketId 市场ID
      * @return
      */
     @RequestMapping(value = "/api/contacts/listAllContacts", method = RequestMethod.POST)
@@ -116,4 +118,13 @@ public interface CustomerRpc {
      */
     @RequestMapping(value = "/api/address/listAllAddress", method = RequestMethod.POST)
     List<Address> listAllAddress(@RequestParam("customerId") Long customerId);
+
+    /**
+     * 获取客户在某市场内的信息
+     * @param customerId 客户ID
+     * @param marketId 市场ID
+     * @return
+     */
+    @RequestMapping(value = "api/customerMarket/getByCustomerAndMarket", method = RequestMethod.POST)
+    BaseOutput<CustomerMarket> getByCustomerAndMarket(@RequestParam("customerId") Long customerId, @RequestParam("marketId") Long marketId);
 }

@@ -20,36 +20,36 @@
                 </div>
                 <div class="row row-cols-4">
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户名称</label>
-                        <input type="text" class="form-control" name="" required value="${customer.name!}"/>
+                        <label for="" class="">客户名称</label>
+                        <input type="text" class="form-control" name=""  value="${customer.name!}"/>
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户类型</label>
+                        <label for="" class="">客户类型</label>
                         <select id="organizationType" name="organizationType" class="form-control"  ></select>
-                        <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider" _queryParams='{required:true}' _valueField="value" _textField="text" _value="${customer.organizationType!}" />
+                        <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="getCertificateType"/>
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户来源</label>
-                        <input type="text" class="form-control" name="" required disabled value="${customer.sourceSystem!}" />
+                        <label for="" class="">客户来源</label>
+                        <input type="text" class="form-control" name=""  disabled value="${customer.sourceSystem!}" />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户行业</label>
                         <input type="text" class="form-control" name="" value="${customer.profession!}" />
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户级别</label>
-                        <input type="text" class="form-control" name="" value="${customer.grade!}"  />
+                        <label for="" class="">客户级别</label>
+                        <input type="text" class="form-control" name="" value="${customer.gradeValue!}"  />
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户注册时间</label>
+                        <label for="" class="">客户注册时间</label>
                         <input type="text" class="form-control" name="" value="${customer.createTime!}" />
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>客户状态</label>
-                        <input type="text" class="form-control" name="" value="${customer.state!}" />
+                        <label for="" class="">客户状态</label>
+                        <input type="text" class="form-control" name="" value="${customer.stateValue!}" />
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>联系电话</label>
+                        <label for="" class="">联系电话</label>
                         <input type="text" class="form-control" name="" value="${customer.contactsPhone!}" />
                     </div>
                 </div>
@@ -59,16 +59,16 @@
                 </div>
                 <div class="row row-cols-4" id="customerInfo">
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>归属人</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class="">归属人</label>
+                        <input type="text" class="form-control" name="" value="${customerMarket.ownerName!}" />
                     </div>
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>归属组织</label>
-                        <input type="text" class="form-control" name="" required disabled />
+                        <label for="" class="">归属组织</label>
+                        <input type="text" class="form-control" name="" value="${customerMarket.marketName!}" />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">归属部门</label>
-                        <input type="text" class="form-control" name="" required />
+                        <input type="text" class="form-control" name="" value="${customerMarket.departmentName!}" />
                     </div>
                 </div>
             </div>
@@ -78,33 +78,46 @@
                 </div>
                 <div class="row row-cols-4">
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i> 证件</label>
-                        <input type="text" class="form-control" name="" required />
+                        <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
+                        <label for="" class=""> 证件</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select id="certificateType" name="certificateType" class="form-control">
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}"/>
+                        </div>
                     </div>
 
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>证件企业名称</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class="">证件企业名称</label>
+                        <input type="text" class="form-control" name="" value="${customer.name!}" />
                     </div>
 
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i> 证件有效期</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class=""> 证件有效期</label>
+                        <input type="text" class="form-control" name="" value="${customer.certificateRange!}" />
                     </div>
 
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>证件地址</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class="">证件地址</label>
+                        <input type="text" class="form-control" name=""  value="${customer.certificateAddr!}"/>
                     </div>
 
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>法人证件</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class="">法人证件</label>
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
+                                </select>
+                            </div>
+                            <input type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}"/>
+                        </div>
                     </div>
 
                     <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>法人姓名</label>
-                        <input type="text" class="form-control" name="" required />
+                        <label for="" class="">法人姓名</label>
+                        <input type="text" class="form-control" name=""  value="${customer.corporationName!}"/>
                     </div>
                 </div>
             </div>
@@ -176,5 +189,44 @@
         $(":input").attr("disabled", true);
         queryContactsList();
     });
-    
+
+    /**
+     * 获取证件类型
+     */
+    function getCertificateType(){
+        let organizationType = $('#organizationType').val();
+        let certificateTypeCode = $('#certificateTypeCode').val();
+        $("#certificateType").empty();
+        if (organizationType){
+            //根据类型，加载不同的证件类型
+            $.ajax({
+                type: "POST",
+                url: "${contextPath}/customer/getCertificateType.action",
+                data: {organizationType:organizationType},
+                processData:true,
+                dataType: "json",
+                async : false,
+                success: function (ret) {
+                    if(ret.success){
+                        //获取 ret.data
+                        let data = [];
+                        ret.data.forEach(function(el, index){
+                            if (el.code === certificateTypeCode){
+                                data.push("<option value='"+el.code+"' selected>"+el.name+"</option>");
+                            }else{
+                                data.push("<option value='"+el.code+"'>"+el.name+"</option>");
+                            }
+                        });
+                        $('#certificateType').html(data.join(""));
+                    }else{
+                        bs4pop.alert(ret.result, {width: 300,type: 'error'});
+                    }
+                },
+                error: function(){
+                    bs4pop.alert('远程访问失败', {width: 300,type: 'error'});
+                }
+            });
+        }
+    }
+
 </script>

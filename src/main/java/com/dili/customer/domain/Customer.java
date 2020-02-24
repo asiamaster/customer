@@ -1,23 +1,28 @@
 package com.dili.customer.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.dili.customer.enums.CustomerEnum;
 import com.dili.ss.domain.BaseDomain;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * 由MyBatis Generator工具自动生成
  * 客户基础数据
 企业客户没有性别和民族和certificate_time，但有certificate_rang
  * This file was generated on 2020-01-09 17:36:22.
+ * @author yuehongbo
  */
 @Getter
 @Setter
 public class Customer extends BaseDomain {
+
+    private static final long serialVersionUID = -8221228310573544779L;
 
     private Long id;
 
@@ -167,6 +172,7 @@ public class Customer extends BaseDomain {
      * 创建时间
      */
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**
@@ -185,4 +191,27 @@ public class Customer extends BaseDomain {
      */
     private Integer state;
 
+    /**
+     * 获取客户级别显示
+     * @return
+     */
+    public String getGradeValue(){
+        CustomerEnum.Grade instance = CustomerEnum.Grade.getInstance(this.getGrade());
+        if (Objects.nonNull(instance)){
+            return instance.getValue();
+        }
+        return "";
+    }
+
+    /**
+     * 获取客户级别显示
+     * @return
+     */
+    public String getStateValue(){
+        CustomerEnum.State instance = CustomerEnum.State.getInstance(this.getState());
+        if (Objects.nonNull(instance)){
+            return instance.getValue();
+        }
+        return "";
+    }
 }

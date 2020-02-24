@@ -12,10 +12,13 @@ import java.time.LocalDateTime;
  * 由MyBatis Generator工具自动生成
  * 客户归属市场关系表
  * This file was generated on 2020-01-09 18:02:32.
+ * @author yuehongbo
  */
 @Getter
 @Setter
-public class CustomerFirm extends BaseDomain {
+public class CustomerMarket extends BaseDomain {
+
+    private static final long serialVersionUID = -5019292742709774501L;
     /**
      * ID
      */
@@ -79,5 +82,20 @@ public class CustomerFirm extends BaseDomain {
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime modifyTime;
+
+    /**
+     * 所有者名称
+     */
+    private String ownerName;
+
+    /**
+     * 市场名称
+     */
+    private String marketName;
+
+    /**
+     * 部门名称
+     */
+    private String departmentName;
 
 }

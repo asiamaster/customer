@@ -84,9 +84,9 @@
                         </button>
                     </#resource>
                     <#resource code="securityEnterprise">
-                        <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
+                     <!--   <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
                                 class="fa fa-pencil-square-o"></i> 安全提升
-                        </button>
+                        </button>-->
                     </#resource>
                     <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
                         查看
@@ -132,7 +132,7 @@
                         <th data-width-unit="%" data-width="15" data-field="createTime" data-align="center" data-provider="datetimeProvider">
                             注册时间
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="creatorId" data-align="center">
+                        <th data-width-unit="%" data-width="10" data-field="creatorId" data-align="center" data-provider="userProvider">
                             创建人
                         </th>
                         <th data-width-unit="%" data-width="10" data-field="state" data-align="center" data-provider="stateProvider">

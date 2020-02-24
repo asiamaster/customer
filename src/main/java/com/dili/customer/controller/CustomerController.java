@@ -1,14 +1,16 @@
 package com.dili.customer.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.alibaba.fastjson.JSONObject;
 import com.dili.customer.domain.Customer;
+import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.enums.CustomerEnum;
 import com.dili.customer.enums.CustomerEnum.OrganizationType;
 import com.dili.customer.rpc.CustomerRpc;
+import com.dili.customer.rpc.MarketRpc;
+import com.dili.customer.service.UserService;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
@@ -16,8 +18,11 @@ import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
+import com.dili.uap.sdk.domain.Department;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserTicket;
 import com.dili.uap.sdk.rpc.DataDictionaryRpc;
+import com.dili.uap.sdk.rpc.DepartmentRpc;
 import com.dili.uap.sdk.session.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,9 +55,14 @@ public class CustomerController {
 
     @Autowired
     private CustomerRpc customerRpc;
-
     @Autowired
     private DataDictionaryRpc dataDictionaryRpc;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private MarketRpc marketRpc;
+    @Autowired
+    private DepartmentRpc departmentRpc;
 
     /**
      * 跳转到Customer页面
@@ -222,16 +232,31 @@ public class CustomerController {
      * @param modelMap
      */
     private void getCustomerDetail(Long customerId,ModelMap modelMap){
+        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         CustomerQuery query = new CustomerQuery();
         query.setId(customerId);
-        query.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
+        query.setMarketId(userTicket.getFirmId());
         //获取客户基本信息
         BaseOutput<List<Customer>> output = customerRpc.list(query);
         if (output.isSuccess()){
             Customer customer = output.getData().stream().findFirst().orElse(new Customer());
             modelMap.put("customer",customer);
-
+            BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
+            if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())){
+                CustomerMarket customerMarket = marketOutput.getData();
+                customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
+                BaseOutput<Firm> marketRpcById = marketRpc.getById(customerMarket.getMarketId());
+                if (marketRpcById.isSuccess() && Objects.nonNull(marketRpcById.getData())) {
+                    customerMarket.setMarketName(marketRpcById.getData().getName());
+                }
+                if (Objects.nonNull(customerMarket.getDepartmentId())) {
+                    BaseOutput<Department> departmentBaseOutput = departmentRpc.get(customerMarket.getDepartmentId());
+                    if (departmentBaseOutput.isSuccess() && Objects.nonNull(departmentBaseOutput.getData())) {
+                        customerMarket.setDepartmentName(departmentBaseOutput.getData().getName());
+                    }
+                }
+                modelMap.put("customerMarket", customerMarket);
+            }
         }
     }
-
 }
