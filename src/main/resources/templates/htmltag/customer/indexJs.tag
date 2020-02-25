@@ -6,6 +6,7 @@
     let _customerGrid = $('#customerGrid');
     let _form = $('#_form');
     let currentSelectRowIndex;
+    var dia;
 
     /*********************变量定义区 end***************/
 
@@ -34,7 +35,7 @@
     打开新增窗口
     */
     function openInsertHandler() {
-         bs4pop.dialog({
+         dia = bs4pop.dialog({
             title: '新增客户',
             content: '/customer/enterprise/register.html',
             isIframe: true,
@@ -50,7 +51,7 @@
      * 打开客户更新
      */
     function openUpdateHandler() {
-        bs4pop.dialog({
+        dia = bs4pop.dialog({
             title: '更新客户',
             content: '/customer/enterprise/update.html',
             isIframe: true,
@@ -74,7 +75,7 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
-        bs4pop.dialog({
+        dia = bs4pop.dialog({
             title: '客户详情',
             content: '/customer/enterprise/detail.action?id='+selectedRow.id,
             isIframe: true,

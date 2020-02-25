@@ -1,17 +1,18 @@
 <#bs4Body>
 
     <div class="container-fluid">
+        <h4 class="red"><span class="px-3">客户有限共i</span><span class="px-3">PL232439857</span><span class="px-3">普通客户</span></h4>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-baseInfo-tab" data-toggle="tab" href="#nav-baseInfo"
                     role="tab" aria-controls="nav-baseInfo" aria-selected="true">基本信息</a>
                 <a class="nav-item nav-link" id="nav-cardInfo-tab" data-toggle="tab" href="#nav-cardInfo" role="tab"
-                    aria-controls="nav-cardInfo" aria-selected="false">证件实名信息</a>
+                    aria-controls="nav-cardInfo" aria-selected="false">证件信息</a>
                 <a class="nav-item nav-link" id="nav-resourceInfo-tab" data-toggle="tab" href="#nav-resourceInfo"
                     role="tab" aria-controls="nav-resourceInfo" aria-selected="false">资源信息</a>
             </div>
         </nav>
-        <form id="addForm" role="form" novalidate>
+        <form id="saveForm" role="form" novalidate>
             <div class="tab-content" id="nav-tabContent">
                 <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
                     <div class="breadcrumb" aria-expanded="true">
@@ -20,7 +21,7 @@
                     <div class="row row-cols-4">
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户名称</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="" maxlength="20" required  />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户类型</label>
@@ -32,7 +33,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户行业</label>
-                            <input type="text" class="form-control" name="" />
+                            <select class="form-control" name="" id=""></select>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户级别</label>
@@ -44,7 +45,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户状态</label>
-                            <input type="text" class="form-control" name="" required />
+                            <select name="" class="form-control" required ></select>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>联系电话</label>
@@ -66,43 +67,43 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class="">归属部门</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="" />
                         </div>
                     </div>
                 </div>
                 <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
                     <div class="breadcrumb" aria-expanded="true">
-                        证件实名信息
+                        证件信息
                     </div>
                     <div class="row row-cols-4">
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i> 证件</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="" required disabled />
                         </div>
 
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>证件企业名称</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="" required disabled />
                         </div>
 
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i> 证件有效期</label>
-                            <input type="text" class="form-control" name="" required />
+                            <label for="" class="">证件有效期</label>
+                            <input type="text" class="form-control" name="" />
                         </div>
 
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i>证件地址</label>
-                            <input type="text" class="form-control" name="" required />
+                            <label for="" class="">证件地址</label>
+                            <input type="text" class="form-control" name="" maxlength="50" />
                         </div>
 
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i>法人证件</label>
-                            <input type="text" class="form-control" name="" required />
+                            <label for="" class="">法人证件</label>
+                            <input type="text" class="form-control" name=""  maxlength="50" />
                         </div>
 
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i>法人姓名</label>
-                            <input type="text" class="form-control" name="" required />
+                            <label for="" class="">法人姓名</label>
+                            <input type="text" class="form-control" name="" maxlength="20" />
                         </div>
                     </div>
                 </div>
@@ -110,10 +111,56 @@
                     <div class="breadcrumb" aria-expanded="true">
                         联系人
                     </div>
-
+                    <div>
+                        <table class="table table-bordered table-hover table-striped" id="customerTable">
+                            <thead>
+                            <tr>
+                                <th class="text-center align-middle" style="width: 5%"><a id="addCustomer" href="javascript:;" style="padding: 8px 18px;"><i class="fa fa-plus-square fa-lg"></i></a></th>
+                                <th style="width: 10%;font-weight:normal; ">关系/职务</th>
+                                <th style="width: 10%;font-weight:normal; ">*名称</th>
+                                <th style="width: 5%;font-weight:normal; ">性别</th>
+                                <th style="width: 10%;font-weight:normal; ">*电话</th>
+                                <th style="width: 10%;font-weight:normal; ">民族</th>
+                                <th style="width: 10%;font-weight:normal; ">出生日期</th>
+                                <th style="width: 20%;font-weight:normal; ">备注</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
+            </div>
+            <div class="text-right mt-2">
+                <button type="button" class="btn btn-light px-5" id="formCancel">取消</button>
+                <button type="button" class="btn btn-primary px-5" id="formSubmit">提交</button>
             </div>
         </form>
     </div>
 
 </#bs4Body>
+<#customer_updateJs />
+
+<script  id="customerItem"  type="text/html">
+    <tr data-index="{{index}}">
+        <td class="text-center align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
+
+        <td></td>
+        <td style="padding: .1rem!important;"><input type="text" id="number_{{index}}" name="number_{{index}}"value="{{number}}" class="form-control" required></td>
+        <td style="padding: .1rem!important;"><select name="sex{{index}}"  id="sex{{index}}" value="{{number}}" class="form-control"  ></select></td>
+        <td style="padding: .1rem!important;"><input type="text" id="tel{{index}}" name="tel{{index}}"value="{{tel}}" class="form-control" required></td>
+        <td style="padding: .1rem!important;"><select name="{{index}}"  id="{{index}}" value="{{}}" class="form-control"  ></select></td>
+        <td style="padding: .1rem!important;">
+            <div class="input-group">
+                <input type="text" name="createTimeStart" id="createTimeStart" class="form-control laydatetime" required />
+                <div class="input-group-append">
+                    <label for="createTimeStart" class="input-group-text fa fa-calendar"></label>
+                </div>
+            </div>
+        </td>
+        <td style="padding: .1rem!important;"><input type="text" id="mark{{index}}" name="mark{{index}}"value="{{}}" class="form-contr"></td>
+
+
+
+    </tr>
+</script>

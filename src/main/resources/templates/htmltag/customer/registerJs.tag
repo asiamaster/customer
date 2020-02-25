@@ -112,7 +112,7 @@
      * 取消保存
     */
     $('#formCancel').on('click', function () {
-
+        parent.dia.hide()
     });
 
     /**
