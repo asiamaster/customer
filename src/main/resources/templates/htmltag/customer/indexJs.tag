@@ -32,12 +32,14 @@
     });
 
     /**
-    打开新增窗口
+     * 打开新增窗口
+     * @param organizationType 客户类型
     */
-    function openInsertHandler() {
+    function openInsertHandler(organizationType) {
+        let url = "/customer/register.action?organizationType="+organizationType;
          dia = bs4pop.dialog({
             title: '新增客户',
-            content: '/customer/enterprise/register.html',
+            content: url,
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
@@ -49,11 +51,13 @@
 
     /**
      * 打开客户更新
+     * @param organizationType 客户类型
      */
-    function openUpdateHandler() {
+    function openUpdateHandler(organizationType) {
+        let url = "/customer/" + organizationType + "/enterprise/update.html";
         dia = bs4pop.dialog({
             title: '更新客户',
-            content: '/customer/enterprise/update.html',
+            content: url,
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
@@ -75,9 +79,10 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
+        let url = '/customer/detail.action?id='+selectedRow.id;
         dia = bs4pop.dialog({
             title: '客户详情',
-            content: '/customer/enterprise/detail.action?id='+selectedRow.id,
+            content: url,
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
@@ -98,7 +103,6 @@
             bs4pop.alert('请选中一条数据');
             return;
         }
-
         //table选择模式是单选时可用
         let selectedRow = rows[0];
         let msg = (enable || 'true' == enable) ? '确定要启用该客户吗？' : '确定要禁用该客户吗？';

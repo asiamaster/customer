@@ -60,7 +60,7 @@
 
                         });
                     } else {
-                        bs4pop.alert(ret.result, {width: 400,type: 'error'},function () {});
+                        bs4pop.alert(ret.result, {width: 400,type: 'error'});
                     }
                 },
                 error: function (error) {
@@ -121,6 +121,7 @@
      */
     function queryCustomerByNumber() {
         let certificateNumber = $('#certificateNumber').val();
+        let organizationType = $('#organizationType').val();
         if (certificateNumber){
             if (certificateNumber.length < 15) {
                 bs4pop.alert("证件号至少输入15位", {width: 400, type: 'error'});
@@ -162,12 +163,14 @@
                             $(".form-control").val('');
                             $('#id').val('');
                             $('#certificateNumber').val(certificateNumber);
+                            $('#organizationType').val(organizationType);
                         }
                     } else {
                         $(".form-control").attr("readonly",false);
                         $(".form-control").val('');
                         $('#id').val('');
                         $('#certificateNumber').val(certificateNumber);
+                        $('#organizationType').val(organizationType);
                         bs4pop.alert(ret.result, {width: 350,type: 'error'});
                     }
                 },

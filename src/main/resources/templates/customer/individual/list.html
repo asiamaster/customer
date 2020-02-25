@@ -1,0 +1,153 @@
+<#bs4Body>
+
+<div class="container-fluid">
+    <form class="form" id="customerQueryForm">
+        <input type="hidden" name="organizationType" value="${organizationType!}">
+        <div class="row">
+            <nav class="col-12" aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page">个人客户管理</li>
+                </ol>
+            </nav>
+        </div>
+        <div class="row  row-cols-6">
+            <div class="form-group col">
+                <label for="">客户名称</label>
+                <input type="" class="form-control isNaturalNum" id="name" name="name" placeholder="">
+            </div>
+            <div class="form-group col">
+                <label for="">客户编号</label>
+                <input type="" class="form-control isNaturalNum" id="code" name="code" placeholder="">
+            </div>
+            <div class="form-group col">
+                <label for="">联系电话</label>
+                <input type="" class="form-control isNaturalNum" id="contactsPhone" name="contactsPhone" placeholder="">
+            </div>
+            <div class="form-group col">
+                <label for="">创建人</label>
+                <input type="" class="form-control isNaturalNum" id="" placeholder="">
+            </div>
+            <div class="form-group col">
+                <label for="">客户来源</label>
+                <select class="form-control" id="sourceSystem" name="sourceSystem">
+                    <option value="">请选择</option>
+                    <option value="11">1</option>
+                    <option value="22">2</option>
+                </select>
+            </div>
+            <div class="form-group col">
+                <label for="">客户级别</label>
+                <select class="form-control" id="grade" name="grade"></select>
+                <#bcomboProvider _id="grade" _provider="gradeProvider"  _valueField="value" _textField="text" _value=""/>
+            </div>
+            <div class="form-group col-auto">
+                <label for="createTimeStart" class="justify-content-end">注册日期</label>
+                <div class="form-inline">
+                    <div class="input-group">
+                        <input type="text" name="createTimeStart" id="createTimeStart" class="form-control laydatetime"/>
+                        <div class="input-group-append">
+                            <label for="createTimeStart" class="input-group-text fa fa-calendar"></label>
+                        </div>
+                    </div>&nbsp;&nbsp;至&nbsp;&nbsp;
+                    <div class="input-group" id="datetimepicker3">
+                        <input type="text" name="createTimeEnd" id="createTimeEnd" class="form-control laydatetime" value=""/>
+                        <div class="input-group-append">
+                            <label for="createTimeEnd" class="input-group-text fa fa-calendar"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="">
+            <button type="button" class="btn btn-primary" onclick="queryCustomerDataHandler()">查询</button>
+            <button type="button" class="btn btn-secondary">清空</button>
+        </div>
+    </form>
+    <hr>
+
+    <div class="">
+        <button id="" type="button" class="btn btn-primary" onclick=""><i class="fa "></i> 可用</button>
+        <button id="" type="button" class="btn btn-primary" onclick=""><i class="fa "></i> 不可用</button>
+    </div>
+    <div class="">
+        <div class="row">
+            <div class="col-12">
+                <div id="toolbar" class="btn-group" role="group" aria-label="Toolbar with button groups">
+                    <#resource code="addIndividual">
+                    <button id="btn_add" type="button" class="btn btn-primary" onclick="openInsertHandler('${organizationType!}')"><i
+                            class="fa fa-plus"></i> 新增
+                    </button>
+                </#resource>
+                <#resource code="updateIndividual">
+                <button id="btn_edit" type="button" class="btn btn-primary" onclick="openUpdateHandler('${organizationType!}')"><i
+                        class="fa fa-pencil-square-o"></i> 更新
+                </button>
+            </#resource>
+            <#resource code="securityIndividual">
+            <!--   <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
+                       class="fa fa-pencil-square-o"></i> 安全提升
+               </button>-->
+        </#resource>
+        <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
+            查看
+        </button>
+        <button id="btn_export" type="button" class="btn btn-primary" onclick=""><i
+                class="fa fa-file-excel-o"></i>导出
+        </button>
+        <button id="btn-print" type="button" class="btn btn-primary" onclick=""><i
+                class="fa fa-print"></i>打印
+        </button>
+        <button id="btn-enabled" type="button" class="btn btn-primary"
+                onclick="doEnableHandler(true)"><i class="fa fa-play"></i> 启用
+        </button>
+        <button id="btn-disabled" type="button" class="btn btn-primary"
+                onclick="doEnableHandler(false)"><i class="fa fa-stop"></i> 禁用
+        </button>
+    </div>
+    <table id="customerGrid" data-toggle="table" data-title="客户列表" class="table" data-toolbar="#toolbar"
+           data-pagination="true" data-page-number="1" data-page-size="10" data-query-params="queryParams"
+           data-side-pagination="server" data-method="POST"
+           data-content-type="application/x-www-form-urlencoded" data-single-select="true"
+           data-click-to-select="true" data-checkbox-header="true" data-unique-id="id" data-sort-name="id"
+           data-sort-order="desc" data-icons="bui.variable.icons" data-buttons-class="primary"
+           data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
+        <thead>
+        <tr>
+            <th data-width-unit="%" data-width="2" data-checkbox="true"></th>
+            <th data-width-unit="%" data-width="10" data-field="code" data-align="center">
+                客户编号
+            </th>
+            <th data-width-unit="%" data-width="20" data-field="name" data-align="center">
+                客户名称
+            </th>
+            <th data-width-unit="%" data-width="10" data-field="grade" data-align="center" data-provider="gradeProvider">
+                客户级别
+            </th>
+            <th data-width-unit="%" data-width="10" data-field="sourceSystem" data-align="center">
+                客户来源
+            </th>
+            <th data-width-unit="%" data-width="10" data-field="contactsPhone" data-align="center">
+                联系电话
+            </th>
+            <th data-width-unit="%" data-width="15" data-field="createTime" data-align="center" data-provider="datetimeProvider">
+                注册时间
+            </th>
+            <th data-width-unit="%" data-width="10" data-field="creatorId" data-align="center" data-provider="userProvider">
+                创建人
+            </th>
+            <th data-width-unit="%" data-width="10" data-field="state" data-align="center" data-provider="stateProvider">
+                状态
+            </th>
+        </tr>
+        </thead>
+    </table>
+</div>
+</div>
+</div>
+
+
+</div>
+
+</#bs4Body>
+
+<#customer_indexJs />

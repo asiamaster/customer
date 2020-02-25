@@ -1,5 +1,6 @@
 package com.dili.customer.controller;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.CustomerMarket;
@@ -38,8 +39,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-import static com.dili.customer.enums.CustomerEnum.OrganizationType.ENTERPRISE;
-import static com.dili.customer.enums.CustomerEnum.OrganizationType.getInstance;
+import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
 
 /**
  * <B>Description</B>
@@ -65,16 +65,26 @@ public class CustomerController {
     private DepartmentRpc departmentRpc;
 
     /**
-     * 跳转到Customer页面
+     * 跳转到企业客户管理页面
      * @param modelMap
      * @return String
      */
     @RequestMapping(value = "/enterprise/index.html", method = RequestMethod.GET)
-    public String index(ModelMap modelMap) {
+    public String enterpriseIndex(ModelMap modelMap) {
         modelMap.put("organizationType", ENTERPRISE.getCode());
         return "customer/enterprise/list";
     }
 
+    /**
+     * 跳转到个人客户管理页面
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value = "/individual/index.html", method = RequestMethod.GET)
+    public String individualIndex(ModelMap modelMap) {
+        modelMap.put("organizationType", INDIVIDUAL.getCode());
+        return "customer/individual/list";
+    }
 
     /**
      * 分页查询客户列表信息
@@ -87,6 +97,7 @@ public class CustomerController {
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
         customer.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
+        customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
         //传入的查询时间处理，如传入的是2020-01-01 则默认加1天，不然当天的数据查询不到
         if (Objects.nonNull(customer.getCreateTimeEnd())) {
             customer.setCreateTimeEnd(customer.getCreateTimeEnd().plusDays(1));
@@ -97,7 +108,7 @@ public class CustomerController {
     }
 
     /**
-     * 企业客户注册
+     * 企业客户注册功能
      * @param customer
      * @return BaseOutput
      */
@@ -116,9 +127,11 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value = "/enterprise/register.html", method = RequestMethod.GET)
-    public String register(ModelMap modelMap) {
-        modelMap.put("organizationType", ENTERPRISE.getCode());
+    @RequestMapping(value = "/register.action", method = RequestMethod.GET)
+    public String register(String organizationType, ModelMap modelMap) {
+        if (StrUtil.isNotBlank(organizationType)) {
+            modelMap.put("organizationType", organizationType);
+        }
         return "customer/register";
     }
 
@@ -137,10 +150,15 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value = "/enterprise/detail.action", method = RequestMethod.GET)
+    @RequestMapping(value = "/detail.action", method = RequestMethod.GET)
     public String detail(@NotNull Long id, ModelMap modelMap) {
         getCustomerDetail(id, modelMap);
-        return "customer/enterprise/detail";
+        String detail = "customer/enterprise/detail";
+        if (modelMap.containsKey("customer")) {
+            Customer customer = (Customer) modelMap.get("customer");
+            detail = "customer/" + CustomerEnum.OrganizationType.getInstance(customer.getOrganizationType()).getCode() + "/detail";
+        }
+        return detail;
     }
 
     /**
@@ -238,7 +256,7 @@ public class CustomerController {
         query.setMarketId(userTicket.getFirmId());
         //获取客户基本信息
         BaseOutput<List<Customer>> output = customerRpc.list(query);
-        if (output.isSuccess()){
+        if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())){
             Customer customer = output.getData().stream().findFirst().orElse(new Customer());
             modelMap.put("customer",customer);
             BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
