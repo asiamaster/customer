@@ -3,7 +3,7 @@
     /**
      * 客户类型改变时，
     */
-    $('[name="organizationType"]').change(function(){
+    $('[name="organizationType"]').change(function () {
         let organizationType = $(this).val();
         //如果选择的是企业，则显示企业需要的相关信息
         if (organizationType === 'enterprise') {
@@ -11,7 +11,7 @@
         } else {
             $('[data-type="company"]').val('').hide();
         }
-        getCertificateType();
+        getCertificateType(organizationType, 'certificateType');
     });
 
     
@@ -21,43 +21,8 @@
             $('#organizationType').val(organizationType);
             $('#organizationTypeDiv').hide();
         <%}%>
-        getCertificateType();
+        getCertificateType($('#organizationType').val(),'certificateType');
     }
-
-    /**
-     *  客户类型改变时，的操作事件
-     */
-    function getCertificateType(){
-        let organizationType = $('#organizationType').val();
-        $("#certificateType").empty();
-        if (organizationType){
-            //根据类型，加载不同的证件类型
-            $.ajax({
-                type: "POST",
-                url: "${contextPath}/customer/getCertificateType.action",
-                data: {organizationType:organizationType},
-                processData:true,
-                dataType: "json",
-                async : false,
-                success: function (ret) {
-                    if(ret.success){
-                        //获取 ret.data
-                        let data = [];
-                        ret.data.forEach(function(el, index){
-                            data.push("<option value='"+el.code+"'>"+el.name+"</option>");
-                        });
-                        $('#certificateType').html(data.join(""));
-                    }else{
-                        bs4pop.alert(ret.result, {width: 300,type: 'error'});
-                    }
-                },
-                error: function(){
-                    bs4pop.alert('远程访问失败', {width: 300,type: 'error'});
-                }
-            });
-        }
-    }
-
 
     /**
      * 保存数据

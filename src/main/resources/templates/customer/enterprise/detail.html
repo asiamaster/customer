@@ -26,7 +26,7 @@
                     <div class="form-group col">
                         <label for="" class="">客户类型</label>
                         <select id="organizationType" name="organizationType" class="form-control"  ></select>
-                        <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="getCertificateType"/>
+                        <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户来源</label>
@@ -107,6 +107,7 @@
                     <div class="form-group col">
                         <label for="" class="">法人证件</label>
                         <div class="input-group">
+                            <input type="hidden" id="corporationCertificateTypeCode" value="${customer.corporationCertificateType}">
                             <div class="input-group-prepend">
                                 <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
                                 </select>
@@ -164,23 +165,25 @@
 </div>
 
 </#bs4Body>
+
+<#customer_commonJs />
+
 <script>
 
     function queryContactsList() {
         <%if (has(customer)){%>
-            // $("#contactsGrid").bootstrapTable("refreshOptions",$.extend(options, bui.util.bindMetadata("contactsGrid", {"customerId":selected})));
             $("#contactsGrid").bootstrapTable("refreshOptions",{url:"${contextPath}/contacts/list.action"});
         <%}%>
     }
 
-    function queryContactsParams(params){
+    function queryContactsParams(params) {
         var id = $('#id').val();
         let temp = {
             rows: params.limit,   //页面大小
             page: ((params.offset / params.limit) + 1) || 1, //页码
             sort: params.sort,
             order: params.order,
-            customerId:id
+            customerId: id
         };
         return $.extend(temp, bui.util.bindMetadata("contactsGrid"));
     }
@@ -191,42 +194,11 @@
     });
 
     /**
-     * 获取证件类型
+     * 组织类型加载成功后执行的方法
      */
-    function getCertificateType(){
-        let organizationType = $('#organizationType').val();
-        let certificateTypeCode = $('#certificateTypeCode').val();
-        $("#certificateType").empty();
-        if (organizationType){
-            //根据类型，加载不同的证件类型
-            $.ajax({
-                type: "POST",
-                url: "${contextPath}/customer/getCertificateType.action",
-                data: {organizationType:organizationType},
-                processData:true,
-                dataType: "json",
-                async : false,
-                success: function (ret) {
-                    if(ret.success){
-                        //获取 ret.data
-                        let data = [];
-                        ret.data.forEach(function(el, index){
-                            if (el.code === certificateTypeCode){
-                                data.push("<option value='"+el.code+"' selected>"+el.name+"</option>");
-                            }else{
-                                data.push("<option value='"+el.code+"'>"+el.name+"</option>");
-                            }
-                        });
-                        $('#certificateType').html(data.join(""));
-                    }else{
-                        bs4pop.alert(ret.result, {width: 300,type: 'error'});
-                    }
-                },
-                error: function(){
-                    bs4pop.alert('远程访问失败', {width: 300,type: 'error'});
-                }
-            });
-        }
+    function organizationTypeLoadSuccess() {
+        getCertificateType($('#organizationType').val(), 'certificateType', $('#certificateTypeCode').val());
+        getCertificateType('individual', 'corporationCertificateType', $('#corporationCertificateTypeCode').val(),' ');
     }
 
 </script>
