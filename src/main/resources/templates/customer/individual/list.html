@@ -77,32 +77,36 @@
                     <button id="btn_add" type="button" class="btn btn-primary" onclick="openInsertHandler('${organizationType!}')"><i
                             class="fa fa-plus"></i> 新增
                     </button>
-                </#resource>
-                <#resource code="updateIndividual">
-                <button id="btn_edit" type="button" class="btn btn-primary" onclick="openUpdateHandler('${organizationType!}')"><i
-                        class="fa fa-pencil-square-o"></i> 更新
-                </button>
-            </#resource>
-            <#resource code="securityIndividual">
-            <!--   <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
-                       class="fa fa-pencil-square-o"></i> 安全提升
-               </button>-->
-        </#resource>
-        <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
-            查看
-        </button>
-        <button id="btn_export" type="button" class="btn btn-primary" onclick=""><i
-                class="fa fa-file-excel-o"></i>导出
-        </button>
-        <button id="btn-print" type="button" class="btn btn-primary" onclick=""><i
-                class="fa fa-print"></i>打印
-        </button>
-        <button id="btn-enabled" type="button" class="btn btn-primary"
-                onclick="doEnableHandler(true)"><i class="fa fa-play"></i> 启用
-        </button>
-        <button id="btn-disabled" type="button" class="btn btn-primary"
-                onclick="doEnableHandler(false)"><i class="fa fa-stop"></i> 禁用
-        </button>
+                    </#resource>
+                    <#resource code="updateIndividual">
+                    <button id="btn_edit" type="button" class="btn btn-primary" onclick="openUpdateHandler('${organizationType!}')"><i
+                            class="fa fa-pencil-square-o"></i> 更新
+                    </button>
+                    </#resource>
+                    <#resource code="securityIndividual">
+                    <!--   <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
+                               class="fa fa-pencil-square-o"></i> 安全提升
+                       </button>-->
+                    </#resource>
+                    <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
+                        查看
+                    </button>
+                    <button id="btn_export" type="button" class="btn btn-primary" onclick=""><i
+                            class="fa fa-file-excel-o"></i>导出
+                    </button>
+                    <button id="btn-print" type="button" class="btn btn-primary" onclick=""><i
+                            class="fa fa-print"></i>打印
+                    </button>
+                    <#resource code="enableIndividual">
+                    <button id="btn-enabled" type="button" class="btn btn-primary"
+                            onclick="doEnableHandler(true)"><i class="fa fa-play"></i> 启用
+                    </button>
+                    </#resource>
+                    <#resource code="disableIndividual">
+                    <button id="btn-disabled" type="button" class="btn btn-primary"
+                            onclick="doEnableHandler(false)"><i class="fa fa-stop"></i> 禁用
+                    </button>
+                    </#resource>
     </div>
     <table id="customerGrid" data-toggle="table" data-title="客户列表" class="table" data-toolbar="#toolbar"
            data-pagination="true" data-page-number="1" data-page-size="10" data-query-params="queryParams"

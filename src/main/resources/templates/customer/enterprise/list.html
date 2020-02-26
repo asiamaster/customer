@@ -97,12 +97,16 @@
                     <button id="btn-print" type="button" class="btn btn-primary" onclick=""><i
                             class="fa fa-print"></i>打印
                     </button>
+                    <#resource code="enableEnterprise">
                     <button id="btn-enabled" type="button" class="btn btn-primary"
                             onclick="doEnableHandler(true)"><i class="fa fa-play"></i> 启用
                     </button>
+                    </#resource>
+                    <#resource code="disableEnterprise">
                     <button id="btn-disabled" type="button" class="btn btn-primary"
                             onclick="doEnableHandler(false)"><i class="fa fa-stop"></i> 禁用
                     </button>
+                    </#resource>
                 </div>
                 <table id="customerGrid" data-toggle="table" data-title="客户列表" class="table" data-toolbar="#toolbar"
                        data-pagination="true" data-page-number="1" data-page-size="10" data-query-params="queryParams"

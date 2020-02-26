@@ -141,7 +141,9 @@
                         if (data){
                             if (data.organizationType != $('#organizationType').val()) {
                                 var msg = '该证件号已在[' + $("#organizationType").find("option:selected").text() + ']客户里存在';
-                                bs4pop.alert(msg, {width: 400, type: 'error'});
+                                bs4pop.alert(msg, {width: 400, type: 'error'},function () {
+                                    parent.dia.hide();
+                                });
                                 return;
                             }
                             bs4pop.confirm('已存在客户基本信息，本次将沿用客户已有信息?', {type: 'warning'}, function (flag) {

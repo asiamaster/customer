@@ -230,6 +230,21 @@ public class CustomerController {
     }
 
     /**
+     * 禁用/启用客户
+     * @param id 客户ID
+     * @param enable 是否启用
+     * @return BaseOutput
+     */
+    @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput doEnable(Long id, Boolean enable) {
+        if (Objects.isNull(id) || Objects.isNull(enable)) {
+            return BaseOutput.failure("必要参数丢失");
+        }
+        return customerRpc.updateState(id, enable ? CustomerEnum.State.NORMAL.getCode() : CustomerEnum.State.DISABLED.getCode());
+    }
+
+    /**
      * 设置客户信息的默认存储数据
      * @param customer
      */

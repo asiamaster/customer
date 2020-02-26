@@ -69,6 +69,15 @@ public interface CustomerRpc {
     BaseOutput saveBaseInfo(Customer baseInfo);
 
     /**
+     * 更新用户状态
+     * @param customerId 客户ID
+     * @param state      状态值
+     * @return
+     */
+    @RequestMapping(value = "/api/customer/updateState", method = {RequestMethod.POST})
+    BaseOutput updateState(@RequestParam("customerId") Long customerId, @RequestParam("state") Integer state);
+
+    /**
      * 保存客户证件相关
      * @param certificateInfo 客户证件相关信息
      * @return

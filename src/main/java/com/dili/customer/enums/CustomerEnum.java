@@ -86,8 +86,8 @@ public class CustomerEnum {
      * 客户等级
      */
     public enum Grade {
-        GENERAL(1, "普通"),
-        KAC(2, "重点"),
+        GENERAL(1, "普通客户"),
+        KAC(2, "重点客户"),
         ;
 
         @Getter
