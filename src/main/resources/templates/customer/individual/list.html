@@ -54,6 +54,13 @@
                     </div>
                 </div>
             </div>
+            <div class="form-group col">
+                <label for="">客户状态</label>
+                <div class="form-inline" id="stateRadioDiv">
+                    <!-- 此标签执行后会自动生成上面html片段 -->
+                    <#bradioGroupProvider _containerId="stateRadioDiv" _name="state" _provider="stateProvider"  />
+                </div>
+            </div>
         </div>
         <div class="">
             <button type="button" class="btn btn-primary" onclick="queryCustomerDataHandler()">查询</button>

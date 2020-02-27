@@ -309,7 +309,14 @@ public class CustomerController {
             BaseOutput<List<Customer>> output = customerRpc.list(query);
             if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
                 Customer customer = output.getData().stream().findFirst().orElse(new Customer());
-                modelMap.put("customer", customer);
+
+                DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
+                dataDictionaryValue.setDdCode("source_channel");
+                dataDictionaryValue.setCode(customer.getSourceChannel());
+                BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue = dataDictionaryRpc.listDataDictionaryValue(dataDictionaryValue);
+                if (listDataDictionaryValue.isSuccess() && CollectionUtil.isNotEmpty(listDataDictionaryValue.getData())){
+                    customer.setSourceChannelValue(listDataDictionaryValue.getData().get(0).getName());
+                }
                 BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
                     CustomerMarket customerMarket = marketOutput.getData();
@@ -326,6 +333,8 @@ public class CustomerController {
                     }
                     modelMap.put("customerMarket", customerMarket);
                 }
+
+                modelMap.put("customer", customer);
             }
         }
     }

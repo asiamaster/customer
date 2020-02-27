@@ -20,35 +20,38 @@
                     <div class="row row-cols-4">
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户名称</label>
-                            <input type="text" class="form-control" name="" maxlength="20" required  />
+                            <input type="text" class="form-control" name="name" maxlength="20" required  value="${customer.name!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户类型</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <select id="organizationType" name="organizationType" class="form-control"  ></select>
+                            <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户来源</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name=""  disabled value="${customer.sourceChannelValue!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户行业</label>
-                            <select class="form-control" name="" id=""></select>
+                            <select id="profession" name="profession" class="form-control"></select>
+                            <#bcomboProvider _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business"}'  _valueField="value" _textField="text" _value="${customer.profession!}" />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户级别</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name="" required disabled value="${customer.gradeValue!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户注册时间</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name="" required disabled value="${customer.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户状态</label>
-                            <select name="" class="form-control" required ></select>
+                            <select id="state" name="state" class="form-control" required ></select>
+                            <#bcomboProvider _id="state" _provider="stateProvider"  _valueField="value" _textField="text" _value="${customer.state!}" _queryParams='{required:true}'/>
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>联系电话</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="contactsPhone" required value="${customer.contactsPhone!}"/>
                         </div>
                     </div>
                     <div class="breadcrumb" data-target="#customerInfo" aria-expanded="true"
@@ -57,12 +60,16 @@
                     </div>
                     <div class="row row-cols-4" id="customerInfo">
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i>归属人</label>
+                            <label for="_ownerId" class=""><i class="red">*</i>归属人</label>
+                            <div class="col-10">
+                                <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId" _displayDomainName="_ownerId" _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}"   _required="true" />
+                            </div>
                             <input type="text" class="form-control" name="" required />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>归属组织</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="hidden" id="marketId" name="marketId" value="${customerMarket.marketId!}">
+                            <input type="text" class="form-control" name="" required disabled value="${customerMarket.marketName!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class="">归属部门</label>
