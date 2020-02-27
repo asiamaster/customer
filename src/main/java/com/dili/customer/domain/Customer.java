@@ -198,6 +198,11 @@ public class Customer extends BaseDomain {
     private Integer state;
 
     /**
+     * 客户来源渠道值
+     */
+    private String sourceChannelValue;
+
+    /**
      * 获取客户级别显示
      * @return
      */

@@ -29,8 +29,8 @@
                         <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
                     </div>
                     <div class="form-group col">
-                        <label for="" class="">客户来源</label>
-                        <input type="text" class="form-control" name=""  disabled value="${customer.sourceSystem!}" />
+                        <label for="" class="">来源渠道</label>
+                        <input type="text" class="form-control" name=""  disabled value="${customer.sourceChannelValue!}" />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户行业</label>
@@ -42,7 +42,7 @@
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户注册时间</label>
-                        <input type="text" class="form-control" name="" value="${customer.createTime!}" />
+                        <input type="text" class="form-control" name=""  value="${customer.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}" />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户状态</label>

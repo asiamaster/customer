@@ -26,9 +26,10 @@ public interface UserService {
 
     /**
      * 获取当前用户所属市场的所有用户
+     * @param realName 真实名称 模糊搜索
      * @return
      */
-    List<User> getCurrentMarketUser();
+    List<User> getCurrentMarketUser(String realName);
 
     /**
      * 通过ID获取用户信息

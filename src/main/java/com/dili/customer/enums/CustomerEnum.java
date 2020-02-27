@@ -19,7 +19,7 @@ public class CustomerEnum {
      */
     public enum State{
 
-        NORMAL(1, "正常"),
+        NORMAL(1, "生效"),
         DISABLED(2, "禁用"),
         ;
         @Getter

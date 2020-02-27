@@ -34,7 +34,7 @@ public class UserProvider extends BatchDisplayTextProviderAdaptor {
 
     @Override
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
-        List<User> list = userService.getCurrentMarketUser();
+        List<User> list = userService.getCurrentMarketUser(obj.toString());
         List<ValuePair<?>> resultList = list.stream().map(f -> {
             return (ValuePair<?>) new ValuePairImpl(f.getRealName(), f.getId());
         }).collect(Collectors.toList());
