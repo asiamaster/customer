@@ -13,20 +13,21 @@
                     role="tab" aria-controls="nav-resourceInfo" aria-selected="false">资源信息</a>
             </div>
         </nav>
-        <form id="saveForm" role="form" novalidate>
-            <div class="tab-content" id="nav-tabContent">
-                <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
+
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
+                <form role="form" id="baseInfoForm" >
                     <div class="breadcrumb" aria-expanded="true">
                         基本信息
                     </div>
                     <div class="row row-cols-4">
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户名称</label>
-                            <input type="text" class="form-control" name="" maxlength="20" required  />
+                            <input type="text" class="form-control" name="customerame" maxlength="20" value="良芳" required  />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户类型</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name="" value="企业" requNired disabled />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户来源</label>
@@ -50,7 +51,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>联系电话</label>
-                            <input type="text" class="form-control" name="" required />
+                            <input type="text" class="form-control" name="" value="18202828888" required />
                         </div>
                     </div>
                     <div class="breadcrumb" data-target="#customerInfo" aria-expanded="true"
@@ -71,58 +72,73 @@
                             <input type="text" class="form-control" name="" />
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
+                </form>
+            </div>
+            <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
+                <form role="form" id="cardInfoForm" >
                     <div class="breadcrumb" aria-expanded="true">
                         证件信息
                     </div>
                     <div class="row row-cols-4">
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i> 证件</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name="" required disabled/>
                         </div>
-
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>证件企业名称</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <input type="text" class="form-control" name="" required disabled/>
                         </div>
-
-                        <div class="form-group col">
-                            <label for="" class="">证件有效期</label>
-                            <input type="text" class="form-control" name="" />
+                        <div class="form-group col-auto">
+                            <label class="justify-content-end">证件有效期</label>
+                            <div class="form-inline">
+                                <div class="input-group">
+                                    <input type="text" name="" id="" value="" class="form-control laydate laystart"/>
+                                    <div class="input-group-append">
+                                        <label for="" class="input-group-text fa fa-calendar"></label>
+                                    </div>
+                                </div>&nbsp;&nbsp;至&nbsp;&nbsp;
+                                <div class="input-group">
+                                    <input type="text" name="" id="" value="" class="form-control laydate layend"/>
+                                    <div class="input-group-append">
+                                        <label for="" class="input-group-text fa fa-calendar"></label>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-
                         <div class="form-group col">
                             <label for="" class="">证件地址</label>
-                            <input type="text" class="form-control" name="" maxlength="50" />
+                            <input type="text" class="form-control" name="" maxlength="50"/>
                         </div>
-
                         <div class="form-group col">
                             <label for="" class="">法人证件</label>
-                            <input type="text" class="form-control" name=""  maxlength="50" />
+                            <input type="text" class="form-control" name="" maxlength="50"/>
                         </div>
-
                         <div class="form-group col">
                             <label for="" class="">法人姓名</label>
-                            <input type="text" class="form-control" name="" maxlength="20" />
+                            <input type="text" class="form-control" name="" maxlength="20"/>
                         </div>
                     </div>
-                </div>
-                <div class="tab-pane" id="nav-resourceInfo" role="tabpanel" aria-labelledby="nav-resourceInfo-tab">
+                </form>
+            </div>
+            <div class="tab-pane" id="nav-resourceInfo" role="tabpanel" aria-labelledby="nav-resourceInfo-tab">
+                <form role="form" id="resourceInfoForm" >
                     <div class="breadcrumb" aria-expanded="true">
                         联系人
                     </div>
                     <div>
-                        <table class="table table-bordered table-hover table-striped" id="customerTable">
+                        <table class="table table-bordered table-hover table-striped text-center" id="customerTable">
                             <thead>
                             <tr>
-                                <th class="text-center align-middle" style="width: 5%"><a id="addCustomer" href="javascript:;" style="padding: 8px 18px;"><i class="fa fa-plus-square fa-lg"></i></a></th>
+                                <th class="align-middle" style="width: 5%"><a id="addCustomer" href="javascript:;"
+                                                                              style="padding: 8px 18px;"><i
+                                        class="fa fa-plus-square fa-lg"></i></a></th>
                                 <th style="width: 10%;font-weight:normal; ">关系/职务</th>
                                 <th style="width: 10%;font-weight:normal; ">*名称</th>
                                 <th style="width: 5%;font-weight:normal; ">性别</th>
                                 <th style="width: 10%;font-weight:normal; ">*电话</th>
                                 <th style="width: 10%;font-weight:normal; ">民族</th>
                                 <th style="width: 10%;font-weight:normal; ">出生日期</th>
+                                <th style="width: 5%;font-weight:normal; ">默认</th>
                                 <th style="width: 20%;font-weight:normal; ">备注</th>
                             </tr>
                             </thead>
@@ -130,8 +146,9 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
             </div>
+            </form>
+        </div>
             <div class="text-right mt-2">
                 <button type="button" class="btn btn-light px-5" id="formCancel">取消</button>
                 <button type="button" class="btn btn-primary px-5" id="formSubmit">提交</button>
@@ -145,28 +162,39 @@
 </div>
 
 </#bs4Body>
-<script type="text/javascript" src="${contextPath}/static/resources/js/bui/commonEdit.js"></script>
-
+<script type="text/javascript" src="${contextPath}/resources/js/bui/commonEdit.js"></script>
 <#customer_updateJs />
 
 <script  id="customerItem"  type="text/html">
     <tr data-index="{{index}}">
-        <td class="text-center align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
+        <td class="align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
 
         <td></td>
-        <td style="padding: .1rem!important;"><input type="text" id="number_{{index}}" name="number_{{index}}"value="{{number}}" class="form-control" required></td>
-        <td style="padding: .1rem!important;"><select name="sex{{index}}"  id="sex{{index}}" value="{{number}}" class="form-control"  ></select></td>
-        <td style="padding: .1rem!important;"><input type="text" id="tel{{index}}" name="tel{{index}}"value="{{tel}}" class="form-control" required></td>
-        <td style="padding: .1rem!important;"><select name="{{index}}"  id="{{index}}" value="{{}}" class="form-control"  ></select></td>
+        <td style="padding: .1rem!important;"><input type="text" id="name{{index}}" name="name{{index}}"value="陈{{name}}" class="form-control" maxlength="20" required></td>
+        <td style="padding: .1rem!important;"><select name="sex{{index}}"  id="sex{{index}}" value="{{number}}" class="form-control">
+            <option value="">请选择</option>
+            <option value="1">男</option>
+            <option value="2">女</option>
+        </select></td>
+        <td style="padding: .1rem!important;"><input type="text" id="tel{{index}}" name="tel{{index}}"value="{{tel}}" class="form-control isMobile" required></td>
+        <td style="padding: .1rem!important;"><select name="nation{{index}}"  id="nation{{index}}" value="{{nation}}" class="form-control" >
+            <option value="1">汉</option>
+        </select></td>
         <td style="padding: .1rem!important;">
             <div class="input-group">
-                <input type="text" name="createTimeStart" id="createTimeStart" class="form-control laydatetime" required />
+                <input type="text" name="borthdate{{index}}" id="borthdate{{index}}" value="" class="form-control laydate layend"/>
                 <div class="input-group-append">
-                    <label for="createTimeStart" class="input-group-text fa fa-calendar"></label>
+                    <label for="borthdate{{index}}"  class="input-group-text fa fa-calendar"></label>
                 </div>
             </div>
         </td>
-        <td style="padding: .1rem!important;"><input type="text" id="mark{{index}}" name="mark{{index}}"value="{{}}" class="form-contr"></td>
+        <td class="align-middle" style="padding: .05rem!important;">
+            <div class="form-check">
+                <input class="form-check-input" type="radio" id="default{{index}}" name="default" value="1">
+                <label class="form-check-label" for="default{{index}}"></label>
+            </div>
+        </td>
+        <td style="padding: .1rem!important;"><input type="text" id="mark{{index}}" name="mark{{index}}"value="{{mark}}" class="form-control" maxlength="20"></td>
 
 
 
