@@ -1,6 +1,7 @@
 package com.dili.customer.service.impl;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
 import com.dili.customer.service.UserService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -37,14 +38,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getCurrentMarketUser() {
+    public List<User> getCurrentMarketUser(String realName) {
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         if (null == userTicket) {
             return Collections.emptyList();
         }
         User condition = DTOUtils.newInstance(User.class);
         condition.setFirmCode(userTicket.getFirmCode());
-        BaseOutput<List<User>> baseOutput = userRpc.list(condition);
+        if (StrUtil.isNotBlank(realName)) {
+            condition.setRealName(realName);
+        }
+        BaseOutput<List<User>> baseOutput = userRpc.listByExample(condition);
         return baseOutput.isSuccess() ? baseOutput.getData() : Collections.emptyList();
     }
 

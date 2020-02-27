@@ -24,7 +24,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>客户类型</label>
-                            <select id="organizationType" name="organizationType" class="form-control"  ></select>
+                            <select id="organizationType" name="organizationType" class="form-control" disabled ></select>
                             <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
                         </div>
                         <div class="form-group col">
@@ -62,9 +62,8 @@
                         <div class="form-group col">
                             <label for="_ownerId" class=""><i class="red">*</i>归属人</label>
                             <div class="col-10">
-                                <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId" _displayDomainName="_ownerId" _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}"   _required="true" />
+                                <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId" _displayDomainName="_ownerId" _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
                             </div>
-                            <input type="text" class="form-control" name="" required />
                         </div>
                         <div class="form-group col">
                             <label for="" class=""><i class="red">*</i>归属组织</label>
@@ -72,8 +71,10 @@
                             <input type="text" class="form-control" name="" required disabled value="${customerMarket.marketName!}"/>
                         </div>
                         <div class="form-group col">
+                            <input type="hidden" id="currentDepartmentId" value="${customerMarket.departmentId}">
                             <label for="" class="">归属部门</label>
-                            <input type="text" class="form-control" name="" />
+                            <select id="departmentId" name="departmentId" class="form-control">
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -83,33 +84,30 @@
                     </div>
                     <div class="row row-cols-4">
                         <div class="form-group col">
+                            <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
                             <label for="" class=""><i class="red">*</i> 证件</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select id="certificateType" name="certificateType" class="form-control" disabled>
+                                    </select>
+                                </div>
+                                <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}" readonly disabled/>
+                            </div>
                         </div>
 
                         <div class="form-group col">
-                            <label for="" class=""><i class="red">*</i>证件企业名称</label>
-                            <input type="text" class="form-control" name="" required disabled />
+                            <label for="" class=""><i class="red">*</i>证件名称</label>
+                            <input type="text" class="form-control" name="" value="${customer.name}" required disabled />
                         </div>
 
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
-                            <input type="text" class="form-control" name="" />
+                            <input type="text" class="form-control" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
                         </div>
 
                         <div class="form-group col">
                             <label for="" class="">证件地址</label>
                             <input type="text" class="form-control" name="" maxlength="50" />
-                        </div>
-
-                        <div class="form-group col">
-                            <label for="" class="">法人证件</label>
-                            <input type="text" class="form-control" name=""  maxlength="50" />
-                        </div>
-
-                        <div class="form-group col">
-                            <label for="" class="">法人姓名</label>
-                            <input type="text" class="form-control" name="" maxlength="20" />
                         </div>
                     </div>
                 </div>
@@ -125,6 +123,17 @@
 </div>
 
 </#bs4Body>
-<#customer_updateJs />
+<#customer_commonJs />
+<script>
+    /**
+     * 组织类型加载成功后执行的方法
+     */
+    function organizationTypeLoadSuccess() {
+        //加载证件信息
+        getCertificateType($('#organizationType').val(), 'certificateType', $('#certificateTypeCode').val());
+    }
 
+    $(function () {
+        listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'--请选择--');
+    })
 </script>
