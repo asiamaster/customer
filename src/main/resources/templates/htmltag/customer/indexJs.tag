@@ -36,8 +36,8 @@
      * @param organizationType 客户类型
     */
     function openInsertHandler(organizationType) {
-        let url = "/customer/register.action?organizationType="+organizationType;
-         dia = bs4pop.dialog({
+        let url = "/customer/register.action?sourceSystem=CUSTOMER&sourceChannel=bg_create&organizationType=" + organizationType;
+        dia = bs4pop.dialog({
             title: '新增客户',
             content: url,
             isIframe: true,

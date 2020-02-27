@@ -1,10 +1,14 @@
 <script>
 
-    /**
-     * 客户类型改变时，
-    */
-    $('[name="organizationType"]').change(function () {
-        let organizationType = $(this).val();
+    // /**
+    //  * 客户类型改变时，
+    // */
+    // $('[name="organizationType"]').change(function () {
+    //
+    // });
+
+    function organizationTypeChange() {
+        let organizationType = $('#organizationType').val();
         //如果选择的是企业，则显示企业需要的相关信息
         if (organizationType === 'enterprise') {
             $('[data-type="company"]').show();
@@ -12,8 +16,7 @@
             $('[data-type="company"]').val('').hide();
         }
         getCertificateType(organizationType, 'certificateType');
-    });
-
+    }
     
     function organizationTypeLoadSuccess() {
         <%if (has(organizationType)){%>
@@ -21,7 +24,8 @@
             $('#organizationType').val(organizationType);
             $('#organizationTypeDiv').hide();
         <%}%>
-        getCertificateType($('#organizationType').val(),'certificateType');
+        organizationTypeChange();
+        //getCertificateType($('#organizationType').val(),'certificateType');
     }
 
     /**
@@ -57,7 +61,7 @@
                             tmpJson.name = $('#name').val();
                             tmpJson.contactsPhone = $('#contactsPhone').val();
                             window.parent.postMessage(JSON.stringify(tmpJson),'/');
-
+                            parent.dia.hide();
                         });
                     } else {
                         bs4pop.alert(ret.result, {width: 400,type: 'error'});
@@ -89,6 +93,28 @@
         }
     });
 
+    $('#certificateNumber').bind('input', function () {
+        var old = $(this).data('selectVal');
+        if (old != $(this).val()) {
+            clearCustomerVal();
+        }
+        $(this).data('selectVal', $(this).val());
+    });
+
+    /**
+     * 清空输入框
+     */
+    function clearCustomerVal(){
+        $('#id').val('');
+        // let certificateNumber = $('#certificateNumber').val();
+        // let certificateType = $('#certificateType').val();
+        // let organizationType = $('#organizationType').val();
+        // $(".form-control").val('');
+        // $('#certificateNumber').val(certificateNumber);
+        // $('#certificateType').val(certificateType);
+        // $('#organizationType').val(organizationType);
+    }
+
     /**
      * 读卡操作
      */
@@ -99,7 +125,7 @@
                 return;
             }
             $('#certificateNumber').val(userObj.IDCardNo);
-            queryCustomerByNumber();
+            queryCustomerByNumber(userObj);
         },50);
     });
 
@@ -119,7 +145,7 @@
     /**
      * 根据证件号查询客户在当前市场是否已存在
      */
-    function queryCustomerByNumber() {
+    function queryCustomerByNumber(userObj) {
         let certificateNumber = $('#certificateNumber').val();
         let organizationType = $('#organizationType').val();
         if (certificateNumber){
@@ -138,8 +164,9 @@
                     if (ret.success) {
                         //返回true，表示用户不存在，或者用户已存在，但在该市场不存在
                         let data = ret.data;
+                        //如果用户已存在，则用系统中的用户信息
                         if (data){
-                            if (data.organizationType != $('#organizationType').val()) {
+                            if (data.organizationType != organizationType) {
                                 var msg = '该证件号已在[' + $("#organizationType").find("option:selected").text() + ']客户里存在';
                                 bs4pop.alert(msg, {width: 400, type: 'error'},function () {
                                     parent.dia.hide();
@@ -161,18 +188,35 @@
                                 }
                             });
                         }else{
-                            $(".form-control").attr("readonly",false);
-                            $(".form-control").val('');
-                            $('#id').val('');
-                            $('#certificateNumber').val(certificateNumber);
-                            $('#organizationType').val(organizationType);
+                            //如果用户不存在，判断本次是否读卡操作
+                            //如果userObj 有值，则表示是读卡读出的数据
+                            if (userObj){
+                                $("#id").val('');
+                                var gender='2';
+                                if(userObj.Sex =="男"){
+                                    gender='1';
+                                }else{
+                                    gender='2';
+                                }
+                                var photo = "data:image/jpeg;base64,"+userObj.PhotoFileName;
+                                let name = userObj.Name;
+                                $('#name').val(name.trim());
+                                $('#gender').val(gender);
+                                $('#photo').val(photo);
+                                var address = userObj.Address;
+                                $('#certificateAddr').val(address.trim());
+                                $('#birthdate').val(userObj.Born);
+                                $('#certificateRange').val(userObj.UserLifeBegin+' ~ '+userObj.UserLifeEnd);
+                                $(".form-control").attr("readonly",true);
+                                $("#certificateNumber").attr("readonly",false);
+                            }else{
+                                $(".form-control").attr("readonly",false);
+                                clearCustomerVal();
+                            }
                         }
                     } else {
                         $(".form-control").attr("readonly",false);
-                        $(".form-control").val('');
-                        $('#id').val('');
-                        $('#certificateNumber').val(certificateNumber);
-                        $('#organizationType').val(organizationType);
+                        clearCustomerVal();
                         bs4pop.alert(ret.result, {width: 350,type: 'error'});
                     }
                 },

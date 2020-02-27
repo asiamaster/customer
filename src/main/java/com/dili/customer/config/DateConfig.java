@@ -1,5 +1,6 @@
 package com.dili.customer.config;
 
+import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
@@ -9,6 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -49,4 +51,25 @@ public class DateConfig {
         module.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
         return module;
     }
+
+    @Bean
+    public Converter<String, LocalDate> localDateConverter() {
+        return new Converter<>() {
+            @Override
+            public LocalDate convert(String source) {
+                return StrUtil.isBlank(source) ? null : LocalDate.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT));
+            }
+        };
+    }
+
+    @Bean
+    public Converter<String, LocalDateTime> localDateTimeConverter() {
+        return new Converter<>() {
+            @Override
+            public LocalDateTime convert(String source) {
+                return StrUtil.isBlank(source) ? null : LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT));
+            }
+        };
+    }
+
 }

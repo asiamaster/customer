@@ -1,18 +1,13 @@
 package com.dili.customer.domain.dto;
 
-import com.dili.customer.domain.Address;
 import com.dili.customer.validator.AddView;
-import com.dili.customer.validator.UpdateView;
-import com.google.common.base.MoreObjects;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * <B>企业客户基本信息</B>
@@ -24,6 +19,7 @@ import java.time.LocalDate;
  */
 @Getter
 @Setter
+@ToString
 public class EnterpriseCustomer extends IndividualCustomer implements Serializable {
 
     private static final long serialVersionUID = 4869002082778403248L;
@@ -41,13 +37,5 @@ public class EnterpriseCustomer extends IndividualCustomer implements Serializab
     @NotBlank(message = "企业法人不能为空", groups = {AddView.class})
     @Size(max = 40, message = "法人请保持在40个字以内", groups = {AddView.class})
     private String corporationName;
-
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("contactsName", contactsName)
-                .add("corporationName", corporationName)
-                .toString();
-    }
 
 }

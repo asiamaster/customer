@@ -28,12 +28,9 @@
                 <input type="" class="form-control isNaturalNum" id="" placeholder="">
             </div>
             <div class="form-group col">
-                <label for="">客户来源</label>
-                <select class="form-control" id="sourceSystem" name="sourceSystem">
-                    <option value="">请选择</option>
-                    <option value="11">1</option>
-                    <option value="22">2</option>
-                </select>
+                <label for="">来源渠道</label>
+                <select class="form-control" id="sourceChannel" name="sourceChannel"></select>
+                <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel"}' _valueField="value" _textField="text" _value=""/>
             </div>
             <div class="form-group col">
                 <label for="">客户级别</label>
@@ -127,8 +124,8 @@
             <th data-width-unit="%" data-width="10" data-field="grade" data-align="center" data-provider="gradeProvider">
                 客户级别
             </th>
-            <th data-width-unit="%" data-width="10" data-field="sourceSystem" data-align="center">
-                客户来源
+            <th data-width-unit="%" data-width="10" data-field="sourceChannel" data-align="center" data-provider="dataDictionaryValueProvider" data-query-params='{dd_code:"source_channel"}'>
+                来源渠道
             </th>
             <th data-width-unit="%" data-width="10" data-field="contactsPhone" data-align="center">
                 联系电话

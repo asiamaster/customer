@@ -149,4 +149,38 @@ public class CustomerEnum {
             return null;
         }
     }
+
+    /**
+     * 客户性别枚举定义
+     */
+    public enum Gender{
+
+        MALE(1, "男"),
+        FEMALE(2, "女"),
+        ;
+        @Getter
+        private Integer code;
+        @Getter
+        private String value;
+
+        Gender(Integer code, String value) {
+            this.code = code;
+            this.value = value;
+        }
+
+
+        /**
+         * 获取某个枚举值实例信息
+         * @param code
+         * @return
+         */
+        public static Gender getInstance(Integer code){
+            for (Gender gender : Gender.values()) {
+                if (gender.getCode().equals(code)){
+                    return gender;
+                }
+            }
+            return null;
+        }
+    }
 }

@@ -22,9 +22,11 @@ import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.rpc.DataDictionaryRpc;
 import com.dili.uap.sdk.rpc.DepartmentRpc;
 import com.dili.uap.sdk.session.SessionContext;
+import com.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
 
@@ -63,6 +66,8 @@ public class CustomerController {
     private MarketRpc marketRpc;
     @Autowired
     private DepartmentRpc departmentRpc;
+    @Autowired
+    private UserResourceRedis userResourceRedis;
 
     /**
      * 跳转到企业客户管理页面
@@ -128,9 +133,32 @@ public class CustomerController {
      * @return String
      */
     @RequestMapping(value = "/register.action", method = RequestMethod.GET)
-    public String register(String organizationType, ModelMap modelMap) {
-        if (StrUtil.isNotBlank(organizationType)) {
-            modelMap.put("organizationType", organizationType);
+    public String register(String sourceSystem, String sourceChannel, String organizationType, ModelMap modelMap) {
+        if (StrUtil.isBlank(sourceSystem) || StrUtil.isBlank(sourceChannel)) {
+            modelMap.put("error", "客户来源不明确，不能操作此项");
+        } else {
+            modelMap.put("sourceSystem", sourceSystem);
+            modelMap.put("sourceChannel", sourceChannel);
+            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+            //有创建哪些客户类型的券
+            Set organizationTypeRight = Sets.newHashSet();
+            if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addEnterprise")) {
+                organizationTypeRight.add(ENTERPRISE.getCode());
+            }
+            if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addIndividual")) {
+                organizationTypeRight.add(INDIVIDUAL.getCode());
+            }
+            if (CollectionUtil.isEmpty(organizationTypeRight)) {
+                modelMap.put("error", "你没有新建客户的权限，请联系管理员分配");
+            } else {
+                if (StrUtil.isNotBlank(organizationType)) {
+                    if (organizationTypeRight.contains(organizationType)) {
+                        modelMap.put("organizationType", organizationType);
+                    } else {
+                        modelMap.put("error", "你没有新建此类型客户的权限，请联系管理员分配");
+                    }
+                }
+            }
         }
         return "customer/register";
     }

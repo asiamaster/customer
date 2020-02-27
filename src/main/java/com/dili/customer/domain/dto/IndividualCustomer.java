@@ -2,15 +2,16 @@ package com.dili.customer.domain.dto;
 
 import com.dili.customer.validator.AddView;
 import com.dili.customer.validator.UpdateView;
-import com.google.common.base.MoreObjects;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 /**
  * <B>Description</B>
@@ -22,6 +23,7 @@ import java.io.Serializable;
  */
 @Getter
 @Setter
+@ToString
 public class IndividualCustomer implements Serializable {
     private static final long serialVersionUID = -5865840494367827998L;
 
@@ -60,8 +62,15 @@ public class IndividualCustomer implements Serializable {
     /**
      * 来源系统##外部系统来源标识
      */
-    @NotBlank(message = "客户来源不能为空", groups = {AddView.class})
+    @NotBlank(message = "客户来源系统不能为空", groups = {AddView.class})
     private String sourceSystem;
+
+    /**
+     * 来源渠道##摊位租赁、系统注册等
+     */
+    @NotBlank(message = "客户来源渠道不能为空", groups = {AddView.class})
+    private String sourceChannel;
+
 
     /**
      * 联系电话
@@ -105,21 +114,29 @@ public class IndividualCustomer implements Serializable {
      */
     private Integer isDelete;
 
-    @Override
-    public String toString() {
-        return MoreObjects.toStringHelper(this)
-                .add("id", id)
-                .add("certificateNumber", certificateNumber)
-                .add("certificateType", certificateType)
-                .add("name", name)
-                .add("organizationType", organizationType)
-                .add("sourceSystem", sourceSystem)
-                .add("contactsPhone", contactsPhone)
-                .add("operatorId", operatorId)
-                .add("ownerId", ownerId)
-                .add("marketId", marketId)
-                .add("state", state)
-                .add("departmentId", departmentId)
-                .toString();
-    }
+    /**
+     * 性别
+     */
+    private Integer gender;
+
+    /**
+     * 照片
+     */
+    private String photo;
+
+    /**
+     * 出生日期
+     */
+    private LocalDate birthdate;
+
+    /**
+     * 证件地址
+     */
+    private String certificateAddr;
+
+    /**
+     * 证件日期##企业时为营业执照日期,如:2011-09-01 至 长期
+     */
+    private String certificateRange;
+
 }

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -101,6 +102,11 @@ public class Customer extends BaseDomain {
      * 来源系统##外部系统来源标识
      */
     private String sourceSystem;
+
+    /**
+     * 来源渠道##租赁业务、系统创建等
+     */
+    private String sourceChannel;
 
     /**
      * 客户行业##水果批发/蔬菜批发/超市
