@@ -53,8 +53,16 @@
      * 打开客户更新
      * @param organizationType 客户类型
      */
-    function openUpdateHandler(organizationType) {
-        let url = "/customer/" + organizationType + "/enterprise/update.html";
+    function openUpdateHandler() {
+        //获取选中行的数据
+        let rows = _customerGrid.bootstrapTable('getSelections');
+        if (null == rows || rows.length == 0) {
+            bs4pop.alert('请选中一条数据', {type: "warning"});
+            return;
+        }
+        //table选择模式是单选时可用
+        let selectedRow = rows[0];
+        let url = "/customer/update.html?customerId="+selectedRow.id;
         dia = bs4pop.dialog({
             title: '更新客户',
             content: url,
@@ -189,6 +197,7 @@
         */
     /*****************************************自定义事件区 end**************************************/
     window.addEventListener('message', function (e) {
+        // alert(e.data);
         queryCustomerDataHandler();
     }, false)
 

@@ -2,167 +2,169 @@
 
 <div class="container-fluid">
     <%if (has(customer)){%>
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-baseInfo-tab" data-toggle="tab" href="#nav-baseInfo"
-               role="tab" aria-controls="nav-baseInfo" aria-selected="true">基本信息</a>
-            <a class="nav-item nav-link" id="nav-cardInfo-tab" data-toggle="tab" href="#nav-cardInfo" role="tab"
-               aria-controls="nav-cardInfo" aria-selected="false">证件信息</a>
-            <a class="nav-item nav-link" id="nav-resourceInfo-tab" data-toggle="tab" href="#nav-resourceInfo"
-               role="tab" aria-controls="nav-resourceInfo" aria-selected="false">资源信息</a>
-        </div>
-    </nav>
-    <form id="addForm" role="form" novalidate>
-        <input type="hidden" id="id" value="${customer.id!}">
-        <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
-                <div class="breadcrumb" aria-expanded="true">
-                    基本信息
-                </div>
-                <div class="row row-cols-4">
-                    <div class="form-group col">
-                        <label for="" class="">客户名称</label>
-                        <input type="text" class="form-control" name=""  value="${customer.name!}"/>
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户类型</label>
-                        <select id="organizationType" name="organizationType" class="form-control"  ></select>
-                        <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户来源</label>
-                        <input type="text" class="form-control" name=""  disabled value="${customer.sourceSystem!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户行业</label>
-                        <input type="text" class="form-control" name="" value="${customer.profession!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户级别</label>
-                        <input type="text" class="form-control" name="" value="${customer.gradeValue!}"  />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户注册时间</label>
-                        <input type="text" class="form-control" name="" value="${customer.createTime!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">客户状态</label>
-                        <input type="text" class="form-control" name="" value="${customer.stateValue!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">联系电话</label>
-                        <input type="text" class="form-control" name="" value="${customer.contactsPhone!}" />
-                    </div>
-                </div>
-                <div class="breadcrumb" data-target="#customerInfo" aria-expanded="true"
-                     aria-controls="customerInfo">
-                    归属信息
-                </div>
-                <div class="row row-cols-4" id="customerInfo">
-                    <div class="form-group col">
-                        <label for="" class="">归属人</label>
-                        <input type="text" class="form-control" name="" value="${customerMarket.ownerName!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">归属组织</label>
-                        <input type="text" class="form-control" name="" value="${customerMarket.marketName!}" />
-                    </div>
-                    <div class="form-group col">
-                        <label for="" class="">归属部门</label>
-                        <input type="text" class="form-control" name="" value="${customerMarket.departmentName!}" />
-                    </div>
-                </div>
+        <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
+        <nav>
+            <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active" id="nav-baseInfo-tab" data-toggle="tab" href="#nav-baseInfo"
+                   role="tab" aria-controls="nav-baseInfo" aria-selected="true">基本信息</a>
+                <a class="nav-item nav-link" id="nav-cardInfo-tab" data-toggle="tab" href="#nav-cardInfo" role="tab"
+                   aria-controls="nav-cardInfo" aria-selected="false">证件信息</a>
+                <a class="nav-item nav-link" id="nav-resourceInfo-tab" data-toggle="tab" href="#nav-resourceInfo"
+                   role="tab" aria-controls="nav-resourceInfo" aria-selected="false">资源信息</a>
             </div>
-            <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
-                <div class="breadcrumb" aria-expanded="true">
-                    证件信息
-                </div>
-                <div class="row row-cols-4">
-                    <div class="form-group col">
-                        <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
-                        <label for="" class=""> 证件</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <select id="certificateType" name="certificateType" class="form-control">
-                                </select>
-                            </div>
-                            <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}"/>
+        </nav>
+        <form id="addForm" role="form" novalidate>
+            <input type="hidden" id="id" value="${customer.id!}">
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
+                    <div class="breadcrumb" aria-expanded="true">
+                        基本信息
+                    </div>
+                    <div class="row row-cols-4">
+                        <div class="form-group col">
+                            <label for="" class="">客户名称</label>
+                            <input type="text" class="form-control" name=""  value="${customer.name!}"/>
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户类型</label>
+                            <select id="organizationType" name="organizationType" class="form-control"  ></select>
+                            <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider"  _valueField="value" _textField="text" _value="${customer.organizationType!}" _onLoadSuccess="organizationTypeLoadSuccess"/>
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户来源</label>
+                            <input type="text" class="form-control" name=""  disabled value="${customer.sourceSystem!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户行业</label>
+                            <input type="text" class="form-control" name="" value="${customer.profession!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户级别</label>
+                            <input type="text" class="form-control" name="" value="${customer.gradeValue!}"  />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户注册时间</label>
+                            <input type="text" class="form-control" name="" value="${customer.createTime!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户状态</label>
+                            <input type="text" class="form-control" name="" value="${customer.stateValue!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">联系电话</label>
+                            <input type="text" class="form-control" name="" value="${customer.contactsPhone!}" />
                         </div>
                     </div>
-
-                    <div class="form-group col">
-                        <label for="" class="">证件企业名称</label>
-                        <input type="text" class="form-control" name="" value="${customer.name!}" />
+                    <div class="breadcrumb" data-target="#customerInfo" aria-expanded="true"
+                         aria-controls="customerInfo">
+                        归属信息
                     </div>
-
-                    <div class="form-group col">
-                        <label for="" class=""> 证件有效期</label>
-                        <input type="text" class="form-control" name="" value="${customer.certificateRange!}" />
-                    </div>
-
-                    <div class="form-group col">
-                        <label for="" class="">证件地址</label>
-                        <input type="text" class="form-control" name=""  value="${customer.certificateAddr!}"/>
-                    </div>
-
-                    <div class="form-group col">
-                        <label for="" class="">法人证件</label>
-                        <div class="input-group">
-                            <input type="hidden" id="corporationCertificateTypeCode" value="${customer.corporationCertificateType}">
-                            <div class="input-group-prepend">
-                                <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
-                                </select>
-                            </div>
-                            <input type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}"/>
+                    <div class="row row-cols-4" id="customerInfo">
+                        <div class="form-group col">
+                            <label for="" class="">归属人</label>
+                            <input type="text" class="form-control" name="" value="${customerMarket.ownerName!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">归属组织</label>
+                            <input type="text" class="form-control" name="" value="${customerMarket.marketName!}" />
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">归属部门</label>
+                            <input type="text" class="form-control" name="" value="${customerMarket.departmentName!}" />
                         </div>
                     </div>
+                </div>
+                <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
+                    <div class="breadcrumb" aria-expanded="true">
+                        证件信息
+                    </div>
+                    <div class="row row-cols-4">
+                        <div class="form-group col">
+                            <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
+                            <label for="" class=""> 证件</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select id="certificateType" name="certificateType" class="form-control">
+                                    </select>
+                                </div>
+                                <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}"/>
+                            </div>
+                        </div>
 
-                    <div class="form-group col">
-                        <label for="" class="">法人姓名</label>
-                        <input type="text" class="form-control" name=""  value="${customer.corporationName!}"/>
+                        <div class="form-group col">
+                            <label for="" class="">证件企业名称</label>
+                            <input type="text" class="form-control" name="" value="${customer.name!}" />
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class=""> 证件有效期</label>
+                            <input type="text" class="form-control" name="" value="${customer.certificateRange!}" />
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class="">证件地址</label>
+                            <input type="text" class="form-control" name=""  value="${customer.certificateAddr!}"/>
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class="">法人证件</label>
+                            <div class="input-group">
+                                <input type="hidden" id="corporationCertificateTypeCode" value="${customer.corporationCertificateType}">
+                                <div class="input-group-prepend">
+                                    <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
+                                    </select>
+                                </div>
+                                <input type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class="">法人姓名</label>
+                            <input type="text" class="form-control" name=""  value="${customer.corporationName!}"/>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="tab-pane" id="nav-resourceInfo" role="tabpanel" aria-labelledby="nav-resourceInfo-tab">
-                <div class="breadcrumb" aria-expanded="true">
-                    联系人
+                <div class="tab-pane" id="nav-resourceInfo" role="tabpanel" aria-labelledby="nav-resourceInfo-tab">
+                    <div class="breadcrumb" aria-expanded="true">
+                        联系人
+                    </div>
+                    <table id="contactsGrid" data-toggle="table" data-title="联系人列表" class="table" data-toolbar="#toolbar"
+                           data-pagination="false"  data-query-params="queryContactsParams"
+                           data-side-pagination="server" data-method="POST"
+                           data-content-type="application/x-www-form-urlencoded" data-single-select="true"
+                           data-click-to-select="true" data-checkbox-header="true" data-unique-id="id" data-sort-name="id"
+                           data-sort-order="desc" data-icons="bui.variable.icons" data-buttons-class="primary"
+                           data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
+                        <thead>
+                        <tr>
+                            <th data-width-unit="%" data-width="10" data-field="position" data-align="center">
+                                职务/关系
+                            </th>
+                            <th data-width-unit="%" data-width="20" data-field="name" data-align="center">
+                                名称
+                            </th>
+                            <th data-width-unit="%" data-width="10" data-field="gender" data-align="center">
+                                性别
+                            </th>
+                            <th data-width-unit="%" data-width="10" data-field="phone" data-align="center">
+                                电话
+                            </th>
+                            <th data-width-unit="%" data-width="15" data-field="birthdate" data-align="center">
+                                出生日期
+                            </th>
+                            <th data-width-unit="%" data-width="15" data-field="isDefault" data-align="center">
+                                默认联系人
+                            </th>
+                            <th data-width-unit="%" data-width="10" data-field="notes" data-align="center">
+                                备注
+                            </th>
+                        </tr>
+                        </thead>
+                    </table>
                 </div>
-                <table id="contactsGrid" data-toggle="table" data-title="联系人列表" class="table" data-toolbar="#toolbar"
-                       data-pagination="false"  data-query-params="queryContactsParams"
-                       data-side-pagination="server" data-method="POST"
-                       data-content-type="application/x-www-form-urlencoded" data-single-select="true"
-                       data-click-to-select="true" data-checkbox-header="true" data-unique-id="id" data-sort-name="id"
-                       data-sort-order="desc" data-icons="bui.variable.icons" data-buttons-class="primary"
-                       data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
-                    <thead>
-                    <tr>
-                        <th data-width-unit="%" data-width="10" data-field="position" data-align="center">
-                            职务/关系
-                        </th>
-                        <th data-width-unit="%" data-width="20" data-field="name" data-align="center">
-                            名称
-                        </th>
-                        <th data-width-unit="%" data-width="10" data-field="gender" data-align="center">
-                            性别
-                        </th>
-                        <th data-width-unit="%" data-width="10" data-field="phone" data-align="center">
-                            电话
-                        </th>
-                        <th data-width-unit="%" data-width="15" data-field="birthdate" data-align="center">
-                            出生日期
-                        </th>
-                        <th data-width-unit="%" data-width="15" data-field="isDefault" data-align="center">
-                            默认联系人
-                        </th>
-                        <th data-width-unit="%" data-width="10" data-field="notes" data-align="center">
-                            备注
-                        </th>
-                    </tr>
-                    </thead>
-                </table>
             </div>
-        </div>
-    </form>
+        </form>
+
     <%}else{%>
         <h4 class="red"><span class="px-3">客户信息已不存在</span></h4>
     <%}%>

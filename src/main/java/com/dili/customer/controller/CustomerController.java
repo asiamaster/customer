@@ -168,10 +168,17 @@ public class CustomerController {
      * @param modelMap
      * @return String
      */
-    @RequestMapping(value = "/enterprise/update.html", method = RequestMethod.GET)
-    public String update(ModelMap modelMap) {
-        return "customer/enterprise/update";
+    @RequestMapping(value = "/update.html", method = RequestMethod.GET)
+    public String update(Long customerId, ModelMap modelMap) {
+        getCustomerDetail(customerId, modelMap);
+        String detail = "customer/enterprise/update";
+        if (modelMap.containsKey("customer")) {
+            Customer customer = (Customer) modelMap.get("customer");
+            detail = "customer/" + CustomerEnum.OrganizationType.getInstance(customer.getOrganizationType()).getCode() + "/update";
+        }
+        return detail;
     }
+
 
     /**
      * 跳转到详情页面
@@ -292,31 +299,33 @@ public class CustomerController {
      * @param customerId 客户ID
      * @param modelMap
      */
-    private void getCustomerDetail(Long customerId,ModelMap modelMap){
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-        CustomerQuery query = new CustomerQuery();
-        query.setId(customerId);
-        query.setMarketId(userTicket.getFirmId());
-        //获取客户基本信息
-        BaseOutput<List<Customer>> output = customerRpc.list(query);
-        if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())){
-            Customer customer = output.getData().stream().findFirst().orElse(new Customer());
-            modelMap.put("customer",customer);
-            BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
-            if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())){
-                CustomerMarket customerMarket = marketOutput.getData();
-                customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
-                BaseOutput<Firm> marketRpcById = marketRpc.getById(customerMarket.getMarketId());
-                if (marketRpcById.isSuccess() && Objects.nonNull(marketRpcById.getData())) {
-                    customerMarket.setMarketName(marketRpcById.getData().getName());
-                }
-                if (Objects.nonNull(customerMarket.getDepartmentId())) {
-                    BaseOutput<Department> departmentBaseOutput = departmentRpc.get(customerMarket.getDepartmentId());
-                    if (departmentBaseOutput.isSuccess() && Objects.nonNull(departmentBaseOutput.getData())) {
-                        customerMarket.setDepartmentName(departmentBaseOutput.getData().getName());
+    private void getCustomerDetail(Long customerId, ModelMap modelMap) {
+        if (Objects.nonNull(customerId)) {
+            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+            CustomerQuery query = new CustomerQuery();
+            query.setId(customerId);
+            query.setMarketId(userTicket.getFirmId());
+            //获取客户基本信息
+            BaseOutput<List<Customer>> output = customerRpc.list(query);
+            if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
+                Customer customer = output.getData().stream().findFirst().orElse(new Customer());
+                modelMap.put("customer", customer);
+                BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
+                if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
+                    CustomerMarket customerMarket = marketOutput.getData();
+                    customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
+                    BaseOutput<Firm> marketRpcById = marketRpc.getById(customerMarket.getMarketId());
+                    if (marketRpcById.isSuccess() && Objects.nonNull(marketRpcById.getData())) {
+                        customerMarket.setMarketName(marketRpcById.getData().getName());
                     }
+                    if (Objects.nonNull(customerMarket.getDepartmentId())) {
+                        BaseOutput<Department> departmentBaseOutput = departmentRpc.get(customerMarket.getDepartmentId());
+                        if (departmentBaseOutput.isSuccess() && Objects.nonNull(departmentBaseOutput.getData())) {
+                            customerMarket.setDepartmentName(departmentBaseOutput.getData().getName());
+                        }
+                    }
+                    modelMap.put("customerMarket", customerMarket);
                 }
-                modelMap.put("customerMarket", customerMarket);
             }
         }
     }

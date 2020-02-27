@@ -60,6 +60,7 @@
                             tmpJson.certificateNumber = $('#certificateNumber').val();
                             tmpJson.name = $('#name').val();
                             tmpJson.contactsPhone = $('#contactsPhone').val();
+                            tmpJson.customerId = ret.data;
                             window.parent.postMessage(JSON.stringify(tmpJson),'/');
                             parent.dia.hide();
                         });
