@@ -10,9 +10,11 @@ import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.enums.CustomerEnum;
 import com.dili.customer.enums.CustomerEnum.OrganizationType;
+import com.dili.customer.enums.NationalityEnum;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.customer.rpc.MarketRpc;
 import com.dili.customer.service.UserService;
+import com.dili.customer.utils.EnumUtil;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
@@ -285,6 +287,16 @@ public class CustomerController {
             return BaseOutput.failure("必要参数丢失");
         }
         return customerRpc.updateState(id, enable ? CustomerEnum.State.NORMAL.getCode() : CustomerEnum.State.DISABLED.getCode());
+    }
+
+    /**
+     * 获取民族主数据
+     * @return BaseOutput
+     */
+    @RequestMapping(value = "/listNationality.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput listNationality() {
+        return BaseOutput.success().setData(EnumUtil.toObject(NationalityEnum.class));
     }
 
     /**
