@@ -2,6 +2,7 @@ package com.dili.customer.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
@@ -174,7 +175,14 @@ public class CustomerController {
         String detail = "customer/enterprise/update";
         if (modelMap.containsKey("customer")) {
             Customer customer = (Customer) modelMap.get("customer");
-            detail = "customer/" + CustomerEnum.OrganizationType.getInstance(customer.getOrganizationType()).getCode() + "/update";
+            OrganizationType instance = getInstance(customer.getOrganizationType());
+            detail = "customer/" + instance.getCode() + "/update";
+            if (ENTERPRISE.equals(instance)){
+                BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
+                if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
+                    modelMap.put("contactsList",output.getData());
+                }
+            }
         }
         return detail;
     }

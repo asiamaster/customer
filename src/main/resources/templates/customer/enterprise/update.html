@@ -140,30 +140,63 @@
                         联系人
                     </div>
                     <div>
-                        <table class="table table-bordered table-hover table-striped text-center" id="customerTable"
-                               data-toggle="table" data-title="联系人列表"  data-toolbar="#toolbar"
-                               data-pagination="false"  data-query-params="queryContactsParams"
-                               data-side-pagination="server" data-method="POST"
-                               data-content-type="application/x-www-form-urlencoded" data-single-select="true"
-                               data-click-to-select="true" data-checkbox-header="true" data-unique-id="id" data-sort-name="id"
-                               data-sort-order="desc" data-icons="bui.variable.icons" data-buttons-class="primary"
-                               data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
+                        <table class="table table-bordered table-hover table-striped text-center" id="customerTable">
                             <thead>
                             <tr>
-                                <th class="align-middle" style="width: 5%"><a id="addCustomer" href="javascript:;"
-                                                                              style="padding: 8px 18px;"><i
-                                        class="fa fa-plus-square fa-lg"></i></a></th>
-                                <th style="width: 10%;font-weight:normal; " data-field="position">关系/职务</th>
-                                <th style="width: 10%;font-weight:normal; " data-field="name">*名称</th>
-                                <th style="width: 5%;font-weight:normal; " data-field="gender" data-provider="genderProvider">性别</th>
-                                <th style="width: 10%;font-weight:normal; " data-field="phone">*电话</th>
-                                <th style="width: 10%;font-weight:normal; ">民族</th>
-                                <th style="width: 10%;font-weight:normal; " data-field="birthdate">出生日期</th>
-                                <th style="width: 5%;font-weight:normal; " data-field="isDefault">默认</th>
-                                <th style="width: 20%;font-weight:normal; " data-field="notes">备注</th>
+                                <th class="align-middle" style="width: 5%">
+                                    <a id="addCustomer" href="javascript:;" style="padding: 8px 18px;"><i class="fa fa-plus-square fa-lg"></i></a>
+                                </th>
+                                <th style="width: 10%;font-weight:normal; " >关系/职务</th>
+                                <th style="width: 10%;font-weight:normal; " >*名称</th>
+                                <th style="width: 5%;font-weight:normal; " >性别</th>
+                                <th style="width: 10%;font-weight:normal; " >*电话</th>
+                                <th style="width: 10%;font-weight:normal; " >名族</th>
+                                <th style="width: 10%;font-weight:normal; " >出生日期</th>
+                                <th style="width: 5%;font-weight:normal; " >默认</th>
+                                <th style="width: 20%;font-weight:normal; " >备注</th>
                             </tr>
                             </thead>
                             <tbody>
+                            <%if (has(contactsList) && isNotEmpty(contactsList) && contactsList.~size >0 ){
+                                for(contacts in contactsList){
+                            %>
+                            <tr data-index="${contactsLP.dataIndex}">
+                                <td class="align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
+
+                                <td>
+                                    <input type="text" id="position${contactsLP.dataIndex}" name="position${contactsLP.dataIndex}" value="${contacts.position!}">
+                                </td>
+                                <td style="padding: .1rem!important;">
+                                    <input type="text" id="name${contactsLP.dataIndex}" name="name${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
+                                <td style="padding: .1rem!important;">
+                                    <select name="gender${contactsLP.dataIndex}"  id="gender${contactsLP.dataIndex}"  class="form-control"></select>
+                                    <#bcomboProvider _id="gender${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
+                                </td>
+                                <td style="padding: .1rem!important;">
+                                    <input type="text" id="phone${contactsLP.dataIndex}" name="phone${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
+                                </td>
+                                <td style="padding: .1rem!important;">
+                                    <input type="text" id="nation${contactsLP.dataIndex}" name="nation${contactsLP.dataIndex}" value="${contacts.nation!}" class="form-control" required>
+                                </td>
+                                <td style="padding: .1rem!important;">
+                                    <div class="input-group">
+                                        <input type="text" name="birthdate${contactsLP.dataIndex}" id="birthdate${contactsLP.dataIndex}" value="${contacts.birthdate!}" class="form-control laydate layend"/>
+                                        <div class="input-group-append">
+                                            <label for="birthdate${contactsLP.dataIndex}"  class="input-group-text fa fa-calendar"></label>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle" style="padding: .05rem!important;">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" id="isDefault${contactsLP.dataIndex}" name="isDefault" value="${contacts.isDefault!}">
+                                        <label class="form-check-label" for="isDefault${contactsLP.dataIndex}"></label>
+                                    </div>
+                                </td>
+                                <td style="padding: .1rem!important;">
+                                    <input type="text" id="notes${contactsLP.dataIndex}" name="notes${contactsLP.dataIndex}" value="${contacts.notes!}" class="form-contr">
+                                </td>
+                            </tr>
+                            <%}}%>
                             </tbody>
                         </table>
                     </div>
@@ -197,29 +230,6 @@
         getCertificateType('individual', 'corporationCertificateType', $('#corporationCertificateTypeCode').val(),'-- 请选择 -- ');
     }
 
-    function queryContactsList() {
-        <%if (has(customer)){%>
-            $("#customerTable").bootstrapTable("refreshOptions",{url:"${contextPath}/contacts/list.action"});
-        <%}%>
-    }
-
-    /**
-     * 联系人查询参数组装
-     * @param params
-     * @returns {jQuery}
-     */
-    function queryContactsParams(params) {
-        var id = $('#id').val();
-        let temp = {
-            rows: params.limit,   //页面大小
-            page: ((params.offset / params.limit) + 1) || 1, //页码
-            sort: params.sort,
-            order: params.order,
-            customerId: id
-        };
-        return $.extend(temp, bui.util.bindMetadata("contactsGrid"));
-    }
-
     $(function () {
         listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'-- 请选择 --');
     })
@@ -227,36 +237,43 @@
 
 <script  id="customerItem"  type="text/html">
     <tr data-index="{{index}}">
-        <td class="align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
+        <td class="align-middle">
+            <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
+        </td>
 
-        <td></td>
-        <td style="padding: .1rem!important;"><input type="text" id="name{{index}}" name="name{{index}}"value="陈{{name}}" class="form-control" maxlength="20" required></td>
-        <td style="padding: .1rem!important;"><select name="sex{{index}}"  id="sex{{index}}" value="{{number}}" class="form-control">
-            <option value="">请选择</option>
-            <option value="1">男</option>
-            <option value="2">女</option>
-        </select></td>
-        <td style="padding: .1rem!important;"><input type="text" id="tel{{index}}" name="tel{{index}}"value="{{tel}}" class="form-control isMobile" required></td>
-        <td style="padding: .1rem!important;"><select name="nation{{index}}"  id="nation{{index}}" value="{{nation}}" class="form-control" >
-            <option value="1">汉</option>
-        </select></td>
+        <td>
+            <input type="text" id="position{{index}}" name="position{{index}}" value="">
+        </td>
+        <td style="padding: .1rem!important;">
+            <input type="text" id="name{{index}}" name="name{{index}}"value="陈{{name}}" class="form-control" maxlength="20" required>
+        </td>
+        <td style="padding: .1rem!important;">
+            <select name="gender{{index}}"  id="gender{{index}}" class="form-control"></select>
+        </td>
+        <td style="padding: .1rem!important;">
+            <input type="text" id="phone{{index}}" name="phone{{index}}"  class="form-control isMobile" required>
+        </td>
+        <td style="padding: .1rem!important;">
+            <select name="nation{{index}}"  id="nation{{index}}" value="{{nation}}" class="form-control" >
+                <option value="1">汉</option>
+            </select>
+        </td>
         <td style="padding: .1rem!important;">
             <div class="input-group">
-                <input type="text" name="borthdate{{index}}" id="borthdate{{index}}" value="" class="form-control laydate layend"/>
+                <input type="text" name="birthdate{{index}}" id="birthdate{{index}}" value="" class="form-control laydate layend"/>
                 <div class="input-group-append">
-                    <label for="borthdate{{index}}"  class="input-group-text fa fa-calendar"></label>
+                    <label for="birthdate{{index}}"  class="input-group-text fa fa-calendar"></label>
                 </div>
             </div>
         </td>
         <td class="align-middle" style="padding: .05rem!important;">
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="default{{index}}" name="default" value="1">
-                <label class="form-check-label" for="default{{index}}"></label>
+                <input class="form-check-input" type="radio" id="isDefault{{index}}" name="isDefault" value="1">
+                <label class="form-check-label" for="isDefault{{index}}"></label>
             </div>
         </td>
-        <td style="padding: .1rem!important;"><input type="text" id="mark{{index}}" name="mark{{index}}"value="{{}}" class="form-contr"></td>
-
-
-
+        <td style="padding: .1rem!important;">
+            <input type="text" id="notes{{index}}" name="notes{{index}}" value="{{}}" class="form-contr">
+        </td>
     </tr>
 </script>

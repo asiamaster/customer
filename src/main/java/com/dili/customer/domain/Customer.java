@@ -3,11 +3,9 @@ package com.dili.customer.domain;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.dili.customer.enums.CustomerEnum;
 import com.dili.ss.domain.BaseDomain;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -178,7 +176,6 @@ public class Customer extends BaseDomain {
      * 创建时间
      */
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     /**

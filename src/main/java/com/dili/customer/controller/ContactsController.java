@@ -1,12 +1,9 @@
 package com.dili.customer.controller;
 
 import com.dili.customer.domain.Contacts;
-import com.dili.customer.domain.Customer;
-import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
-import com.dili.ss.domain.PageOutput;
 import com.dili.ss.metadata.ValueProviderUtils;
 import com.dili.uap.sdk.session.SessionContext;
 import com.google.common.collect.Lists;
@@ -16,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * <B>Description</B>
@@ -51,7 +46,7 @@ public class ContactsController {
         }
         BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
         if (output.isSuccess()) {
-            results = ValueProviderUtils.buildDataByProvider(new Contacts(), output.getData());
+            results = ValueProviderUtils.buildDataByProvider((Map) new Contacts(), output.getData());
         }
         return new EasyuiPageOutput(results.size(), results).toString();
     }
