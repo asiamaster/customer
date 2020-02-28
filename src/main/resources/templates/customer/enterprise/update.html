@@ -106,9 +106,14 @@
 
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
-                            <input type="text" class="form-control" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
-                        </div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
 
+                                <div class="input-group-append">
+                                    <label for=""  class="input-group-text fa fa-calendar"></label>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-group col">
                             <label for="" class="">证件地址</label>
                             <input type="text" class="form-control" name="certificateAddr" maxlength="50" value="${customer.certificateAddr!}"/>
@@ -164,36 +169,36 @@
                                 <td class="align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
 
                                 <td>
-                                    <input type="text" id="position${contactsLP.dataIndex}" name="position${contactsLP.dataIndex}" value="${contacts.position!}">
+                                    <input type="text" id="position_${contactsLP.dataIndex}" name="position_${contactsLP.dataIndex}" value="${contacts.position!}" class="form-control">
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input type="text" id="name${contactsLP.dataIndex}" name="name${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
+                                    <input type="text" id="name_${contactsLP.dataIndex}" name="name_${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
                                 <td style="padding: .1rem!important;">
-                                    <select name="gender${contactsLP.dataIndex}"  id="gender${contactsLP.dataIndex}"  class="form-control"></select>
+                                    <select name="gender_${contactsLP.dataIndex}"  id="gender_${contactsLP.dataIndex}"  class="form-control"></select>
                                     <#bcomboProvider _id="gender${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input type="text" id="phone${contactsLP.dataIndex}" name="phone${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
+                                    <input type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input type="text" id="nation${contactsLP.dataIndex}" name="nation${contactsLP.dataIndex}" value="${contacts.nation!}" class="form-control" required>
+                                    <input type="text" id="nation_${contactsLP.dataIndex}" name="nation_${contactsLP.dataIndex}" value="${contacts.nation!}" class="form-control" required>
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <div class="input-group">
-                                        <input type="text" name="birthdate${contactsLP.dataIndex}" id="birthdate${contactsLP.dataIndex}" value="${contacts.birthdate!}" class="form-control laydate layend"/>
+                                        <input type="text" name="birthdate_${contactsLP.dataIndex}" id="birthdate_${contactsLP.dataIndex}" value="${contacts.birthdate!}" class="form-control laydate layend"/>
                                         <div class="input-group-append">
-                                            <label for="birthdate${contactsLP.dataIndex}"  class="input-group-text fa fa-calendar"></label>
+                                            <label for="birthdate_${contactsLP.dataIndex}"  class="input-group-text fa fa-calendar"></label>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="align-middle" style="padding: .05rem!important;">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" id="isDefault${contactsLP.dataIndex}" name="isDefault" value="${contacts.isDefault!}">
-                                        <label class="form-check-label" for="isDefault${contactsLP.dataIndex}"></label>
+                                        <input class="form-check-input" type="radio" id="isDefault_${contactsLP.dataIndex}" name="isDefault" value="${contacts.isDefault!}">
+                                        <label class="form-check-label" for="isDefault_${contactsLP.dataIndex}"></label>
                                     </div>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input type="text" id="notes${contactsLP.dataIndex}" name="notes${contactsLP.dataIndex}" value="${contacts.notes!}" class="form-contr">
+                                    <input type="text" id="notes_${contactsLP.dataIndex}" name="notes_${contactsLP.dataIndex}" value="${contacts.notes!}" class="form-control">
                                 </td>
                             </tr>
                             <%}}%>
@@ -240,40 +245,43 @@
         <td class="align-middle">
             <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
         </td>
-
         <td>
-            <input type="text" id="position{{index}}" name="position{{index}}" value="">
+            <input type="text" id="position_{{index}}" name="position_{{index}}" value="" class="form-control">
         </td>
         <td style="padding: .1rem!important;">
-            <input type="text" id="name{{index}}" name="name{{index}}"value="陈{{name}}" class="form-control" maxlength="20" required>
+            <input type="text" id="name_{{index}}" name="name_{{index}}"value="陈{{name}}" class="form-control" maxlength="20" required>
         </td>
         <td style="padding: .1rem!important;">
-            <select name="gender{{index}}"  id="gender{{index}}" class="form-control"></select>
+            <select name="gender_{{index}}"  id="gender_{{index}}" class="form-control">
+                <option value="">请选择</option>
+                <option value="1">男</option>
+                <option value="2">女</option>
+            </select>
         </td>
         <td style="padding: .1rem!important;">
-            <input type="text" id="phone{{index}}" name="phone{{index}}"  class="form-control isMobile" required>
+            <input type="text" id="phone_{{index}}" name="phone_{{index}}"  class="form-control isMobile" required>
         </td>
         <td style="padding: .1rem!important;">
-            <select name="nation{{index}}"  id="nation{{index}}" value="{{nation}}" class="form-control" >
+            <select name="nation_{{index}}"  id="nation_{{index}}" value="{{nation}}" class="form-control" >
                 <option value="1">汉</option>
             </select>
         </td>
         <td style="padding: .1rem!important;">
             <div class="input-group">
-                <input type="text" name="birthdate{{index}}" id="birthdate{{index}}" value="" class="form-control laydate layend"/>
+                <input type="text" name="birthdate_{{index}}" id="birthdate_{{index}}" value="" class="form-control laydate"/>
                 <div class="input-group-append">
-                    <label for="birthdate{{index}}"  class="input-group-text fa fa-calendar"></label>
+                    <label for="birthdate_{{index}}"  class="input-group-text fa fa-calendar"></label>
                 </div>
             </div>
         </td>
         <td class="align-middle" style="padding: .05rem!important;">
             <div class="form-check">
-                <input class="form-check-input" type="radio" id="isDefault{{index}}" name="isDefault" value="1">
-                <label class="form-check-label" for="isDefault{{index}}"></label>
+                <input class="form-check-input" type="radio" id="isDefault_{{index}}" name="isDefault" value="1">
+                <label class="form-check-label" for="isDefault_{{index}}"></label>
             </div>
         </td>
         <td style="padding: .1rem!important;">
-            <input type="text" id="notes{{index}}" name="notes{{index}}" value="{{}}" class="form-contr">
+            <input type="text" id="notes_{{index}}" name="notes_{{index}}"  class="form-control">
         </td>
     </tr>
 </script>

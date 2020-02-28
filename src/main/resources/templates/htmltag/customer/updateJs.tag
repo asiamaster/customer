@@ -13,13 +13,18 @@
     /*********************变量定义区 end***************/
 
 
-
-
     $(function () {
-        addCustomerItem();
+        // addCustomerItem();
         laydateInt()
     });
 
+    laydate.render({
+        elem: '#certificateRange',
+        trigger: 'click',
+        type: 'date',
+        theme: '#007bff',
+        range: true,
+    });
 
     /**
      * 添加摊位
@@ -42,29 +47,37 @@
 
     // 提交保存
     $('#formSubmit').on('click', function (e) {
-        // baseInfoForm
-        // cardInfoForm
-        // resourceInfoForm
+
        if (!$('form').valid()) {
            return false;
        } else {
            bui.loading.show('努力提交中，请稍候。。。');
-           let _formData = [];
-           let resourceArr = [];
-           let _baseAndCardData = [].concat($('#baseInfoForm').serializeArray(), $('#cardInfoForm').serializeArray());
-           let _resourceData = $('#resourceInfoForm').serializeArray();
-           $.each(_baseAndCardData, function(index, value){
-               _formData.push({[value.name]: value.value})
+           let _formDataObj = {};
+           let cardData = {};
+           let contactsData = []
+           $.each($('#baseInfoForm').serializeArray(), function(index, value){
+               _formDataObj[value.name] = value.value;
            });
-           $.each(_resourceData, function(index, value){
-               resourceArr.push({[value.name]: value.value})
+
+           $.each($('#cardInfoForm').serializeArray(), function(index, value){
+               cardData[value.name] = value.value;
            });
-           _formData.push({'resourceList': resourceArr});
-            console.log(_formData)
+           $.each($('#resourceInfoForm tbody tr'), function(index, value){
+               let itemObj = {};
+               $(value).find('input, select').each(function (i, el) {
+                   itemObj[el.name.split('_')[0]] = el.value;
+               });
+               contactsData.push(itemObj);
+           });
+
+           _formDataObj['customerCertificate'] = cardData;
+           _formDataObj['contactsList'] = contactsData;
+
+            console.log(_formDataObj)
            $.ajax({
                type: "POST",
                url: "${contextPath}/customer/save.action",
-                data: _formData,
+                data: _formDataObj,
                 processData: false,
                 contentType: false,
                 async: true,
