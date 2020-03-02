@@ -79,13 +79,6 @@
     });
 
     /**
-     * 取消保存
-    */
-    $('#formCancel').on('click', function () {
-        parent.dia.hide()
-    });
-
-    /**
      * 证件号码输入完成后回车时间
      */
     $('#certificateNumber').keydown(function (e) {
