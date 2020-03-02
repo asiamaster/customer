@@ -4,7 +4,7 @@
      * 根据组织类型获取证件类型
      * @param organizationType 组织类型
      * @param targetId 目标显示控件ID
-     * @param currentValue 当前证件类型值
+     * @param currentValue 当前值
      * @param nullValue 空值显示的名称
      */
     function getCertificateType(organizationType, targetId, currentValue,nullValue) {
@@ -48,7 +48,7 @@
      * 根据市场id获取市场的部门信息
      * @param marketId 市场ID
      * @param targetId 目标显示控件ID
-     * @param currentValue 当前证件类型值
+     * @param currentValue 当前值
      * @param nullValue 空值显示的名称
      */
     function listDepartmentByMarketId(marketId, targetId, currentValue,nullValue) {
@@ -91,7 +91,7 @@
     /**
      * 获取民族主数据信息
      * @param targetId 目标显示控件ID
-     * @param currentValue 当前证件类型值
+     * @param currentValue 当前值
      * @param nullValue 空值显示的名称
      */
     function listNationality(targetId, currentValue, nullValue) {

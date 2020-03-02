@@ -175,7 +175,7 @@
                                     <input type="text" id="name_${contactsLP.dataIndex}" name="name_${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
                                 <td style="padding: .1rem!important;">
                                     <select name="gender_${contactsLP.dataIndex}"  id="gender_${contactsLP.dataIndex}"  class="form-control"></select>
-                                    <#bcomboProvider _id="gender${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
+                                    <#bcomboProvider _id="gender_${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <input type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
