@@ -92,9 +92,6 @@
                     <button id="btn_export" type="button" class="btn btn-primary" onclick=""><i
                             class="fa fa-file-excel-o"></i>导出
                     </button>
-                    <button id="btn-print" type="button" class="btn btn-primary" onclick=""><i
-                            class="fa fa-print"></i>打印
-                    </button>
                     <#resource code="enableEnterprise">
                     <button id="btn-enabled" type="button" class="btn btn-primary"
                             onclick="doEnableHandler(true)"><i class="fa fa-play"></i> 启用
@@ -115,7 +112,7 @@
                        data-show-refresh="true" data-show-fullscreen="true" data-show-columns="true">
                     <thead>
                     <tr>
-                        <th data-width-unit="%" data-width="2" data-checkbox="true"></th>
+                        <th data-width-unit="%" data-width="2" data-radio="true"></th>
                         <th data-width-unit="%" data-width="10" data-field="code" data-align="center">
                             客户编号
                         </th>

@@ -89,17 +89,17 @@
         console.log(_formDataObj)
        $.ajax({
            type: "POST",
-           url: "${contextPath}/customer/save.action",
+           url: "${contextPath}/customer/doUpdate.action",
             data: _formDataObj,
             processData: false,
             contentType: false,
             async: true,
             success: function (res) {
                 bui.loading.hide();
-                if (data.code == "200") {
-                    bs4pop.alert('成功', {type: 'success '}, function () {
-                        /* 应该要带条件刷新 */
-                        window.location.reload();
+                if (res.success) {
+                    bs4pop.alert('更新成功', {type: 'success'}, function () {
+                        window.parent.postMessage('操作成功','/');
+                        parent.dia.hide();
                     });
                 } else {
                     bui.loading.hide();

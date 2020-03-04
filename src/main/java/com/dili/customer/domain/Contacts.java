@@ -2,6 +2,7 @@ package com.dili.customer.domain;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.dili.customer.validator.EnterpriseView;
+import com.dili.ss.domain.BaseDomain;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,11 +19,12 @@ import java.time.LocalDateTime;
  * 由MyBatis Generator工具自动生成
  * <p>
  * This file was generated on 2020-01-02 16:18:39.
+ * @author yuehongbo
  */
 @Getter
 @Setter
 @ToString
-public class Contacts implements Serializable {
+public class Contacts extends BaseDomain implements Serializable {
 
     private static final long serialVersionUID = -1896023012443783818L;
     /**

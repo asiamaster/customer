@@ -80,6 +80,11 @@ public class IndividualCustomer implements Serializable {
     private String contactsPhone;
 
     /**
+     * 客户编码
+     */
+    private String code;
+
+    /**
      * 客户等级
      */
     private Integer grade;

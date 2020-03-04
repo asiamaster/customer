@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <B>Description</B>
@@ -33,20 +34,20 @@ public class ContactsController {
 
     /**
      * 查询客户联系人列表信息
-     * @param customerId
+     * @param contacts
      * @return
      * @throws Exception
      */
     @RequestMapping(value = "/list.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String list(Long customerId) throws Exception {
+    public String list(Contacts contacts) throws Exception {
         List results = Lists.newArrayList();
-        if (null == customerId) {
+        if (Objects.isNull(contacts) || Objects.isNull(contacts.getCustomerId())) {
             return new EasyuiPageOutput(results.size(), results).toString();
         }
-        BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
+        BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(contacts.getCustomerId(), SessionContext.getSessionContext().getUserTicket().getFirmId());
         if (output.isSuccess()) {
-            results = ValueProviderUtils.buildDataByProvider((Map) new Contacts(), output.getData());
+            results = ValueProviderUtils.buildDataByProvider(contacts, output.getData());
         }
         return new EasyuiPageOutput(results.size(), results).toString();
     }

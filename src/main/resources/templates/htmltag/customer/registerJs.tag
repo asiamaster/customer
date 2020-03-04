@@ -43,6 +43,7 @@
             if (organizationType === 'enterprise') {
                 url = "${contextPath}/customer/registerEnterprise.action";
             }
+            console.log(_formData);
             $.ajax({
                 type: "POST",
                 url: url,

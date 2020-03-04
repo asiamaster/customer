@@ -6,14 +6,16 @@ import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
+import com.dili.customer.domain.dto.CustomerUpdateInput;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.enums.CustomerEnum;
 import com.dili.customer.enums.CustomerEnum.OrganizationType;
 import com.dili.customer.enums.NationalityEnum;
 import com.dili.customer.rpc.CustomerRpc;
-import com.dili.customer.rpc.MarketRpc;
-import com.dili.customer.service.UserService;
+import com.dili.customer.rpc.UidRpc;
+import com.dili.customer.service.remote.FirmRpcService;
+import com.dili.customer.service.remote.UserRpcService;
 import com.dili.customer.utils.EnumUtil;
 import com.dili.customer.validator.AddView;
 import com.dili.ss.domain.BaseOutput;
@@ -43,6 +45,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 
 import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
@@ -64,13 +67,15 @@ public class CustomerController {
     @Autowired
     private DataDictionaryRpc dataDictionaryRpc;
     @Autowired
-    private UserService userService;
+    private UserRpcService userService;
     @Autowired
-    private MarketRpc marketRpc;
+    private FirmRpcService firmRpc;
     @Autowired
     private DepartmentRpc departmentRpc;
     @Autowired
     private UserResourceRedis userResourceRedis;
+    @Autowired
+    private UidRpc uidRpc;
 
     /**
      * 跳转到企业客户管理页面
@@ -79,6 +84,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/enterprise/index.html", method = RequestMethod.GET)
     public String enterpriseIndex(ModelMap modelMap) {
+
         modelMap.put("organizationType", ENTERPRISE.getCode());
         return "customer/enterprise/list";
     }
@@ -290,6 +296,18 @@ public class CustomerController {
     }
 
     /**
+     * 处理客户信息更新保存操作
+     * @param input 更新数据
+     * @return
+     */
+    @RequestMapping(value = "/doUpdate.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput doUpdate(CustomerUpdateInput input) {
+        input.setOperatorId(SessionContext.getSessionContext().getUserTicket().getId());
+        return customerRpc.update(input);
+    }
+
+    /**
      * 获取民族主数据
      * @return BaseOutput
      */
@@ -312,6 +330,7 @@ public class CustomerController {
         customer.setState(CustomerEnum.State.NORMAL.getCode());
         customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
         customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
+        customer.setCode(getCustomerCode(OrganizationType.getInstance(customer.getOrganizationType())));
     }
 
     /**
@@ -341,10 +360,8 @@ public class CustomerController {
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
                     CustomerMarket customerMarket = marketOutput.getData();
                     customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
-                    BaseOutput<Firm> marketRpcById = marketRpc.getById(customerMarket.getMarketId());
-                    if (marketRpcById.isSuccess() && Objects.nonNull(marketRpcById.getData())) {
-                        customerMarket.setMarketName(marketRpcById.getData().getName());
-                    }
+                    Optional<Firm> market = firmRpc.getFirmById(customerMarket.getMarketId());
+                    customerMarket.setMarketName(market.get().getName());
                     if (Objects.nonNull(customerMarket.getDepartmentId())) {
                         BaseOutput<Department> departmentBaseOutput = departmentRpc.get(customerMarket.getDepartmentId());
                         if (departmentBaseOutput.isSuccess() && Objects.nonNull(departmentBaseOutput.getData())) {
@@ -357,5 +374,15 @@ public class CustomerController {
                 modelMap.put("customer", customer);
             }
         }
+    }
+
+    /**
+     * 获取客户编码
+     * @param type
+     * @return
+     */
+    private String getCustomerCode(OrganizationType type){
+        BaseOutput<String> bizNumberOutput = uidRpc.bizNumber(type.getUidType());
+        return bizNumberOutput.getData();
     }
 }

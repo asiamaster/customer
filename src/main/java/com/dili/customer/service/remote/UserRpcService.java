@@ -1,8 +1,7 @@
-package com.dili.customer.service.impl;
+package com.dili.customer.service.remote;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
-import com.dili.customer.service.UserService;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.uap.sdk.domain.User;
@@ -23,21 +22,29 @@ import java.util.Optional;
  * <B>农丰时代科技有限公司</B>
  *
  * @author yuehongbo
- * @date 2020/2/24 18:06
+ * @date 2020/3/3 15:57
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserRpcService {
 
     @Autowired
     private UserRpc userRpc;
 
-    @Override
+    /**
+     * 根据条件查询用户信息
+     * @param user
+     * @return
+     */
     public List<User> listByExample(User user) {
         BaseOutput<List<User>> baseOutput = userRpc.listByExample(user);
         return baseOutput.isSuccess() ? baseOutput.getData() : Collections.emptyList();
     }
 
-    @Override
+    /**
+     * 根据真实姓名模糊获取当前市场的用户信息
+     * @param realName 真实姓名
+     * @return
+     */
     public List<User> getCurrentMarketUser(String realName) {
         UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
         if (null == userTicket) {
@@ -52,7 +59,11 @@ public class UserServiceImpl implements UserService {
         return baseOutput.isSuccess() ? baseOutput.getData() : Collections.emptyList();
     }
 
-    @Override
+    /**
+     * 根据用户ID获取用户信息
+     * @param userId 用户ID
+     * @return
+     */
     public Optional<User> getUserById(Long userId) {
         if (Objects.isNull(userId)) {
             return Optional.empty();
@@ -65,7 +76,11 @@ public class UserServiceImpl implements UserService {
         return Optional.empty();
     }
 
-    @Override
+    /**
+     * 根据用户ID集批量获取用户信息
+     * @param ids id集合
+     * @return
+     */
     public List<User> listUserByIds(List<String> ids) {
         if (CollectionUtil.isEmpty(ids)) {
             return Collections.EMPTY_LIST;

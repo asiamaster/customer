@@ -4,7 +4,6 @@
         //行索引计数器
         //如 let itemIndex = 0;
     let _customerGrid = $('#customerGrid');
-    let _form = $('#_form');
     let currentSelectRowIndex;
     var dia;
 

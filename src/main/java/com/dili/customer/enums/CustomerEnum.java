@@ -2,8 +2,6 @@ package com.dili.customer.enums;
 
 import lombok.Getter;
 
-import javax.validation.constraints.Email;
-
 /**
  * <B>客户信息相关的枚举定义</B>
  * <B>Copyright:本软件源代码版权归农丰时代所有,未经许可不得任意复制与传播.</B>
@@ -52,18 +50,30 @@ public class CustomerEnum {
      * 客户组织类型
      */
     public enum OrganizationType {
-        INDIVIDUAL("individual", "个人"),
-        ENTERPRISE("enterprise", "企业"),
+        INDIVIDUAL("individual", "个人", "PC", "individualCustomer"),
+        ENTERPRISE("enterprise", "企业", "BC", "enterpriseCustomer"),
         ;
 
         @Getter
         private String code;
         @Getter
         private String value;
+        /**
+         * 客户编码规则前缀
+         */
+        @Getter
+        private String prefix;
+        /**
+         * uid编码生成时的业务类型
+         */
+        @Getter
+        private String uidType;
 
-        OrganizationType(String code, String value) {
+        OrganizationType(String code, String value, String prefix, String uidType) {
             this.code = code;
             this.value = value;
+            this.prefix = prefix;
+            this.uidType = uidType;
         }
 
         /**
@@ -183,4 +193,5 @@ public class CustomerEnum {
             return null;
         }
     }
+
 }

@@ -181,7 +181,8 @@
                                     <input type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input type="text" id="nation_${contactsLP.dataIndex}" name="nation_${contactsLP.dataIndex}" value="${contacts.nation!}" class="form-control" required>
+                                    <select name="nation_${contactsLP.dataIndex}"  id="nation_${contactsLP.dataIndex}"  class="form-control"></select>
+                                    <#bcomboProvider _id="nation_${contactsLP.dataIndex}" _provider="nationalityProvider"  _valueField="value" _textField="text" _value="${contacts.nation!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <div class="input-group">

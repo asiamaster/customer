@@ -1,22 +1,23 @@
 package com.dili.customer.provider;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.alibaba.fastjson.JSONPath;
-import com.dili.customer.rpc.MarketRpc;
-import com.dili.ss.domain.BaseOutput;
+import com.dili.customer.service.remote.FirmRpcService;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.BatchProviderMeta;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
-import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
+import com.dili.ss.metadata.provider.BatchDisplayTextProviderSupport;
 import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.dto.FirmDto;
-import com.google.common.collect.Lists;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -29,21 +30,21 @@ import java.util.stream.Collectors;
  */
 @Component
 @Scope("prototype")
-public class MarketProvider extends BatchDisplayTextProviderAdaptor {
+public class MarketProvider extends BatchDisplayTextProviderSupport {
 
     @Autowired
-    private MarketRpc marketRpc;
+    private FirmRpcService firmRpcService;
 
     @Override
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
-        BaseOutput<List<Firm>> baseOutput = marketRpc.listByExample(DTOUtils.newInstance(FirmDto.class));
-        List<ValuePair<?>> resultList = Lists.newArrayList();
-        if (baseOutput.isSuccess() && CollectionUtil.isNotEmpty(baseOutput.getData())) {
-            resultList.addAll(baseOutput.getData().stream().map(f -> {
-                return (ValuePair<?>) new ValuePairImpl(f.getName(), f.getCode());
-            }).collect(Collectors.toCollection(() -> new ArrayList<ValuePair<?>>())));
+        List<Firm> firmList = firmRpcService.getCurrentUserFirms();
+        if (CollectionUtils.isNotEmpty(firmList)) {
+            return firmList.stream().filter(Objects::nonNull).map(f -> {
+                ValuePairImpl<?> vp = new ValuePairImpl<>(f.getName(), f.getCode());
+                return vp;
+            }).collect(Collectors.toList());
         }
-        return resultList;
+        return Collections.emptyList();
     }
 
     @Override
@@ -57,36 +58,25 @@ public class MarketProvider extends BatchDisplayTextProviderAdaptor {
             if (!idList.isEmpty()) {
                 FirmDto firmDto = DTOUtils.newDTO(FirmDto.class);
                 firmDto.setIdList(idList);
-                BaseOutput<List<Firm>> output = marketRpc.listByExample(firmDto);
-                return output.isSuccess() ? output.getData() : null;
+                return firmRpcService.listByExample(firmDto);
             }
         }
         return null;
     }
 
     @Override
-    protected Map<String, String> getEscapeFileds(Map metaMap) {
-        if(metaMap.get(ESCAPE_FILEDS_KEY) instanceof Map){
-            return (Map)metaMap.get(ESCAPE_FILEDS_KEY);
-        }else {
-            Map<String, String> map = new HashMap<>();
-            map.put(metaMap.get(FIELD_KEY).toString(), "name");
-            return map;
-        }
-    }
-
-    @Override
-    protected boolean ignoreCaseToRef(Map metaMap) {
-        return true;
-    }
-
-    /**
-     * 关联(数据库)表的主键的字段名
-     * 默认取id，子类可自行实现
-     * @return
-     */
-    @Override
-    protected String getRelationTablePkField(Map metaMap) {
-        return "id";
+    protected BatchProviderMeta getBatchProviderMeta(Map metaMap) {
+        BatchProviderMeta batchProviderMeta = DTOUtils.newInstance(BatchProviderMeta.class);
+        //设置主DTO和关联DTO需要转义的字段名
+        batchProviderMeta.setEscapeFiled("name");
+        //忽略大小写关联
+        batchProviderMeta.setIgnoreCaseToRef(true);
+        //主DTO与关联DTO的关联(java bean)属性(外键)
+        batchProviderMeta.setFkField("marketId");
+        //关联(数据库)表的主键的字段名，默认取id
+        batchProviderMeta.setRelationTablePkField("id");
+        //当未匹配到数据时，返回的值
+        batchProviderMeta.setMismatchHandler(t -> "");
+        return batchProviderMeta;
     }
 }

@@ -5,6 +5,7 @@ import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
+import com.dili.customer.domain.dto.CustomerUpdateInput;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
 import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.ss.domain.BaseOutput;
@@ -61,12 +62,12 @@ public interface CustomerRpc {
 
 
     /**
-     * 保存客户基本信息
-     * @param baseInfo 客户基本信息
+     * 更新客户基本信息
+     * @param updateInput 客户更新数据
      * @return
      */
-    @RequestMapping(value = "/api/customer/saveBaseInfo", method = RequestMethod.POST)
-    BaseOutput saveBaseInfo(Customer baseInfo);
+    @RequestMapping(value = "/api/customer/update", method = RequestMethod.POST)
+    BaseOutput update(CustomerUpdateInput updateInput);
 
     /**
      * 更新用户状态
