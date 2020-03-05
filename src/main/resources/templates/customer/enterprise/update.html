@@ -13,10 +13,10 @@
                     role="tab" aria-controls="nav-resourceInfo" aria-selected="false">资源信息</a>
             </div>
         </nav>
-        <input type="hidden" id="id" name="id" value="${customer.id!}">
         <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane show active" id="nav-baseInfo" role="tabpanel" aria-labelledby="nav-baseInfo-tab">
                 <form role="form" id="baseInfoForm" >
+                    <input type="hidden" id="id" name="id" value="${customer.id!}">
                     <div class="breadcrumb" aria-expanded="true">
                         基本信息
                     </div>
@@ -107,8 +107,7 @@
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
-
+                                <input type="text" class="form-control laydate" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
                                 <div class="input-group-append">
                                     <label for=""  class="input-group-text fa fa-calendar"></label>
                                 </div>

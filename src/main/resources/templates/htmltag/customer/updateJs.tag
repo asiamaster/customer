@@ -19,14 +19,6 @@
         laydateInt();
     });
 
-    laydate.render({
-        elem: '#certificateRange',
-        trigger: 'click',
-        type: 'date',
-        theme: '#007bff',
-        range: true,
-    });
-
     /**
      * 添加摊位
      * */
@@ -48,7 +40,6 @@
 
     // 提交保存
     $('#formSubmit').on('click', function (e) {
-
         if (!$('#baseInfoForm').validate({ignore:''}).form()) {
             $('#nav-baseInfo-tab').tab('show');
             return false;
@@ -85,12 +76,13 @@
 
        _formDataObj['customerCertificate'] = cardData;
        _formDataObj['contactsList'] = contactsData;
+        debugger
 
-        console.log(_formDataObj)
+        console.log(JSON.stringify(_formDataObj))
        $.ajax({
            type: "POST",
            url: "${contextPath}/customer/doUpdate.action",
-            data: _formDataObj,
+            data: JSON.stringify(_formDataObj),
             processData: false,
             contentType: false,
             async: true,
