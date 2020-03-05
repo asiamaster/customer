@@ -62,7 +62,7 @@
                         <div class="form-group col">
                             <label for="_ownerId" class=""><i class="red">*</i>归属人</label>
                             <div class="col-10">
-                                <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId" _displayDomainName="_ownerId" _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
+                                <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId"  _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
                             </div>
                         </div>
                         <div class="form-group col">
@@ -107,7 +107,7 @@
 
                         <div class="form-group col">
                             <label for="" class="">证件地址</label>
-                            <input type="text" class="form-control" name="" maxlength="50" />
+                            <input type="text" class="form-control" name="certificateAddr" maxlength="50" />
                         </div>
                     </div>
                 </div>

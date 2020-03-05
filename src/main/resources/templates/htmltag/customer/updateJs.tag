@@ -76,9 +76,7 @@
 
        _formDataObj['customerCertificate'] = cardData;
        _formDataObj['contactsList'] = contactsData;
-        debugger
 
-        console.log(JSON.stringify(_formDataObj))
        $.ajax({
            type: "POST",
            url: "${contextPath}/customer/doUpdate.action",

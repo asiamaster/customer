@@ -37,6 +37,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -302,7 +303,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/doUpdate.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput doUpdate(CustomerUpdateInput input) {
+    public BaseOutput doUpdate(@RequestBody CustomerUpdateInput input) {
         input.setOperatorId(SessionContext.getSessionContext().getUserTicket().getId());
         return customerRpc.update(input);
     }
