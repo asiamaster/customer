@@ -26,6 +26,10 @@
         $('#customerTable tbody').append(HTMLDecode(template('customerItem',{index: ++itemIndex})))
     }
 
+    $('#longTerm').on('click', function () {
+        $('#certificateRange').val('2099-12-31')
+    })
+
     $('#addCustomer').on('click', function(){
         addCustomerItem();
         laydateInt();
