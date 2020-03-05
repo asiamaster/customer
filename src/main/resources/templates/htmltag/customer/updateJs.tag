@@ -44,6 +44,10 @@
 
     // 提交保存
     $('#formSubmit').on('click', function (e) {
+        let _formDataObj = {};
+        let cardData = {};
+        let contactsData = [];
+
         if (!$('#baseInfoForm').validate({ignore:''}).form()) {
             $('#nav-baseInfo-tab').tab('show');
             return false;
@@ -54,15 +58,16 @@
             return false;
         }
 
-        if (!$('#resourceInfoForm').validate({ignore:''}).form()) {
-            $('#nav-resourceInfo-tab').tab('show');
-            return false;
+        if ($('#resourceInfoForm').length) {
+            if (!$('#resourceInfoForm').validate({ignore:''}).form()) {
+                $('#nav-resourceInfo-tab').tab('show');
+                return false;
+            }
+
         }
 
        bui.loading.show('努力提交中，请稍候。。。');
-       let _formDataObj = {};
-       let cardData = {};
-       let contactsData = []
+
        $.each($('#baseInfoForm').serializeArray(), function(index, value){
            _formDataObj[value.name] = value.value;
        });
@@ -70,16 +75,20 @@
        $.each($('#cardInfoForm').serializeArray(), function(index, value){
            cardData[value.name] = value.value;
        });
-       $.each($('#resourceInfoForm tbody tr'), function(index, value){
-           let itemObj = {};
-           $(value).find('input, select').each(function (i, el) {
-               itemObj[el.name.split('_')[0]] = el.value;
-           });
-           contactsData.push(itemObj);
-       });
 
-       _formDataObj['customerCertificate'] = cardData;
-       _formDataObj['contactsList'] = contactsData;
+        if ($('#resourceInfoForm').length) {
+            $.each($('#resourceInfoForm tbody tr'), function(index, value){
+                let itemObj = {};
+                $(value).find('input, select').each(function (i, el) {
+                    itemObj[el.name.split('_')[0]] = el.value;
+                });
+                contactsData.push(itemObj);
+            });
+            _formDataObj['contactsList'] = contactsData;
+        }
+
+        _formDataObj['customerCertificate'] = cardData;
+        console.log(JSON.stringify(_formDataObj));
 
        $.ajax({
            type: "POST",
