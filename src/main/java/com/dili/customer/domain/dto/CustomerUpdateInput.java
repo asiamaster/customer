@@ -33,6 +33,12 @@ public class CustomerUpdateInput implements Serializable {
     private Long id;
 
     /**
+     * 客户姓名
+     */
+    @NotBlank(message = "客户姓名不能为空")
+    private String name;
+
+    /**
      * 客户行业##水果批发/蔬菜批发/超市
      */
     private String profession;

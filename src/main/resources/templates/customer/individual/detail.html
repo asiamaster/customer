@@ -1,5 +1,5 @@
 <#bs4Body>
-
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css" />
 <div class="container-fluid">
     <%if (has(customer)){%>
     <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
@@ -120,6 +120,7 @@
 
     $(function () {
         $(":input").attr("disabled", true);
+        $("select").addClass("select-no-down");
     });
 
     /**

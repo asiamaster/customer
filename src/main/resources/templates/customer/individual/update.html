@@ -1,5 +1,5 @@
 <#bs4Body>
-
+<link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css" />
 <div class="container-fluid">
     <%if (has(customer)){%>
         <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
@@ -30,7 +30,7 @@
                     </div>
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>客户来源</label>
-                        <input type="text" class="form-control" name=""  disabled value="${customer.sourceChannelValue!}"/>
+                        <input type="text" class="form-control"  disabled value="${customer.sourceChannelValue!}"/>
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户行业</label>
@@ -39,11 +39,11 @@
                     </div>
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>客户级别</label>
-                        <input type="text" class="form-control" name="" required disabled value="${customer.gradeValue!}"/>
+                        <input type="text" class="form-control"  required disabled value="${customer.gradeValue!}"/>
                     </div>
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>客户注册时间</label>
-                        <input type="text" class="form-control" name="" required disabled value="${customer.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}"/>
+                        <input type="text" class="form-control" required disabled value="${customer.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}"/>
                     </div>
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>客户状态</label>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>联系电话</label>
-                        <input type="text" class="form-control" name="contactsPhone" required value="${customer.contactsPhone!}"/>
+                        <input type="text" class="form-control" name="contactsPhone" id="contactsPhone" required value="${customer.contactsPhone!}"/>
                     </div>
                 </div>
                 <div class="breadcrumb" data-target="#customerInfo" aria-expanded="true"
@@ -63,7 +63,7 @@
                     <div class="form-group col">
                         <label for="_ownerId" class=""><i class="red">*</i>归属人</label>
                         <div class="col-10">
-                            <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId" _displayDomainName="_ownerId" _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
+                            <#bautoCompleteProvider _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId"  _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
                         </div>
                     </div>
                     <div class="form-group col">
@@ -101,7 +101,7 @@
 
                     <div class="form-group col">
                         <label for="" class=""><i class="red">*</i>证件名称</label>
-                        <input type="text" class="form-control" name="" value="${customer.name}" required disabled />
+                        <input type="text" class="form-control"  value="${customer.name}" required disabled />
                     </div>
 
                     <div class="form-group col">
@@ -119,7 +119,7 @@
 
                     <div class="form-group col">
                         <label for="" class="">证件地址</label>
-                        <input type="text" class="form-control" name="" maxlength="50" />
+                        <input type="text" class="form-control" name="certificateAddr" id="certificateAddr" maxlength="50" />
                     </div>
                 </div>
                 </form>
@@ -148,6 +148,7 @@
     }
 
     $(function () {
+        $("select:disabled").addClass("select-no-down");
         listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'--请选择--');
     })
 </script>

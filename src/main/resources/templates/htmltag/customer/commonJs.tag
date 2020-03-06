@@ -71,9 +71,9 @@
                         //获取 ret.data
                         ret.data.forEach(function (el, index) {
                             if (el.code === currentValue) {
-                                data.push("<option value='" + el.code + "' selected>" + el.name + "</option>");
+                                data.push("<option value='" + el.id + "' selected>" + el.name + "</option>");
                             } else {
-                                data.push("<option value='" + el.code + "'>" + el.name + "</option>");
+                                data.push("<option value='" + el.id + "'>" + el.name + "</option>");
                             }
                         });
                         $('#' + targetId).html(data.join(""));
