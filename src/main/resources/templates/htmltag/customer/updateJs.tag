@@ -29,11 +29,11 @@
      */
     $('#longTerm').on('click', function () {
         if ($(this).find('input:checked').length){
-            $('.inputdate').val('长期').show();
+            $('.inputdate').val('长期').attr('disabled', false).show();
             $('.laydate').attr('disabled', true).hide();
             $('#certificateLongTerm').val('1');
         } else {
-            $('.inputdate').hide();
+            $('.inputdate').attr('disabled', true).hide();
             $('.laydate').attr('disabled', false).val('').show();
             laydateInt();
             $('#certificateLongTerm').val('0');

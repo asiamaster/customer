@@ -82,46 +82,46 @@
             </div>
             <div class="tab-pane" id="nav-cardInfo" role="tabpanel" aria-labelledby="nav-cardInfo-tab">
                 <form role="form" id="cardInfoForm" >
-
-                <div class="breadcrumb" aria-expanded="true">
-                    证件信息
-                </div>
-                <div class="row row-cols-4">
-                    <div class="form-group col">
-                        <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
-                        <label for="" class=""><i class="red">*</i> 证件</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <select id="certificateType" name="certificateType" class="form-control" disabled>
-                                </select>
-                            </div>
-                            <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}" readonly disabled/>
-                        </div>
+                    <div class="breadcrumb" aria-expanded="true">
+                        证件信息
                     </div>
-
-                    <div class="form-group col">
-                        <label for="" class=""><i class="red">*</i>证件名称</label>
-                        <input type="text" class="form-control"  value="${customer.name}" required disabled />
-                    </div>
-
-                    <div class="form-group col">
-                        <label for="" class="">证件有效期</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control laydate" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
-                            <div class="input-group-append">
-                                <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
-                            </div>
-                            <div class="input-group-append">
-                                <span class="input-group-text"><a id="longTerm" href="javascript:;">长期</a></span>
+                    <div class="row row-cols-4">
+                        <div class="form-group col">
+                            <input type="hidden" id="certificateTypeCode" value="${customer.certificateType!}">
+                            <label for="" class=""><i class="red">*</i> 证件</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <select id="certificateType" name="certificateType" class="form-control" disabled>
+                                    </select>
+                                </div>
+                                <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" value="${customer.certificateNumber!}" readonly disabled/>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="form-group col">
-                        <label for="" class="">证件地址</label>
-                        <input type="text" class="form-control" name="certificateAddr" id="certificateAddr" maxlength="50" />
+                        <div class="form-group col">
+                            <label for="" class=""><i class="red">*</i>证件名称</label>
+                            <input type="text" class="form-control"  value="${customer.name}" required disabled />
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class="">证件有效期</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
+                                <input type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
+                                <div class="input-group-append">
+                                    <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><a id="longTerm" href="javascript:;"><input type="checkbox" id="certificateLongTerm" name="certificateLongTerm" value="${customer.certificateLongTerm!}" <%if(customer.certificateLongTerm == 1){ %> checked <%}%>>长期</a></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group col">
+                            <label for="" class="">证件地址</label>
+                            <input type="text" class="form-control" name="certificateAddr" id="certificateAddr" maxlength="50" />
+                        </div>
                     </div>
-                </div>
                 </form>
             </div>
         </div>
@@ -148,7 +148,18 @@
     }
 
     $(function () {
-        $("select:disabled").addClass("select-no-down");
-        listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'--请选择--');
+        <%if (has(customer)){%>
+            $("select:disabled").addClass("select-no-down");
+            listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'--请选择--');
+            let certificateLongTerm = $('#certificateLongTerm').val();
+            if(certificateLongTerm === 1){
+                $('.laydate').attr('disabled', true).val('').hide();
+                $('.inputdate').show();
+            } else {
+                $('.inputdate').attr('disabled', true).val('').hide();
+                $('.laydate').show();
+                laydateInt();
+            }
+        <%}%>
     })
 </script>

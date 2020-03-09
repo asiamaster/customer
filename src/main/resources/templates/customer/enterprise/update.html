@@ -106,8 +106,8 @@
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
-                                <input type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
-                                <input type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
+                                <input type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
+                                <input type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
                                 <div class="input-group-append">
                                     <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
                                 </div>
@@ -168,8 +168,9 @@
                                 for(contacts in contactsList){
                             %>
                             <tr data-index="${contactsLP.dataIndex}">
-                                <td class="align-middle"><a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a></td>
-
+                                <td class="align-middle">
+                                    <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
+                                </td>
                                 <td>
                                     <input type="text" id="position_${contactsLP.dataIndex}" name="position_${contactsLP.dataIndex}" value="${contacts.position!}" class="form-control">
                                 </td>
@@ -243,12 +244,14 @@
             $("select:disabled").addClass("select-no-down");
             listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'-- 请选择 --');
             let certificateLongTerm = $('#certificateLongTerm').val();
-            if(certificateLongTerm === 1){
-                $('.laydate').attr('disabled', true).hide();
-                $('.inputdate').val('长期').show();
+            debugger;
+            //是否为长期
+            if(certificateLongTerm === '1'){
+                $('.laydate').attr('disabled', true).val('').hide();
+                $('.inputdate').show();
             } else {
-                $('.inputdate').hide();
-                $('.laydate').attr('disabled', false).val('').show();
+                $('.inputdate').attr('disabled', true).val('').hide();
+                $('.laydate').show();
                 laydateInt();
             }
         <%}%>
