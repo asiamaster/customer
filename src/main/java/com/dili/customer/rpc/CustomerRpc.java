@@ -25,7 +25,7 @@ import java.util.List;
  * @author yuehongbo
  * @date 2020/1/21 14:09
  */
-@FeignClient(name = "customer-service",url = "http://127.0.0.1:8181")
+@FeignClient(name = "customer-service")
 public interface CustomerRpc {
 
     /**
