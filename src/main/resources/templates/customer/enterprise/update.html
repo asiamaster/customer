@@ -244,11 +244,12 @@
             listDepartmentByMarketId($('#marketId').val(),'departmentId',$('#currentDepartmentId').val(),'-- 请选择 --');
             let certificateLongTerm = $('#certificateLongTerm').val();
             if(certificateLongTerm === 1){
-                $('.laydate').hide();
-                $('.inputdate').show();
+                $('.laydate').attr('disabled', true).hide();
+                $('.inputdate').val('长期').show();
             } else {
                 $('.inputdate').hide();
-                $('.laydate').show();
+                $('.laydate').attr('disabled', false).val('').show();
+                laydateInt();
             }
         <%}%>
     })
