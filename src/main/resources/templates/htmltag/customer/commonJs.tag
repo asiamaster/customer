@@ -129,5 +129,18 @@
         });
     }
 
+    /**
+     * 读取身份证,获取读取信息
+     */
+    function reader() {
+        if (!window.callbackObj) {
+            bs4pop.alert("该模式不支持读取证件", {width: 400, type: 'warning'});
+            return;
+        }
+        var card = callbackObj.readIDCard();
+        var a = eval('(' + card + ')');
+        return a;
+    }
+
 
 </script>

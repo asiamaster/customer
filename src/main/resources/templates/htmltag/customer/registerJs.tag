@@ -43,7 +43,6 @@
             if (organizationType === 'enterprise') {
                 url = "${contextPath}/customer/registerEnterprise.action";
             }
-            console.log(_formData);
             $.ajax({
                 type: "POST",
                 url: url,
@@ -123,19 +122,6 @@
             queryCustomerByNumber(userObj);
         },50);
     });
-
-    /**
-     * 读取身份证
-     */
-    function reader() {
-        if (!window.callbackObj) {
-            bs4pop.alert("该模式不支持读卡", {width: 400, type: 'warning'});
-            return;
-        }
-        var card = callbackObj.readIDCard();
-        var a = eval('(' + card + ')');
-        return a;
-    }
 
     /**
      * 根据证件号查询客户在当前市场是否已存在

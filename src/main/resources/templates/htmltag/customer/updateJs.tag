@@ -24,15 +24,19 @@
         $('#customerTable tbody').append(HTMLDecode(template('customerItem',{index: ++itemIndex})))
     }
 
+    /**
+     * 长期选择项，点击事件
+     */
     $('#longTerm').on('click', function () {
-        debugger
         if ($(this).find('input:checked').length){
             $('.inputdate').val('长期').show();
             $('.laydate').hide();
+            $('#certificateLongTerm').val('1');
         } else {
             $('.inputdate').hide();
             $('.laydate').val('').show();
             laydateInt();
+            $('#certificateLongTerm').val('0');
         }
     });
 
@@ -58,26 +62,20 @@
             $('#nav-baseInfo-tab').tab('show');
             return false;
         }
-
         if (!$('#cardInfoForm').validate({ignore:''}).form()) {
             $('#nav-cardInfo-tab').tab('show');
             return false;
         }
-
         if ($('#resourceInfoForm').length) {
             if (!$('#resourceInfoForm').validate({ignore:''}).form()) {
                 $('#nav-resourceInfo-tab').tab('show');
                 return false;
             }
-
         }
-
        bui.loading.show('努力提交中，请稍候。。。');
-
        $.each($('#baseInfoForm').serializeArray(), function(index, value){
            _formDataObj[value.name] = value.value;
        });
-
        $.each($('#cardInfoForm').serializeArray(), function(index, value){
            cardData[value.name] = value.value;
        });
@@ -92,10 +90,7 @@
             });
             _formDataObj['contactsList'] = contactsData;
         }
-
         _formDataObj['customerCertificate'] = cardData;
-        console.log(JSON.stringify(_formDataObj));
-
        $.ajax({
            type: "POST",
            url: "${contextPath}/customer/doUpdate.action",
@@ -122,6 +117,34 @@
         });
     });
 
+
+    /**
+     * 企业客户法人信息读卡操作
+     */
+    $('#idCardRead').click(function(){
+        setTimeout(function(){
+            var userObj = reader();
+            if(!userObj){
+                return;
+            }
+            $('#corporationCertificateNumber').val(userObj.IDCardNo);
+            $('#corporationCertificateNumber').data('selectVal', userObj.IDCardNo);
+            let name = userObj.Name;
+            $('#corporationName').val(name.trim());
+            $("#corporationName").attr("readonly",true);
+        },50);
+    });
+
+    /**
+     * 法人证件号输入框事件
+     */
+    $('#corporationCertificateNumber').bind('input', function () {
+        var old = $(this).data('selectVal');
+        if (old != $(this).val()) {
+            $("#corporationName").attr("readonly",false);
+        }
+        $(this).data('selectVal', $(this).val());
+    });
 
     /*****************************************自定义事件区 end**************************************/
 </script>
