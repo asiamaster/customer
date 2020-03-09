@@ -106,12 +106,13 @@
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
+                                <input type="text" class="form-control inputdate" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
                                 <input type="text" class="form-control laydate" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
                                 <div class="input-group-append">
                                     <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
                                 </div>
                                 <div class="input-group-append">
-                                    <span class="input-group-text"><a id="longTerm" href="javascript:;">长期</a></span>
+                                    <span class="input-group-text"><a id="longTerm" href="javascript:;"><input type="checkbox">长期</a></span>
                                 </div>
                             </div>
                         </div>

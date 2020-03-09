@@ -10,12 +10,10 @@
         //行索引计数器
 
     let itemIndex = $('#customerTable tbody tr').length ? $('#customerTable tbody tr').length-1 : 0;
-
     /*********************变量定义区 end***************/
 
 
     $(function () {
-        // addCustomerItem();
         laydateInt();
     });
 
@@ -27,8 +25,16 @@
     }
 
     $('#longTerm').on('click', function () {
-        $('#certificateRange').val('2099-12-31')
-    })
+        debugger
+        if ($(this).find('input:checked').length){
+            $('.inputdate').val('长期').show();
+            $('.laydate').hide();
+        } else {
+            $('.inputdate').hide();
+            $('.laydate').val('').show();
+            laydateInt();
+        }
+    });
 
     $('#addCustomer').on('click', function(){
         addCustomerItem();
