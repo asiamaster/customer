@@ -1,10 +1,7 @@
 package com.dili.customer.controller;
 
-import cn.hutool.core.collection.CollectionUtil;
-import com.dili.customer.enums.CustomerEnum;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
-import com.dili.uap.sdk.domain.Department;
 import com.dili.uap.sdk.domain.dto.DepartmentDto;
 import com.dili.uap.sdk.rpc.DepartmentRpc;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
 import java.util.Objects;
 
 /**

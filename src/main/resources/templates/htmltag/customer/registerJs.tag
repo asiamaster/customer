@@ -1,5 +1,7 @@
 <script>
 
+    window.domain = 'diligrp.com';
+
     // /**
     //  * 客户类型改变时，
     // */
@@ -43,7 +45,9 @@
             if (organizationType === 'enterprise') {
                 url = "${contextPath}/customer/registerEnterprise.action";
             }
+
             $.ajax({
+                crossDomain:true,
                 type: "POST",
                 url: url,
                 data: _formData,
@@ -61,7 +65,7 @@
                             tmpJson.name = $('#name').val();
                             tmpJson.contactsPhone = $('#contactsPhone').val();
                             tmpJson.customerId = ret.data;
-                            window.parent.postMessage(JSON.stringify(tmpJson),'/');
+                            parent.window.postMessage(JSON.stringify(tmpJson),'*');
                             parent.dia.hide();
                         });
                     } else {

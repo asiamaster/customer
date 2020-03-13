@@ -189,15 +189,10 @@
         currentSelectRowIndex = undefined;
     });
 
-    //选中行事件
-     /**
-    还没做
-
-        */
     /*****************************************自定义事件区 end**************************************/
     window.addEventListener('message', function (e) {
         // alert(e.data);
         queryCustomerDataHandler();
-    }, false)
+    }, false);
 
 </script>
