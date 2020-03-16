@@ -3,9 +3,9 @@ package com.dili.customer.domain.dto;
 import com.dili.customer.domain.Customer;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -18,6 +18,7 @@ import java.util.List;
  */
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class CustomerQuery extends Customer {
 
     /**
@@ -38,4 +39,10 @@ public class CustomerQuery extends Customer {
      * 客户所属组织集
      */
     private List<Long> marketIdList;
+
+    /**
+     * 关键字查询，根据证件号匹配或名称模糊查询
+     */
+    private String keyword;
+
 }

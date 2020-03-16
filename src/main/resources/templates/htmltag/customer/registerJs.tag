@@ -66,7 +66,6 @@
                             tmpJson.contactsPhone = $('#contactsPhone').val();
                             tmpJson.customerId = ret.data;
                             parent.window.postMessage(JSON.stringify(tmpJson),'*');
-                            parent.dia.hide();
                         });
                     } else {
                         bs4pop.alert(ret.result, {width: 400,type: 'error'});

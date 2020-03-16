@@ -192,6 +192,7 @@
     /*****************************************自定义事件区 end**************************************/
     window.addEventListener('message', function (e) {
         // alert(e.data);
+        dia.hide();
         queryCustomerDataHandler();
     }, false);
 

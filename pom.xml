@@ -150,6 +150,12 @@
         </dependency>
 
         <!-- 内部包  -->
+<!--        <dependency>-->
+<!--            <groupId>com.dili</groupId>-->
+<!--            <artifactId>logger-sdk</artifactId>-->
+<!--            <version>0.0.1-SNAPSHOT</version>-->
+<!--        </dependency>-->
+
         <dependency>
             <groupId>com.dili</groupId>
             <artifactId>ss-processor</artifactId>
