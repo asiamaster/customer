@@ -81,6 +81,13 @@
         }
     });
 
+    // 关闭注册框
+    $('#formCancel').on('click', function(){
+        let isClose = true;
+        parent.postMessage( isClose ,'*');
+    });
+
+
     /**
      * 证件号码输入完成后回车时间
      */
