@@ -59,13 +59,18 @@
                     if (ret.success) {
                         bs4pop.alert('注册成功', {type: 'success',width: 400}, function () {
                             /* 应该要带条件刷新 */
+                            debugger
                             // parent.window.location.reload();
-                            var tmpJson = {};
+                            let tmpJson = {};
+                            let postData = {};
                             tmpJson.certificateNumber = $('#certificateNumber').val();
                             tmpJson.name = $('#name').val();
                             tmpJson.contactsPhone = $('#contactsPhone').val();
                             tmpJson.customerId = ret.data;
-                            parent.window.postMessage(JSON.stringify(tmpJson),'*');
+                            postData['topic'] = 'customerRegister';
+                            postData['content'] = tmpJson;
+                            postData['isClose'] = true;
+                            parent.window.postMessage(JSON.stringify(postData) , '*');
                         });
                     } else {
                         bs4pop.alert(ret.result, {width: 400,type: 'error'});
@@ -83,9 +88,12 @@
 
     // 关闭注册框
     $('#formCancel').on('click', function(){
-        let isClose = true;
-        parent.postMessage( isClose ,'*');
+        let postData = {};
+        postData['isClose'] = true;
+        parent.postMessage( JSON.stringify(postData) ,'*');
     });
+
+
 
 
     /**
