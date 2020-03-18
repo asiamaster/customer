@@ -1,9 +1,6 @@
 package com.dili.customer.rpc;
 
-import com.dili.customer.domain.Address;
-import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
-import com.dili.customer.domain.CustomerMarket;
 import com.dili.customer.domain.dto.CustomerQuery;
 import com.dili.customer.domain.dto.CustomerUpdateInput;
 import com.dili.customer.domain.dto.EnterpriseCustomer;
@@ -25,7 +22,7 @@ import java.util.List;
  * @author yuehongbo
  * @date 2020/1/21 14:09
  */
-@FeignClient(name = "customer-service")
+@FeignClient(name = "customer-service",contextId = "customerRpc")
 public interface CustomerRpc {
 
     /**
@@ -50,7 +47,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/api/customer/registerEnterprise", method = RequestMethod.POST)
-    BaseOutput registerEnterprise(EnterpriseCustomer baseInfo);
+    BaseOutput<Customer> registerEnterprise(EnterpriseCustomer baseInfo);
 
     /**
      * 个人用户注册
@@ -58,7 +55,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/api/customer/registerIndividual", method = RequestMethod.POST)
-    BaseOutput registerIndividual(IndividualCustomer baseInfo);
+    BaseOutput<Customer> registerIndividual(IndividualCustomer baseInfo);
 
 
     /**
@@ -67,7 +64,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/api/customer/update", method = RequestMethod.POST)
-    BaseOutput update(CustomerUpdateInput updateInput);
+    BaseOutput<Customer> update(CustomerUpdateInput updateInput);
 
     /**
      * 更新用户状态
@@ -76,16 +73,7 @@ public interface CustomerRpc {
      * @return
      */
     @RequestMapping(value = "/api/customer/updateState", method = {RequestMethod.POST})
-    BaseOutput updateState(@RequestParam("customerId") Long customerId, @RequestParam("state") Integer state);
-
-    /**
-     * 保存客户证件相关
-     * @param certificateInfo 客户证件相关信息
-     * @return
-     */
-    @RequestMapping(value = "/api/customer/saveCertificateInfo", method = RequestMethod.POST)
-    BaseOutput saveCertificateInfo(Customer certificateInfo);
-
+    BaseOutput<Customer> updateState(@RequestParam("customerId") Long customerId, @RequestParam("state") Integer state);
 
     /**
      * 根据证件号检测某个客户在某市场是否已存在
@@ -96,45 +84,4 @@ public interface CustomerRpc {
     @RequestMapping(value = "/api/customer/checkExistByNoAndMarket", method = RequestMethod.POST)
     BaseOutput<Customer> checkExistByNoAndMarket(@RequestParam(value = "certificateNumber") String certificateNumber,@RequestParam(value = "marketId") Long marketId);
 
-    /**
-     * 保存客户联系人信息
-     * @param customerContacts 客户联系人
-     * @return
-     */
-    @RequestMapping(value = "/api/contacts/saveContacts", method = RequestMethod.POST)
-    List<Contacts> saveContacts(Contacts customerContacts);
-
-    /**
-     * 根据客户ID查询该客户的联系人信息
-     * @param customerId 客户ID
-     * @param marketId 市场ID
-     * @return
-     */
-    @RequestMapping(value = "/api/contacts/listAllContacts", method = RequestMethod.POST)
-    BaseOutput<List<Contacts>> listAllContacts(@RequestParam("customerId") Long customerId, @RequestParam("marketId") Long marketId);
-
-    /**
-     * 保存客户地址信息
-     * @param customerAddress 客户地址
-     * @return
-     */
-    @RequestMapping(value = "/api/address/saveAddress", method = RequestMethod.POST)
-    List<Contacts> saveAddress(Address customerAddress);
-
-    /**
-     * 根据客户ID查询该客户的地址信息
-     * @param customerId 客户ID
-     * @return
-     */
-    @RequestMapping(value = "/api/address/listAllAddress", method = RequestMethod.POST)
-    List<Address> listAllAddress(@RequestParam("customerId") Long customerId);
-
-    /**
-     * 获取客户在某市场内的信息
-     * @param customerId 客户ID
-     * @param marketId 市场ID
-     * @return
-     */
-    @RequestMapping(value = "api/customerMarket/getByCustomerAndMarket", method = RequestMethod.POST)
-    BaseOutput<CustomerMarket> getByCustomerAndMarket(@RequestParam("customerId") Long customerId, @RequestParam("marketId") Long marketId);
 }

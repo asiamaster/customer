@@ -3,10 +3,11 @@ package com.dili.customer.provider;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.ss.metadata.BatchProviderMeta;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
-import com.dili.ss.metadata.provider.BatchDisplayTextProviderAdaptor;
+import com.dili.ss.metadata.provider.BatchDisplayTextProviderSupport;
 import com.dili.uap.sdk.domain.DataDictionaryValue;
 import com.dili.uap.sdk.rpc.DataDictionaryRpc;
 import com.google.common.collect.Lists;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +28,7 @@ import java.util.Map;
  */
 @Component
 @Scope("prototype")
-public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor {
+public class DataDictionaryValueProvider extends BatchDisplayTextProviderSupport {
 
     //前台需要传入的参数
     protected static final String DD_CODE_KEY = "dd_code";
@@ -72,24 +72,17 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor
     }
 
     @Override
-    protected Map<String, String> getEscapeFileds(Map metaMap) {
-        if(metaMap.get(ESCAPE_FILEDS_KEY) instanceof Map){
-            return (Map)metaMap.get(ESCAPE_FILEDS_KEY);
-        }else {
-            Map<String, String> map = new HashMap<>();
-            map.put(metaMap.get(FIELD_KEY).toString(), "name");
-            return map;
-        }
-    }
-
-    /**
-     * 关联(数据库)表的主键的字段名
-     * 默认取id，子类可自行实现
-     * @return
-     */
-    @Override
-    protected String getRelationTablePkField(Map metaMap) {
-        return "code";
+    protected BatchProviderMeta getBatchProviderMeta(Map metaMap) {
+        BatchProviderMeta batchProviderMeta = DTOUtils.newInstance(BatchProviderMeta.class);
+        //设置主DTO和关联DTO需要转义的字段名
+        batchProviderMeta.setEscapeFiled("name");
+        //忽略大小写关联
+        batchProviderMeta.setIgnoreCaseToRef(true);
+        //关联(数据库)表的主键的字段名，默认取id
+        batchProviderMeta.setRelationTablePkField("code");
+        //当未匹配到数据时，返回的值
+        batchProviderMeta.setMismatchHandler(t -> "-");
+        return batchProviderMeta;
     }
 
     /**
@@ -103,10 +96,5 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderAdaptor
             throw new RuntimeException("dd_code属性为空");
         }
         return ddCode;
-    }
-
-    @Override
-    protected boolean ignoreCaseToRef(Map metaMap){
-        return true;
     }
 }
