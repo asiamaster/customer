@@ -90,11 +90,11 @@ function isStartEndDatetime (date, el){
     let start = new Date($('.laystart').val());
     let end = new Date($('.layend').val());
     if ($(el).attr('class').indexOf('laystart')>-1 && end) {
-        if (moment(date).isSameOrAfter(end)) {
+        if (moment(date).isAfter(end)) {
             bs4pop.alert('结束时间需大于开始时间',{} ,function () {$(el).val('')});
         }
     } else if (start && $(el).attr('class').indexOf('layend')>-1 ) {
-        if (moment(start).isSameOrAfter(date)) {
+        if (moment(start).isAfter(date)) {
             bs4pop.alert('结束时间需大于开始时间',{} ,function () {$(el).val('')});
         }
     }
