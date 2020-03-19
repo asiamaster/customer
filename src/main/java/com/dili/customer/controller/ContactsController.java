@@ -1,7 +1,7 @@
 package com.dili.customer.controller;
 
 import com.dili.customer.domain.Contacts;
-import com.dili.customer.rpc.CustomerRpc;
+import com.dili.customer.rpc.ContactsRpc;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.metadata.ValueProviderUtils;
@@ -29,7 +29,7 @@ import java.util.Objects;
 public class ContactsController {
 
     @Autowired
-    private CustomerRpc customerRpc;
+    private ContactsRpc contactsRpc;
 
     /**
      * 查询客户联系人列表信息
@@ -44,7 +44,7 @@ public class ContactsController {
         if (Objects.isNull(contacts) || Objects.isNull(contacts.getCustomerId())) {
             return new EasyuiPageOutput(results.size(), results).toString();
         }
-        BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(contacts.getCustomerId(), SessionContext.getSessionContext().getUserTicket().getFirmId());
+        BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(contacts.getCustomerId(), SessionContext.getSessionContext().getUserTicket().getFirmId());
         if (output.isSuccess()) {
             results = ValueProviderUtils.buildDataByProvider(contacts, output.getData());
         }

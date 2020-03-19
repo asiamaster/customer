@@ -124,7 +124,12 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.springframework/springloaded -->
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>springloaded</artifactId>
@@ -150,11 +155,11 @@
         </dependency>
 
         <!-- 内部包  -->
-<!--        <dependency>-->
-<!--            <groupId>com.dili</groupId>-->
-<!--            <artifactId>logger-sdk</artifactId>-->
-<!--            <version>0.0.1-SNAPSHOT</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>com.dili</groupId>
+            <artifactId>logger-sdk</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
 
         <dependency>
             <groupId>com.dili</groupId>

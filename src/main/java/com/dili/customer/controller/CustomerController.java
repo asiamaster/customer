@@ -12,12 +12,18 @@ import com.dili.customer.domain.dto.IndividualCustomer;
 import com.dili.customer.enums.CustomerEnum;
 import com.dili.customer.enums.CustomerEnum.OrganizationType;
 import com.dili.customer.enums.NationalityEnum;
+import com.dili.customer.rpc.ContactsRpc;
+import com.dili.customer.rpc.CustomerMarketRpc;
 import com.dili.customer.rpc.CustomerRpc;
 import com.dili.customer.rpc.UidRpc;
 import com.dili.customer.service.remote.FirmRpcService;
 import com.dili.customer.service.remote.UserRpcService;
 import com.dili.customer.utils.EnumUtil;
+import com.dili.customer.utils.NetUtil;
 import com.dili.customer.validator.AddView;
+import com.dili.logger.sdk.annotation.BusinessLogger;
+import com.dili.logger.sdk.base.LoggerContext;
+import com.dili.logger.sdk.glossary.LoggerConstant;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
@@ -66,6 +72,10 @@ public class CustomerController {
     @Autowired
     private CustomerRpc customerRpc;
     @Autowired
+    private CustomerMarketRpc customerMarketRpc;
+    @Autowired
+    private ContactsRpc contactsRpc;
+    @Autowired
     private DataDictionaryRpc dataDictionaryRpc;
     @Autowired
     private UserRpcService userService;
@@ -77,9 +87,12 @@ public class CustomerController {
     private UserResourceRedis userResourceRedis;
     @Autowired
     private UidRpc uidRpc;
+    @Autowired
+    protected HttpServletRequest request;
 
     /**
      * 跳转到企业客户管理页面
+     *
      * @param modelMap
      * @return String
      */
@@ -92,6 +105,7 @@ public class CustomerController {
 
     /**
      * 跳转到个人客户管理页面
+     *
      * @param modelMap
      * @return String
      */
@@ -103,6 +117,7 @@ public class CustomerController {
 
     /**
      * 分页查询客户列表信息
+     *
      * @param customer
      * @param request
      * @return
@@ -124,21 +139,40 @@ public class CustomerController {
 
     /**
      * 企业客户注册功能
+     *
      * @param customer
      * @return BaseOutput
      */
     @RequestMapping(value = "/registerEnterprise.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
+    @BusinessLogger(businessType = "customer", content = "${userName} 创建企业客户[${name}] ${flag}", operationType = "add", systemCode = "CUSTOMER")
     public BaseOutput registerEnterprise(@Validated({AddView.class}) EnterpriseCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         setDefaultStorageValue(customer);
-        return customerRpc.registerEnterprise(customer);
+        BaseOutput<Customer> output = customerRpc.registerEnterprise(customer);
+        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        if (output.isSuccess()) {
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
+            LoggerContext.put("name", customer.getName());
+            LoggerContext.put("flag", "成功");
+        } else {
+            LoggerContext.put("flag", "失败");
+        }
+        UserTicket userTicket = getUserTicket();
+        if (userTicket != null) {
+            LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+            LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+            LoggerContext.put("userName", userTicket.getRealName());
+        }
+        return output;
     }
 
     /**
      * 跳转到注册页面
+     *
      * @param modelMap
      * @return String
      */
@@ -175,6 +209,7 @@ public class CustomerController {
 
     /**
      * 跳转到更新页面
+     *
      * @param modelMap
      * @return String
      */
@@ -186,10 +221,10 @@ public class CustomerController {
             Customer customer = (Customer) modelMap.get("customer");
             OrganizationType instance = getInstance(customer.getOrganizationType());
             detail = "customer/" + instance.getCode() + "/update";
-            if (ENTERPRISE.equals(instance)){
-                BaseOutput<List<Contacts>> output = customerRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
+            if (ENTERPRISE.equals(instance)) {
+                BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
                 if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
-                    modelMap.put("contactsList",output.getData());
+                    modelMap.put("contactsList", output.getData());
                 }
             }
         }
@@ -199,6 +234,7 @@ public class CustomerController {
 
     /**
      * 跳转到详情页面
+     *
      * @param modelMap
      * @return String
      */
@@ -215,6 +251,7 @@ public class CustomerController {
 
     /**
      * 跳转到安全认证页面
+     *
      * @param modelMap
      * @return String
      */
@@ -225,22 +262,41 @@ public class CustomerController {
 
     /**
      * 个人客户注册
+     *
      * @param customer
      * @return BaseOutput
      */
     @RequestMapping(value = "/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
+    @BusinessLogger(businessType = "customer", content = "${userName} 创建个人客户[${name}] ${flag}", operationType = "add", systemCode = "CUSTOMER")
     public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
 //        Validation.buildDefaultValidatorFactory().getValidator().validate()
         setDefaultStorageValue(customer);
-        return customerRpc.registerIndividual(customer);
+        BaseOutput<Customer> output = customerRpc.registerIndividual(customer);
+        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        if (output.isSuccess()) {
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
+            LoggerContext.put("name", customer.getName());
+            LoggerContext.put("flag", "成功");
+        } else {
+            LoggerContext.put("flag", "失败");
+        }
+        UserTicket userTicket = getUserTicket();
+        if (userTicket != null) {
+            LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+            LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+            LoggerContext.put("userName", userTicket.getRealName());
+        }
+        return output;
     }
 
     /**
      * 根据客户类型获取对应的证件类型
+     *
      * @param organizationType
      * @return BaseOutput
      */
@@ -268,6 +324,7 @@ public class CustomerController {
 
     /**
      * 根据证件号检测某个客户在某市场是否已存在
+     *
      * @param certificateNumber 客户证件号
      * @return 如果客户在当前市场已存在，则返回错误(false)信息，如果不存在，则返回客户信息(若客户信息存在)
      */
@@ -283,21 +340,51 @@ public class CustomerController {
 
     /**
      * 禁用/启用客户
-     * @param id 客户ID
+     *
+     * @param id     客户ID
      * @param enable 是否启用
      * @return BaseOutput
      */
     @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
+    @BusinessLogger(businessType = "customer", content = "${userName} [${enableValue}] 客户 [${name}] ${flag}",notes = "${node}", systemCode = "CUSTOMER")
     public BaseOutput doEnable(Long id, Boolean enable) {
         if (Objects.isNull(id) || Objects.isNull(enable)) {
             return BaseOutput.failure("必要参数丢失");
         }
-        return customerRpc.updateState(id, enable ? CustomerEnum.State.NORMAL.getCode() : CustomerEnum.State.DISABLED.getCode());
+        CustomerEnum.State instance = null;
+        if (enable) {
+            instance = CustomerEnum.State.NORMAL;
+            LoggerContext.put("enableValue", "启用");
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_OPERATION_TYPE_KEY, "enable");
+        } else {
+            instance = CustomerEnum.State.DISABLED;
+            LoggerContext.put("enableValue", "禁用");
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_OPERATION_TYPE_KEY, "disable");
+        }
+        BaseOutput<Customer> output = customerRpc.updateState(id, instance.getCode());
+        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        if (output.isSuccess()) {
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
+            LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
+            LoggerContext.put("name", output.getData().getName());
+            LoggerContext.put("flag", "成功");
+        } else {
+            LoggerContext.put("flag", "失败");
+        }
+        UserTicket userTicket = getUserTicket();
+        if (userTicket != null) {
+            LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+            LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
+            LoggerContext.put("userName", userTicket.getRealName());
+        }
+        LoggerContext.put("node", userTicket.getRealName() + " 操作了 客户ID：" + id + ",enable=" + enable);
+        return output;
     }
 
     /**
      * 处理客户信息更新保存操作
+     *
      * @param input 更新数据
      * @return
      */
@@ -310,6 +397,7 @@ public class CustomerController {
 
     /**
      * 获取民族主数据
+     *
      * @return BaseOutput
      */
     @RequestMapping(value = "/listNationality.action", method = {RequestMethod.GET, RequestMethod.POST})
@@ -320,6 +408,7 @@ public class CustomerController {
 
     /**
      * 设置客户信息的默认存储数据
+     *
      * @param customer
      */
     private void setDefaultStorageValue(IndividualCustomer customer) {
@@ -336,6 +425,7 @@ public class CustomerController {
 
     /**
      * 获取客户的基本信息
+     *
      * @param customerId 客户ID
      * @param modelMap
      */
@@ -354,10 +444,10 @@ public class CustomerController {
                 dataDictionaryValue.setDdCode("source_channel");
                 dataDictionaryValue.setCode(customer.getSourceChannel());
                 BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue = dataDictionaryRpc.listDataDictionaryValue(dataDictionaryValue);
-                if (listDataDictionaryValue.isSuccess() && CollectionUtil.isNotEmpty(listDataDictionaryValue.getData())){
+                if (listDataDictionaryValue.isSuccess() && CollectionUtil.isNotEmpty(listDataDictionaryValue.getData())) {
                     customer.setSourceChannelValue(listDataDictionaryValue.getData().get(0).getName());
                 }
-                BaseOutput<CustomerMarket> marketOutput = customerRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
+                BaseOutput<CustomerMarket> marketOutput = customerMarketRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
                     CustomerMarket customerMarket = marketOutput.getData();
                     customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
@@ -379,11 +469,21 @@ public class CustomerController {
 
     /**
      * 获取客户编码
+     *
      * @param type
      * @return
      */
-    private String getCustomerCode(OrganizationType type){
+    private String getCustomerCode(OrganizationType type) {
         BaseOutput<String> bizNumberOutput = uidRpc.bizNumber(type.getUidType());
         return bizNumberOutput.getData();
+    }
+
+    /**
+     * 获取当前登录用户信息
+     *
+     * @return
+     */
+    private UserTicket getUserTicket() {
+        return SessionContext.getSessionContext().getUserTicket();
     }
 }

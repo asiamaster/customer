@@ -2,13 +2,6 @@
 
     window.domain = 'diligrp.com';
 
-    // /**
-    //  * 客户类型改变时，
-    // */
-    // $('[name="organizationType"]').change(function () {
-    //
-    // });
-
     function organizationTypeChange() {
         let organizationType = $('#organizationType').val();
         //如果选择的是企业，则显示企业需要的相关信息
@@ -66,7 +59,7 @@
                             tmpJson.certificateNumber = $('#certificateNumber').val();
                             tmpJson.name = $('#name').val();
                             tmpJson.contactsPhone = $('#contactsPhone').val();
-                            tmpJson.customerId = ret.data;
+                            tmpJson.customerId = ret.data.id;
                             postData['topic'] = 'customerRegister';
                             postData['content'] = tmpJson;
                             postData['isClose'] = true;
