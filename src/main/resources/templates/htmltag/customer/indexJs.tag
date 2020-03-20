@@ -113,33 +113,39 @@
         //table选择模式是单选时可用
         let selectedRow = rows[0];
         let msg = (enable || 'true' == enable) ? '确定要启用该客户吗？' : '确定要禁用该客户吗？';
-
-        bs4pop.confirm(msg, undefined, function (sure) {
-            if(sure){
-                bui.loading.show('努力提交中，请稍候。。。');
-                $.ajax({
-                    type: "POST",
-                    url: "${contextPath}/customer/doEnable.action",
-                    data: {id: selectedRow.id, enable: enable},
-                    processData:true,
-                    dataType: "json",
-                    async : true,
-                    success : function(data) {
-                        bui.loading.hide();
-                        if(data.success){
-                            _customerGrid.bootstrapTable('refresh');
-                            _modal.modal('hide');
-                        }else{
-                            bs4pop.alert(data.result, {type: 'error'});
+        bs4pop.prompt("请输入原因","",{title:"系统提示"},function (result,value) {
+            if (result){
+                if (value){
+                    bs4pop.confirm(msg, undefined, function (sure) {
+                        if(sure){
+                            bui.loading.show('努力提交中，请稍候。。。');
+                            $.ajax({
+                                type: "POST",
+                                url: "${contextPath}/customer/doEnable.action",
+                                data: {id: selectedRow.id, enable: enable,reason:value},
+                                processData:true,
+                                dataType: "json",
+                                async : true,
+                                success : function(data) {
+                                    bui.loading.hide();
+                                    if(data.success){
+                                        _customerGrid.bootstrapTable('refresh');
+                                    }else{
+                                        bs4pop.alert(data.result, {type: 'error'});
+                                    }
+                                },
+                                error : function() {
+                                    bui.loading.hide();
+                                    bs4pop.alert('远程访问失败', {type: 'error'});
+                                }
+                            });
                         }
-                    },
-                    error : function() {
-                        bui.loading.hide();
-                        bs4pop.alert('远程访问失败', {type: 'error'});
-                    }
-                });
+                    })
+                } else {
+                    return false;
+                }
             }
-        })
+        });
     }
 
 

@@ -1,7 +1,6 @@
 package com.dili.customer.provider;
 
-import com.dili.customer.enums.CustomerEnum;
-import com.dili.customer.enums.YesOrNoEnum;
+import com.dili.commons.glossary.YesOrNoEnum;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
@@ -33,7 +32,7 @@ public class YesOrNoProvider implements ValueProvider {
     static {
         BUFFER = Lists.newArrayList();
         BUFFER.addAll(Stream.of(YesOrNoEnum.values())
-                .map(e -> new ValuePairImpl<String>(e.getValue(), String.valueOf(e.getCode())))
+                .map(e -> new ValuePairImpl<>(e.getName(), String.valueOf(e.getCode())))
                 .collect(Collectors.toList()));
     }
 
@@ -47,9 +46,9 @@ public class YesOrNoProvider implements ValueProvider {
         if (obj == null || "".equals(obj)) {
             return null;
         }
-        YesOrNoEnum instance = YesOrNoEnum.getInstance(Integer.valueOf(obj.toString()));
+        YesOrNoEnum instance = YesOrNoEnum.getYesOrNoEnum(Integer.valueOf(obj.toString()));
         if (Objects.nonNull(instance)) {
-            return instance.getValue();
+            return instance.getName();
         }
         return null;
     }

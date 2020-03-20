@@ -2,6 +2,7 @@ package com.dili.customer.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.dili.commons.glossary.YesOrNoEnum;
 import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
 import com.dili.customer.domain.CustomerMarket;
@@ -98,7 +99,6 @@ public class CustomerController {
      */
     @RequestMapping(value = "/enterprise/index.html", method = RequestMethod.GET)
     public String enterpriseIndex(ModelMap modelMap) {
-
         modelMap.put("organizationType", ENTERPRISE.getCode());
         return "customer/enterprise/list";
     }
@@ -127,7 +127,7 @@ public class CustomerController {
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
         customer.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
-        customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
+        customer.setIsDelete(YesOrNoEnum.NO.getCode());
         //传入的查询时间处理，如传入的是2020-01-01 则默认加1天，不然当天的数据查询不到
         if (Objects.nonNull(customer.getCreateTimeEnd())) {
             customer.setCreateTimeEnd(customer.getCreateTimeEnd().plusDays(1));
@@ -145,14 +145,14 @@ public class CustomerController {
      */
     @RequestMapping(value = "/registerEnterprise.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${userName} 创建企业客户[${name}] ${flag}", operationType = "add", systemCode = "CUSTOMER")
+    @BusinessLogger(businessType = "customer", content = "${userName!} 创建企业客户[${name!}] ${flag!}", operationType = "add", operationTypeText = "新增", systemCode = "CUSTOMER")
     public BaseOutput registerEnterprise(@Validated({AddView.class}) EnterpriseCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         setDefaultStorageValue(customer);
         BaseOutput<Customer> output = customerRpc.registerEnterprise(customer);
-        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -268,7 +268,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${userName} 创建个人客户[${name}] ${flag}", operationType = "add", systemCode = "CUSTOMER")
+    @BusinessLogger(businessType = "customer", content = "${userName!} 创建个人客户[${name!}] ${flag!}", operationType = "add",operationTypeText = "新增", systemCode = "CUSTOMER")
     public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
@@ -276,7 +276,7 @@ public class CustomerController {
 //        Validation.buildDefaultValidatorFactory().getValidator().validate()
         setDefaultStorageValue(customer);
         BaseOutput<Customer> output = customerRpc.registerIndividual(customer);
-        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -347,23 +347,23 @@ public class CustomerController {
      */
     @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${userName} [${enableValue}] 客户 [${name}] ${flag}",notes = "${node}", systemCode = "CUSTOMER")
-    public BaseOutput doEnable(Long id, Boolean enable) {
+    @BusinessLogger(businessType = "customer", content = "${operatorName!} [${operationTypeText!}] 客户 [${name!}] ${flag!}", systemCode = "CUSTOMER")
+    public BaseOutput doEnable(Long id, Boolean enable,String reason) {
         if (Objects.isNull(id) || Objects.isNull(enable)) {
             return BaseOutput.failure("必要参数丢失");
         }
         CustomerEnum.State instance = null;
         if (enable) {
             instance = CustomerEnum.State.NORMAL;
-            LoggerContext.put("enableValue", "启用");
-            LoggerContext.put(LoggerConstant.LOG_BUSINESS_OPERATION_TYPE_KEY, "enable");
+            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_TEXT_KEY, "启用");
+            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "enable");
         } else {
             instance = CustomerEnum.State.DISABLED;
-            LoggerContext.put("enableValue", "禁用");
-            LoggerContext.put(LoggerConstant.LOG_BUSINESS_OPERATION_TYPE_KEY, "disable");
+            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_TEXT_KEY, "禁用");
+            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "disable");
         }
         BaseOutput<Customer> output = customerRpc.updateState(id, instance.getCode());
-        LoggerContext.put(LoggerConstant.LOG_IP_KEY, NetUtil.getIpAddress(request));
+        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -376,9 +376,9 @@ public class CustomerController {
         if (userTicket != null) {
             LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
             LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
-            LoggerContext.put("userName", userTicket.getRealName());
+            LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
         }
-        LoggerContext.put("node", userTicket.getRealName() + " 操作了 客户ID：" + id + ",enable=" + enable);
+        LoggerContext.put("notes", reason);
         return output;
     }
 
@@ -419,7 +419,7 @@ public class CustomerController {
         customer.setDepartmentId(userTicket.getDepartmentId());
         customer.setState(CustomerEnum.State.NORMAL.getCode());
         customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
-        customer.setIsDelete(CustomerEnum.Deleted.NOT_DELETED.getCode());
+        customer.setIsDelete(YesOrNoEnum.NO.getCode());
         customer.setCode(getCustomerCode(OrganizationType.getInstance(customer.getOrganizationType())));
     }
 
