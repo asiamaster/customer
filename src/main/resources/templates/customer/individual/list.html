@@ -1,15 +1,17 @@
 <#bs4Body>
 
 <div class="container-fluid">
-    <form class="form" id="customerQueryForm">
+    <div class="row">
+        <nav class="col-12">
+            <ol class="breadcrumb"  data-toggle="collapse" data-target="#customerQueryForm" aria-controls="customerQueryForm">
+                <li class="breadcrumb-item active">
+                    个人客户管理 &nbsp;&nbsp;<a class="position-absolute" href="javascript:;"><i class="fa fa-angle-double-down fa-lg" aria-hidden="true"></i></a>
+                </li>
+            </ol>
+        </nav>
+    </div>
+    <form class="form collapse show" id="customerQueryForm" role="form" >
         <input type="hidden" name="organizationType" value="${organizationType!}">
-        <div class="row">
-            <nav class="col-12" aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">个人客户管理</li>
-                </ol>
-            </nav>
-        </div>
         <div class="row  row-cols-6">
             <div class="form-group col">
                 <label for="">客户名称</label>
