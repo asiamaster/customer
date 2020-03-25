@@ -102,6 +102,7 @@
                 bui.loading.hide();
                 if (res.success) {
                     bs4pop.alert('更新成功', {type: 'success'}, function () {
+                        sendUpdateLog();
                         window.parent.postMessage('操作成功','/');
                         parent.dia.hide();
                     });
@@ -117,6 +118,24 @@
         });
     });
 
+
+    /**
+     * 修改时保存日志信息
+     */
+    function sendUpdateLog() {
+        let logObj = {};
+        logObj.marketId = $("#operatorMarket").val();
+        logObj.systemCode = "CUSTOMER";
+        logObj.businessType = "customer";
+        logObj.businessId = $("#id").val();
+        logObj.businessCode = $("#code").val();
+        logObj.operationType = "edit";
+        logObj.marketId = $("#operatorMarket").val();
+        logObj.operatorId = $("#operatorId").val();
+        logObj.operatorName = $("#operatorName").text()
+        logObj.content = Log.buildUpdateContent();
+        Log.operatorLog(logObj);
+    }
 
     /**
      * 企业客户法人信息读卡操作

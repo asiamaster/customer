@@ -14,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -39,8 +36,8 @@ public class MarketProvider extends BatchDisplayTextProviderSupport {
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
         List<Firm> firmList = firmRpcService.getCurrentUserFirms();
         if (CollectionUtils.isNotEmpty(firmList)) {
-            return firmList.stream().filter(Objects::nonNull).map(f -> {
-                ValuePairImpl<?> vp = new ValuePairImpl<>(f.getName(), f.getCode());
+            return firmList.stream().filter(Objects::nonNull).sorted(Comparator.comparing(Firm::getId)).map(f -> {
+                ValuePairImpl<?> vp = new ValuePairImpl<>(f.getName(), f.getId());
                 return vp;
             }).collect(Collectors.toList());
         }

@@ -20,7 +20,6 @@ import com.dili.customer.rpc.UidRpc;
 import com.dili.customer.service.remote.FirmRpcService;
 import com.dili.customer.service.remote.UserRpcService;
 import com.dili.customer.utils.EnumUtil;
-import com.dili.customer.utils.NetUtil;
 import com.dili.customer.validator.AddView;
 import com.dili.logger.sdk.annotation.BusinessLogger;
 import com.dili.logger.sdk.base.LoggerContext;
@@ -145,14 +144,13 @@ public class CustomerController {
      */
     @RequestMapping(value = "/registerEnterprise.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${userName!} 创建企业客户[${name!}] ${flag!}", operationType = "add", operationTypeText = "新增", systemCode = "CUSTOMER")
+    @BusinessLogger(businessType = "customer", content = "${userName!} 创建企业客户[${name!}] ${flag!}", operationType = "add", systemCode = "CUSTOMER")
     public BaseOutput registerEnterprise(@Validated({AddView.class}) EnterpriseCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
         setDefaultStorageValue(customer);
         BaseOutput<Customer> output = customerRpc.registerEnterprise(customer);
-        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -216,11 +214,11 @@ public class CustomerController {
     @RequestMapping(value = "/update.html", method = RequestMethod.GET)
     public String update(Long customerId, ModelMap modelMap) {
         getCustomerDetail(customerId, modelMap);
-        String detail = "customer/enterprise/update";
+        String updatePath = "customer/enterprise/update";
         if (modelMap.containsKey("customer")) {
             Customer customer = (Customer) modelMap.get("customer");
             OrganizationType instance = getInstance(customer.getOrganizationType());
-            detail = "customer/" + instance.getCode() + "/update";
+            updatePath = "customer/" + instance.getCode() + "/update";
             if (ENTERPRISE.equals(instance)) {
                 BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
                 if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
@@ -228,7 +226,7 @@ public class CustomerController {
                 }
             }
         }
-        return detail;
+        return updatePath;
     }
 
 
@@ -268,15 +266,13 @@ public class CustomerController {
      */
     @RequestMapping(value = "/registerIndividual.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${userName!} 创建个人客户[${name!}] ${flag!}", operationType = "add",operationTypeText = "新增", systemCode = "CUSTOMER")
+    @BusinessLogger(businessType = "customer", content = "${userName!} 创建个人客户[${name!}] ${flag!}", operationType = "add", systemCode = "CUSTOMER")
     public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
-//        Validation.buildDefaultValidatorFactory().getValidator().validate()
         setDefaultStorageValue(customer);
         BaseOutput<Customer> output = customerRpc.registerIndividual(customer);
-        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -355,15 +351,12 @@ public class CustomerController {
         CustomerEnum.State instance = null;
         if (enable) {
             instance = CustomerEnum.State.NORMAL;
-            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_TEXT_KEY, "启用");
             LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "enable");
         } else {
             instance = CustomerEnum.State.DISABLED;
-            LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_TEXT_KEY, "禁用");
             LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "disable");
         }
         BaseOutput<Customer> output = customerRpc.updateState(id, instance.getCode());
-        LoggerContext.put(LoggerConstant.LOG_REMOTE_IP_KEY, NetUtil.getIpAddress(request));
         if (output.isSuccess()) {
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_CODE_KEY, output.getData().getCode());
             LoggerContext.put(LoggerConstant.LOG_BUSINESS_ID_KEY, output.getData().getId());
@@ -432,6 +425,7 @@ public class CustomerController {
     private void getCustomerDetail(Long customerId, ModelMap modelMap) {
         if (Objects.nonNull(customerId)) {
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+            modelMap.put("userTicket", userTicket);
             CustomerQuery query = new CustomerQuery();
             query.setId(customerId);
             query.setMarketId(userTicket.getFirmId());
@@ -439,7 +433,6 @@ public class CustomerController {
             BaseOutput<List<Customer>> output = customerRpc.list(query);
             if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
                 Customer customer = output.getData().stream().findFirst().orElse(new Customer());
-
                 DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
                 dataDictionaryValue.setDdCode("source_channel");
                 dataDictionaryValue.setCode(customer.getSourceChannel());
@@ -461,7 +454,6 @@ public class CustomerController {
                     }
                     modelMap.put("customerMarket", customerMarket);
                 }
-
                 modelMap.put("customer", customer);
             }
         }

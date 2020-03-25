@@ -12,15 +12,14 @@
     /******************************驱动执行区 begin***************************/
     $(function () {
         $(window).resize(function () {
-            _customerGrid.bootstrapTable('resetView')
+            _customerGrid.bootstrapTable('resetView');
         });
-        queryCustomerDataHandler();
     });
 
     _customerGrid.ready( function () {
         let size = ($(window).height() - $('#customerQueryForm').height() - 210) / 40;
         size = size > 10 ? size : 10;
-        _customerGrid.bootstrapTable('refreshOptions', {pageSize: parseInt(size)});
+        _customerGrid.bootstrapTable('refreshOptions', {pageSize: parseInt(size),url: '/customer/listPage.action'});
     })
     /******************************驱动执行区 end****************************/
 
@@ -73,8 +72,8 @@
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '100%',
-            height: '100%',
+            width: '95%',
+            height: '95%',
             btns: []
         });
     }
@@ -98,8 +97,8 @@
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '100%',
-            height: '100%',
+            width: '95%',
+            height: '95%',
             btns: []
         });
     }
@@ -121,31 +120,27 @@
         bs4pop.prompt("请输入原因","",{title:"系统提示"},function (result,value) {
             if (result){
                 if (value){
-                    bs4pop.confirm(msg, undefined, function (sure) {
-                        if(sure){
-                            bui.loading.show('努力提交中，请稍候。。。');
-                            $.ajax({
-                                type: "POST",
-                                url: "${contextPath}/customer/doEnable.action",
-                                data: {id: selectedRow.id, enable: enable,reason:value},
-                                processData:true,
-                                dataType: "json",
-                                async : true,
-                                success : function(data) {
-                                    bui.loading.hide();
-                                    if(data.success){
-                                        _customerGrid.bootstrapTable('refresh');
-                                    }else{
-                                        bs4pop.alert(data.result, {type: 'error'});
-                                    }
-                                },
-                                error : function() {
-                                    bui.loading.hide();
-                                    bs4pop.alert('远程访问失败', {type: 'error'});
-                                }
-                            });
+                    bui.loading.show('努力提交中，请稍候。。。');
+                    $.ajax({
+                        type: "POST",
+                        url: "${contextPath}/customer/doEnable.action",
+                        data: {id: selectedRow.id, enable: enable,reason:value},
+                        processData:true,
+                        dataType: "json",
+                        async : true,
+                        success : function(data) {
+                            bui.loading.hide();
+                            if(data.success){
+                                queryCustomerDataHandler();
+                            }else{
+                                bs4pop.alert(data.result, {type: 'error'});
+                            }
+                        },
+                        error : function() {
+                            bui.loading.hide();
+                            bs4pop.alert('远程访问失败', {type: 'error'});
                         }
-                    })
+                    });
                 } else {
                     return false;
                 }
@@ -160,7 +155,7 @@
     function queryCustomerDataHandler() {
         currentSelectRowIndex = undefined;
         $('#toolbar button').attr('disabled', false);
-        _customerGrid.bootstrapTable('refreshOptions', {url: '/customer/listPage.action'});
+        _customerGrid.bootstrapTable('refresh');
     }
 
     /**
@@ -198,6 +193,19 @@
     //选中行事件
     _customerGrid.on('uncheck.bs.table', function (e, row, $element) {
         currentSelectRowIndex = undefined;
+    });
+
+
+    //选中行事件 -- 可操作按钮控制
+    _customerGrid.on('check.bs.table', function (e, row, $element) {
+        let state = row.$_state;
+        if (state === 1) {
+            $('#toolbar button').attr('disabled', false);
+            $('#btn_enabled').attr('disabled', true);
+        } else if (state === 2) {
+            $('#toolbar button').attr('disabled', false);
+            $('#btn_disabled').attr('disabled', true);
+        }
     });
 
     /*****************************************自定义事件区 end**************************************/
