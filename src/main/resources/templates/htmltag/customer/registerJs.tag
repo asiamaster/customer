@@ -198,7 +198,7 @@
                                 var address = userObj.Address;
                                 $('#certificateAddr').val(address.trim());
                                 $('#birthdate').val(userObj.Born);
-                                $('#certificateRange').val(userObj.UserLifeBegin+' ~ '+userObj.UserLifeEnd);
+                                $('#certificateRange').val(userObj.UserLifeEnd);
                                 $(".form-control").attr("readonly",true);
                                 $("#certificateNumber").attr("readonly",false);
                             }else{

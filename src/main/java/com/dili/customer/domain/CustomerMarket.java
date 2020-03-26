@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 
 /**
@@ -63,6 +64,11 @@ public class CustomerMarket extends BaseDomain {
      * 备注信息
      */
     private String notes;
+
+    /**
+     * 在本市场的初始创建人
+     */
+    private Long creatorId;
 
     /**
      * 创建时间

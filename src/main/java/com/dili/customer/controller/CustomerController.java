@@ -50,10 +50,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
 
@@ -125,11 +123,19 @@ public class CustomerController {
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
-        customer.setMarketId(SessionContext.getSessionContext().getUserTicket().getFirmId());
+        if (Objects.isNull(customer.getMarketId())) {
+            List<Firm> userFirms = firmRpc.getCurrentUserFirms();
+            if (CollectionUtil.isEmpty(userFirms)) {
+                return new EasyuiPageOutput(0, Collections.emptyList()).toString();
+            } else {
+                List<Long> idList = userFirms.stream().map(Firm::getId).distinct().collect(Collectors.toList());
+                customer.setMarketIdList(idList);
+            }
+        }
         customer.setIsDelete(YesOrNoEnum.NO.getCode());
         //传入的查询时间处理，如传入的是2020-01-01 则默认加1天，不然当天的数据查询不到
-        if (Objects.nonNull(customer.getCreateTimeEnd())) {
-            customer.setCreateTimeEnd(customer.getCreateTimeEnd().plusDays(1));
+        if (Objects.nonNull(customer.getMarketCreateTimeEnd())) {
+            customer.setMarketCreateTimeEnd(customer.getMarketCreateTimeEnd().plusDays(1));
         }
         PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
         List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
@@ -182,7 +188,7 @@ public class CustomerController {
             modelMap.put("sourceSystem", sourceSystem);
             modelMap.put("sourceChannel", sourceChannel);
             UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-            //有创建哪些客户类型的券
+            //有创建哪些客户类型的权限
             Set organizationTypeRight = Sets.newHashSet();
             if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addEnterprise")) {
                 organizationTypeRight.add(ENTERPRISE.getCode());
@@ -212,15 +218,15 @@ public class CustomerController {
      * @return String
      */
     @RequestMapping(value = "/update.html", method = RequestMethod.GET)
-    public String update(Long customerId, ModelMap modelMap) {
-        getCustomerDetail(customerId, modelMap);
+    public String update(Long customerId, Long marketId, ModelMap modelMap) {
+        getCustomerDetail(customerId, marketId, modelMap);
         String updatePath = "customer/enterprise/update";
         if (modelMap.containsKey("customer")) {
             Customer customer = (Customer) modelMap.get("customer");
             OrganizationType instance = getInstance(customer.getOrganizationType());
             updatePath = "customer/" + instance.getCode() + "/update";
             if (ENTERPRISE.equals(instance)) {
-                BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(customerId, SessionContext.getSessionContext().getUserTicket().getFirmId());
+                BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(customerId,marketId);
                 if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
                     modelMap.put("contactsList", output.getData());
                 }
@@ -229,7 +235,6 @@ public class CustomerController {
         return updatePath;
     }
 
-
     /**
      * 跳转到详情页面
      *
@@ -237,8 +242,8 @@ public class CustomerController {
      * @return String
      */
     @RequestMapping(value = "/detail.action", method = RequestMethod.GET)
-    public String detail(@NotNull Long id, ModelMap modelMap) {
-        getCustomerDetail(id, modelMap);
+    public String detail(@NotNull Long id, Long marketId, ModelMap modelMap) {
+        getCustomerDetail(id, marketId, modelMap);
         String detail = "customer/enterprise/detail";
         if (modelMap.containsKey("customer")) {
             Customer customer = (Customer) modelMap.get("customer");
@@ -405,7 +410,7 @@ public class CustomerController {
      * @param customer
      */
     private void setDefaultStorageValue(IndividualCustomer customer) {
-        UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
+        UserTicket userTicket = getUserTicket();
         customer.setOperatorId(userTicket.getId());
         customer.setMarketId(userTicket.getFirmId());
         customer.setOwnerId(userTicket.getId());
@@ -414,6 +419,10 @@ public class CustomerController {
         customer.setGrade(CustomerEnum.Grade.GENERAL.getCode());
         customer.setIsDelete(YesOrNoEnum.NO.getCode());
         customer.setCode(getCustomerCode(OrganizationType.getInstance(customer.getOrganizationType())));
+        //设置证件是否长期有效
+        if (StrUtil.isNotBlank(customer.getCertificateRange()) && "长期".equals(customer.getCertificateRange().trim())) {
+            customer.setCertificateLongTerm(YesOrNoEnum.YES.getCode());
+        }
     }
 
     /**
@@ -422,13 +431,12 @@ public class CustomerController {
      * @param customerId 客户ID
      * @param modelMap
      */
-    private void getCustomerDetail(Long customerId, ModelMap modelMap) {
-        if (Objects.nonNull(customerId)) {
-            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-            modelMap.put("userTicket", userTicket);
+    private void getCustomerDetail(Long customerId, Long marketId, ModelMap modelMap) {
+        if (Objects.nonNull(customerId) && Objects.nonNull(marketId)) {
+            modelMap.put("userTicket", getUserTicket());
             CustomerQuery query = new CustomerQuery();
             query.setId(customerId);
-            query.setMarketId(userTicket.getFirmId());
+            query.setMarketId(marketId);
             //获取客户基本信息
             BaseOutput<List<Customer>> output = customerRpc.list(query);
             if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
@@ -440,7 +448,7 @@ public class CustomerController {
                 if (listDataDictionaryValue.isSuccess() && CollectionUtil.isNotEmpty(listDataDictionaryValue.getData())) {
                     customer.setSourceChannelValue(listDataDictionaryValue.getData().get(0).getName());
                 }
-                BaseOutput<CustomerMarket> marketOutput = customerMarketRpc.getByCustomerAndMarket(customerId, userTicket.getFirmId());
+                BaseOutput<CustomerMarket> marketOutput = customerMarketRpc.getByCustomerAndMarket(customerId, marketId);
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
                     CustomerMarket customerMarket = marketOutput.getData();
                     customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());

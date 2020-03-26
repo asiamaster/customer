@@ -5,7 +5,9 @@ import com.dili.customer.enums.CustomerEnum;
 import com.dili.ss.domain.BaseDomain;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.Transient;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -198,6 +200,26 @@ public class Customer extends BaseDomain {
      * 客户状态 0注销，1生效，2禁用，
      */
     private Integer state;
+
+    /**
+     * 客户所在市场的创建人
+     * 数据来源于客户市场表的创建人
+     */
+    private Long marketCreatorId;
+
+    /**
+     * 客户所在市场的创建时间
+     * 数据来源于客户市场表的创建时间
+     */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime marketCreateTime;
+
+    /**
+     * 客户当前所属的市场
+     * 数据来源于客户市场表的市场ID
+     */
+    private Long marketId;
+
 
     /**
      * 客户来源渠道值

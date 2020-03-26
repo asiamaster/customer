@@ -21,9 +21,9 @@
      * 添加摊位
      * */
     function addCustomerItem(){
-        $('#customerTable tbody').append(HTMLDecode(template('customerItem',{index: ++itemIndex})))
+        $('#customerTable tbody').append(HTMLDecode(template('customerItem', {index: ++itemIndex})));
         let targetId = "nation_" + itemIndex;
-        listNationality(targetId)
+        listNationality(targetId, '', '-- 请选择 --');
     }
 
     /**
