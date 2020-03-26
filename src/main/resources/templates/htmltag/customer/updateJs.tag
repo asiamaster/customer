@@ -22,6 +22,8 @@
      * */
     function addCustomerItem(){
         $('#customerTable tbody').append(HTMLDecode(template('customerItem',{index: ++itemIndex})))
+        let targetId = "nation_" + itemIndex;
+        listNationality(targetId)
     }
 
     /**
