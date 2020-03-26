@@ -14,14 +14,12 @@
         $(window).resize(function () {
             _customerGrid.bootstrapTable('resetView')
         });
-        queryCustomerDataHandler();
-    });
-
-    _customerGrid.ready( function () {
         let size = ($(window).height() - $('#customerQueryForm').height() - 210) / 40;
         size = size > 10 ? size : 10;
         _customerGrid.bootstrapTable('refreshOptions', {pageSize: parseInt(size)});
-    })
+        queryCustomerDataHandler();
+    });
+
     /******************************驱动执行区 end****************************/
 
     /*****************************************函数区 begin************************************/
@@ -160,7 +158,7 @@
     function queryCustomerDataHandler() {
         currentSelectRowIndex = undefined;
         $('#toolbar button').attr('disabled', false);
-        _customerGrid.bootstrapTable('refreshOptions', {url: '/customer/listPage.action'});
+        _customerGrid.bootstrapTable('refresh');
     }
 
     /**
