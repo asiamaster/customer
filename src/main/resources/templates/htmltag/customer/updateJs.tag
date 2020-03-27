@@ -136,7 +136,7 @@
         logObj.operatorId = $("#operatorId").val();
         logObj.operatorName = $("#operatorName").text()
         logObj.content = Log.buildUpdateContent();
-        logObj.notes = "此记录客户市场数据为：" + $("#marketName").val() + " 所有";
+        logObj.notes = "客户此次市场数据为：" + $("#marketName").val();
         Log.operatorLog(logObj);
     }
 
