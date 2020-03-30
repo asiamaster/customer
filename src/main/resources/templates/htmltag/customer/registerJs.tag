@@ -52,7 +52,6 @@
                     if (ret.success) {
                         bs4pop.alert('注册成功', {type: 'success',width: 400}, function () {
                             /* 应该要带条件刷新 */
-                            debugger
                             // parent.window.location.reload();
                             let tmpJson = {};
                             let postData = {};
