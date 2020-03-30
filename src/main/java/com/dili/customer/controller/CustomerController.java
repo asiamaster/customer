@@ -171,6 +171,7 @@ public class CustomerController {
             UserTicket userTicket = getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
                 LoggerContext.put("userName", userTicket.getRealName());
             }
@@ -297,6 +298,7 @@ public class CustomerController {
             UserTicket userTicket = getUserTicket();
             if (userTicket != null) {
                 LoggerContext.put(LoggerConstant.LOG_OPERATOR_ID_KEY, userTicket.getId());
+                LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
                 LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
                 LoggerContext.put("userName", userTicket.getRealName());
             }
