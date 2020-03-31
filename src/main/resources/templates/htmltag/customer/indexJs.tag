@@ -44,8 +44,8 @@
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '600',
-            height: '700',
+            width: '650',
+            height: '600',
             btns: []
         });
     }
@@ -63,15 +63,15 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
-        let url = "/customer/update.html?customerId="+selectedRow.id;
+        let url = "/customer/update.html?customerId=" + selectedRow.id + "&marketId=" + selectedRow.$_marketId;
         dia = bs4pop.dialog({
             title: '更新客户',
             content: url,
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '100%',
-            height: '100%',
+            width: '95%',
+            height: '95%',
             btns: []
         });
     }
@@ -88,15 +88,15 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
-        let url = '/customer/detail.action?id='+selectedRow.id;
+        let url = '/customer/detail.action?id=' + selectedRow.id + "&marketId=" + selectedRow.$_marketId;
         dia = bs4pop.dialog({
             title: '客户详情',
             content: url,
             isIframe: true,
             closeBtn: true,
             backdrop: 'static',
-            width: '100%',
-            height: '100%',
+            width: '95%',
+            height: '95%',
             btns: []
         });
     }
@@ -114,35 +114,31 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
-        let msg = (enable || 'true' == enable) ? '确定要启用该客户吗？' : '确定要禁用该客户吗？';
-        bs4pop.prompt("请输入原因","",{title:"系统提示"},function (result,value) {
-            if (result){
-                if (value){
-                    bs4pop.confirm(msg, undefined, function (sure) {
-                        if(sure){
-                            bui.loading.show('努力提交中，请稍候。。。');
-                            $.ajax({
-                                type: "POST",
-                                url: "${contextPath}/customer/doEnable.action",
-                                data: {id: selectedRow.id, enable: enable,reason:value},
-                                processData:true,
-                                dataType: "json",
-                                async : true,
-                                success : function(data) {
-                                    bui.loading.hide();
-                                    if(data.success){
-                                        _customerGrid.bootstrapTable('refresh');
-                                    }else{
-                                        bs4pop.alert(data.result, {type: 'error'});
-                                    }
-                                },
-                                error : function() {
-                                    bui.loading.hide();
-                                    bs4pop.alert('远程访问失败', {type: 'error'});
-                                }
-                            });
+        let msg = (enable || 'true' == enable) ? '请输入启用原因' : '请输入禁用原因<strong>(注意：禁用后，在所有市场中都将不可用)</strong>';
+        bs4pop.prompt(msg, "", {title: "系统提示"}, function (result, value) {
+            if (result) {
+                if (value) {
+                    bui.loading.show('努力提交中，请稍候。。。');
+                    $.ajax({
+                        type: "POST",
+                        url: "${contextPath}/customer/doEnable.action",
+                        data: {id: selectedRow.id, enable: enable, reason: value},
+                        processData: true,
+                        dataType: "json",
+                        async: true,
+                        success: function (data) {
+                            bui.loading.hide();
+                            if (data.success) {
+                                queryCustomerDataHandler();
+                            } else {
+                                bs4pop.alert(data.result, {type: 'error'});
+                            }
+                        },
+                        error: function () {
+                            bui.loading.hide();
+                            bs4pop.alert('远程访问失败', {type: 'error'});
                         }
-                    })
+                    });
                 } else {
                     return false;
                 }
@@ -195,6 +191,19 @@
     //选中行事件
     _customerGrid.on('uncheck.bs.table', function (e, row, $element) {
         currentSelectRowIndex = undefined;
+    });
+
+
+    //选中行事件 -- 可操作按钮控制
+    _customerGrid.on('check.bs.table', function (e, row, $element) {
+        let state = row.$_state;
+        if (state === 1) {
+            $('#toolbar button').attr('disabled', false);
+            $('#btn_enabled').attr('disabled', true);
+        } else if (state === 2) {
+            $('#toolbar button').attr('disabled', false);
+            $('#btn_disabled').attr('disabled', true);
+        }
     });
 
     /*****************************************自定义事件区 end**************************************/

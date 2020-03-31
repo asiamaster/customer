@@ -52,7 +52,6 @@
                     if (ret.success) {
                         bs4pop.alert('注册成功', {type: 'success',width: 400}, function () {
                             /* 应该要带条件刷新 */
-                            debugger
                             // parent.window.location.reload();
                             let tmpJson = {};
                             let postData = {};
@@ -165,7 +164,7 @@
                                 });
                                 return;
                             }
-                            bs4pop.confirm('已存在客户基本信息，本次将沿用客户已有信息?', {type: 'warning'}, function (flag) {
+                            bs4pop.confirm('已存在客户基本信息，本次将沿用客户已有信息?', {width: 400,type: 'warning'}, function (flag) {
                                 if (flag) {
                                     $(".form-control").attr("readonly",true);
                                     $("#certificateNumber").attr("readonly",false);
@@ -198,9 +197,10 @@
                                 var address = userObj.Address;
                                 $('#certificateAddr').val(address.trim());
                                 $('#birthdate').val(userObj.Born);
-                                $('#certificateRange').val(userObj.UserLifeBegin+' ~ '+userObj.UserLifeEnd);
+                                $('#certificateRange').val(userObj.UserLifeEnd);
                                 $(".form-control").attr("readonly",true);
                                 $("#certificateNumber").attr("readonly",false);
+                                $("#contactsPhone").attr("readonly",false);
                             }else{
                                 $(".form-control").attr("readonly",false);
                                 clearCustomerVal();

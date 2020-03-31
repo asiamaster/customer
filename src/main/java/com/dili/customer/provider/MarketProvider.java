@@ -68,12 +68,10 @@ public class MarketProvider extends BatchDisplayTextProviderSupport {
         batchProviderMeta.setEscapeFiled("name");
         //忽略大小写关联
         batchProviderMeta.setIgnoreCaseToRef(true);
-        //主DTO与关联DTO的关联(java bean)属性(外键)
-        batchProviderMeta.setFkField("marketId");
         //关联(数据库)表的主键的字段名，默认取id
         batchProviderMeta.setRelationTablePkField("id");
         //当未匹配到数据时，返回的值
-        batchProviderMeta.setMismatchHandler(t -> "");
+        batchProviderMeta.setMismatchHandler(t -> "-");
         return batchProviderMeta;
     }
 }

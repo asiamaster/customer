@@ -69,7 +69,7 @@ public class FirmRpcService {
      * @param firmId 市场ID
      * @return
      */
-    public Set<Long> getCurrentUserAvaliableFirmCodes(Long firmId) {
+    public Set<Long> getCurrentUserAvaliableFirmIds(Long firmId) {
         Set<Long> resultSet = this.getCurrentUserFirmIds(null);
         if (Objects.isNull(firmId) || !resultSet.contains(firmId)) {
             return resultSet;

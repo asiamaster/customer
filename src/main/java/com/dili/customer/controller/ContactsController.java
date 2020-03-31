@@ -44,7 +44,7 @@ public class ContactsController {
         if (Objects.isNull(contacts) || Objects.isNull(contacts.getCustomerId())) {
             return new EasyuiPageOutput(results.size(), results).toString();
         }
-        BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(contacts.getCustomerId(), SessionContext.getSessionContext().getUserTicket().getFirmId());
+        BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(contacts.getCustomerId(), contacts.getMarketId());
         if (output.isSuccess()) {
             results = ValueProviderUtils.buildDataByProvider(contacts, output.getData());
         }

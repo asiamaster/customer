@@ -21,9 +21,9 @@
      * 添加摊位
      * */
     function addCustomerItem(){
-        $('#customerTable tbody').append(HTMLDecode(template('customerItem',{index: ++itemIndex})))
+        $('#customerTable tbody').append(HTMLDecode(template('customerItem', {index: ++itemIndex})));
         let targetId = "nation_" + itemIndex;
-        listNationality(targetId)
+        listNationality(targetId, '', '-- 请选择 --');
     }
 
     /**
@@ -136,6 +136,7 @@
         logObj.operatorId = $("#operatorId").val();
         logObj.operatorName = $("#operatorName").text()
         logObj.content = Log.buildUpdateContent();
+        logObj.notes = "客户此次市场数据为：" + $("#marketName").val();
         Log.operatorLog(logObj);
     }
 
