@@ -32,11 +32,12 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户来源</label>
-                            <input type="text" class="form-control" name=""  disabled value="${customer.sourceSystem!}" />
+                            <input type="text" class="form-control" name=""  disabled value="${customer.sourceChannelValue!}" />
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户行业</label>
-                            <input type="text" class="form-control" name="" value="${customer.profession!}" />
+                            <select id="profession"  name="profession" class="form-control select-no-down"  ></select>
+                            <#bcomboProvider _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business"}'  _valueField="value" _textField="text" _value="${customer.profession!}" />
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户级别</label>
@@ -44,7 +45,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户注册时间</label>
-                            <input type="text" class="form-control" name="" value="${customer.createTime!}" />
+                            <input type="text" class="form-control" name="" value="${customer.marketCreateTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}" />
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户状态</label>
@@ -182,7 +183,7 @@
 
     function queryContactsList() {
         <%if (has(customer)){%>
-            $("#contactsGrid").bootstrapTable("refreshOptions",{url:"${contextPath}/contacts/list.action"});
+            $("#contactsGrid").bootstrapTable("refresh");
         <%}%>
     }
 
@@ -203,7 +204,9 @@
     $(function () {
         $(":input").attr("disabled", true);
         $("select").addClass("select-no-down");
-        queryContactsList();
+        <%if (has(customer)){%>
+            $("#contactsGrid").bootstrapTable("refreshOptions",{url:"${contextPath}/contacts/list.action"});
+        <%}%>
     });
 
     /**
