@@ -67,8 +67,8 @@ function laydateInt() {
             trigger: 'click',
             type: 'date',
             theme: '#007bff',
-            done: function (value, date) {
-                isStartEndDatetime(value, this.elem);
+            done: function () {
+                isStartEndDatetime(this.elem);
             }
         });
     });
@@ -78,26 +78,41 @@ function laydateInt() {
             trigger: 'click',
             type: 'datetime',
             theme: '#007bff',
-            done: function (value, date) {
-                isStartEndDatetime(value, this.elem);
+            done: function () {
+                isStartEndDatetime(this.elem);
             }
         });
     });
 };
 
-//始结束时间对比
-function isStartEndDatetime (date, el){
-    let start = new Date($('.laystart').val());
-    let end = new Date($('.layend').val());
+//开始结束时间对比
+function isStartEndDatetime (el){
+    let start = moment(new Date($('.laystart').val()), 'MM-DD-YYYY HH:mm:ss');
+    let end = moment(new Date($('.layend').val()), 'MM-DD-YYYY HH:mm:ss');
     if ($(el).attr('class').indexOf('laystart')>-1 && end) {
-        if (moment(date).isAfter(end)) {
-            bs4pop.alert('结束时间需大于开始时间',{} ,function () {$(el).val('')});
+        debugger
+        if (start.isAfter(end)) {
+            bs4pop.alert('结束时间不能小于开始时间',{} ,function () {$(el).val('')});
         }
     } else if (start && $(el).attr('class').indexOf('layend')>-1 ) {
-        if (moment(start).isAfter(date)) {
-            bs4pop.alert('结束时间需大于开始时间',{} ,function () {$(el).val('')});
+        debugger
+        if (start.isAfter(end)) {
+            bs4pop.alert('结束时间不能小于开始时间',{} ,function () {$(el).val('')});
         }
     }
 }
+
+/*气泡
+function formatterTooltip (value,row,index){
+    let temp = '<span data-toggle="tooltip" data-placement="top" title=' + value + '>' + value + '</span>';
+    return temp;
+}
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip("show")
+})
+*/
+
 /************ 初始化日期/时间 end **************/
+
+
 
