@@ -195,23 +195,27 @@ public class CustomerController {
         } else {
             modelMap.put("sourceSystem", sourceSystem);
             modelMap.put("sourceChannel", sourceChannel);
-            UserTicket userTicket = SessionContext.getSessionContext().getUserTicket();
-            //有创建哪些客户类型的权限
-            Set organizationTypeRight = Sets.newHashSet();
-            if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addEnterprise")) {
-                organizationTypeRight.add(ENTERPRISE.getCode());
-            }
-            if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addIndividual")) {
-                organizationTypeRight.add(INDIVIDUAL.getCode());
-            }
-            if (CollectionUtil.isEmpty(organizationTypeRight)) {
-                modelMap.put("error", "你没有新建客户的权限，请联系管理员分配");
+            UserTicket userTicket = getUserTicket();
+            if (Objects.isNull(userTicket)) {
+                modelMap.put("error", "登录超时，请重新登录");
             } else {
-                if (StrUtil.isNotBlank(organizationType)) {
-                    if (organizationTypeRight.contains(organizationType)) {
-                        modelMap.put("organizationType", organizationType);
-                    } else {
-                        modelMap.put("error", "你没有新建此类型客户的权限，请联系管理员分配");
+                //有创建哪些客户类型的权限
+                Set organizationTypeRight = Sets.newHashSet();
+                if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addEnterprise")) {
+                    organizationTypeRight.add(ENTERPRISE.getCode());
+                }
+                if (userResourceRedis.checkUserResourceRight(userTicket.getId(), "addIndividual")) {
+                    organizationTypeRight.add(INDIVIDUAL.getCode());
+                }
+                if (CollectionUtil.isEmpty(organizationTypeRight)) {
+                    modelMap.put("error", "你没有新建客户的权限，请联系管理员分配");
+                } else {
+                    if (StrUtil.isNotBlank(organizationType)) {
+                        if (organizationTypeRight.contains(organizationType)) {
+                            modelMap.put("organizationType", organizationType);
+                        } else {
+                            modelMap.put("error", "你没有新建此类型客户的权限，请联系管理员分配");
+                        }
                     }
                 }
             }
