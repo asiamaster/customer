@@ -34,7 +34,7 @@
                         });
                         $('#' + targetId).html(data.join(""));
                     } else {
-                        bs4pop.alert(ret.result, {width: 300, type: 'error'});
+                        bs4pop.alert(ret.message, {width: 300, type: 'error'});
                     }
                 },
                 error: function () {
@@ -78,7 +78,7 @@
                         });
                         $('#' + targetId).html(data.join(""));
                     } else {
-                        bs4pop.alert(ret.result, {width: 300, type: 'error'});
+                        bs4pop.alert(ret.message, {width: 300, type: 'error'});
                     }
                 },
                 error: function () {
@@ -120,7 +120,7 @@
                     });
                     $('#' + targetId).html(data.join(""));
                 } else {
-                    bs4pop.alert(ret.result, {width: 300, type: 'error'});
+                    bs4pop.alert(ret.message, {width: 300, type: 'error'});
                 }
             },
             error: function () {

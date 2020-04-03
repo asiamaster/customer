@@ -126,12 +126,12 @@
                         processData: true,
                         dataType: "json",
                         async: true,
-                        success: function (data) {
+                        success: function (ret) {
                             bui.loading.hide();
-                            if (data.success) {
+                            if (ret.success) {
                                 queryCustomerDataHandler();
                             } else {
-                                bs4pop.alert(data.result, {type: 'error'});
+                                bs4pop.alert(ret.message, {type: 'error'});
                             }
                         },
                         error: function () {

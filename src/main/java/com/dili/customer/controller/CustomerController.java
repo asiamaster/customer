@@ -366,7 +366,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    @BusinessLogger(businessType = "customer", content = "${operatorName!} [${operationTypeText!}] 客户 [${name!}] ${flag!}", systemCode = "CUSTOMER")
+    @BusinessLogger(businessType = "customer", content = "${operatorName!} [${operationText!}] 客户 [${name!}] ${flag!}", systemCode = "CUSTOMER")
     public BaseOutput doEnable(Long id, Boolean enable,String reason) {
         if (Objects.isNull(id) || Objects.isNull(enable)) {
             return BaseOutput.failure("必要参数丢失");
@@ -375,9 +375,11 @@ public class CustomerController {
         if (enable) {
             instance = CustomerEnum.State.NORMAL;
             LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "enable");
+            LoggerContext.put("operationText", "启用");
         } else {
             instance = CustomerEnum.State.DISABLED;
             LoggerContext.put(LoggerConstant.LOG_OPERATION_TYPE_KEY, "disable");
+            LoggerContext.put("operationText", "禁用");
         }
         BaseOutput<Customer> output = customerRpc.updateState(id, instance.getCode());
         if (output.isSuccess()) {

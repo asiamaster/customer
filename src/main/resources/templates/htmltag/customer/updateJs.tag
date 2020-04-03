@@ -110,7 +110,7 @@
                     });
                 } else {
                     bui.loading.hide();
-                    bs4pop.alert(res.result, {type: 'error'});
+                    bs4pop.alert(res.message, {type: 'error'});
                 }
             },
             error: function (error) {

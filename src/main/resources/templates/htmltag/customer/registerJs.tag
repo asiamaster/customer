@@ -65,7 +65,7 @@
                             parent.window.postMessage(JSON.stringify(postData) , '*');
                         });
                     } else {
-                        bs4pop.alert(ret.result, {width: 400,type: 'error'});
+                        bs4pop.alert(ret.message, {width: 400,type: 'error'});
                     }
                 },
                 error: function (error) {
@@ -209,7 +209,7 @@
                     } else {
                         $(".form-control").attr("readonly",false);
                         clearCustomerVal();
-                        bs4pop.alert(ret.result, {width: 350,type: 'error'});
+                        bs4pop.alert(ret.message, {width: 350,type: 'error'});
                     }
                 },
                 error: function () {
