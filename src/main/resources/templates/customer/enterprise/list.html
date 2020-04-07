@@ -20,17 +20,17 @@
             <div class="form-group col">
                 <label for="">客户来源</label>
                 <select class="form-control" id="sourceChannel" name="sourceChannel"></select>
-                <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel"}' _valueField="value" _textField="text" _value=""/>
+                <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel", emptyText:"-- 全部 --"}'  _valueField="value" _textField="text" _value=""/>
             </div>
             <div class="form-group col">
                 <label for="">所属市场</label>
                 <select class="form-control" id="marketId" name="marketId"></select>
-                <#bcomboProvider _id="marketId" _provider="marketProvider"  _valueField="value" _textField="text" _value=""/>
+                <#bcomboProvider _id="marketId" _provider="marketProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"}'/ >
             </div>
             <div class="form-group col">
                 <label for="">客户级别</label>
                 <select class="form-control" id="grade" name="grade"></select>
-                <#bcomboProvider _id="grade" _provider="gradeProvider"  _valueField="value" _textField="text" _value=""/>
+                <#bcomboProvider _id="grade" _provider="gradeProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"/}'>
             </div>
             <div class="form-group col-auto">
                 <label for="marketCreateTimeStart" class="justify-content-end">注册日期</label>
