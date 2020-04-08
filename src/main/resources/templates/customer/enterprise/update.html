@@ -107,8 +107,8 @@
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
-                                <input _log="证件有效期" type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
-                                <input _log="证件有效期" type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
+                                <input _log="证件有效期" type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" />
+                                <input _log="证件有效期" type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}"  />
                                 <div class="input-group-append">
                                     <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
                                 </div>
@@ -129,7 +129,7 @@
                                     <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
                                     </select>
                                 </div>
-                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}"/>
+                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}" minlength="15" maxlength="18"/>
                                 <div class="input-group-append">
                                     <span class="input-group-text"><a id="idCardRead" href="javascript:;">读卡</a></span>
                                 </div>
@@ -137,7 +137,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="corporationName" class="" _log>法人姓名</label>
-                            <input type="text" class="form-control" name="corporationName" id="corporationName"  value="${customer.corporationName!}"/>
+                            <input type="text" class="form-control" name="corporationName" id="corporationName"  maxlength="20" value="${customer.corporationName!}"/>
                         </div>
                     </div>
                 </form>
@@ -275,7 +275,7 @@
             <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
         </td>
         <td>
-            <input _log="关系/职务" type="text" id="position_{{index}}" name="position_{{index}}" value="" class="form-control">
+            <input _log="关系/职务" type="text" id="position_{{index}}" name="position_{{index}}" value="" maxlength="100" class="form-control">
         </td>
         <td style="padding: .1rem!important;">
             <input _log="姓名" type="text" id="name_{{index}}" name="name_{{index}}"value="{{name}}" class="form-control" maxlength="20" required>
@@ -288,7 +288,7 @@
             </select>
         </td>
         <td style="padding: .1rem!important;">
-            <input _log="电话" type="text" id="phone_{{index}}" name="phone_{{index}}"  class="form-control isMobile" required>
+            <input _log="电话" type="text" id="phone_{{index}}" name="phone_{{index}}"  class="form-control isMobile" maxlength="11" required>
         </td>
         <td style="padding: .1rem!important;">
             <select name="nation_{{index}}"  id="nation_{{index}}" value="{{nation}}" class="form-control" _log="民族">
@@ -309,7 +309,7 @@
             </div>
         </td>
         <td style="padding: .1rem!important;">
-            <input _log="备注" type="text" id="notes_{{index}}" name="notes_{{index}}"  class="form-control">
+            <input _log="备注" type="text" id="notes_{{index}}" name="notes_{{index}}" maxlength="20" class="form-control">
         </td>
     </tr>
 </script>
