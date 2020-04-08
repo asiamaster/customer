@@ -36,13 +36,13 @@ public class CustomerCertificateInput implements Serializable {
     /**
      * 证件地址
      */
-    @Size(max = 100, message = "证件地址请保持在40个字符以内")
+    @Size(max = 100, message = "证件地址请保持在100个字符以内")
     private String certificateAddr;
 
     /**
      * 法人证件类型
      */
-    @Size(max = 20, message = "法人证件类型请保持在40个字符以内", groups = {EnterpriseView.class})
+    @Size(max = 20, message = "法人证件类型请保持在20个字符以内", groups = {EnterpriseView.class})
     private String corporationCertificateType;
 
     /**

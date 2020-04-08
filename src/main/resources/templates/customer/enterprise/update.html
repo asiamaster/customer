@@ -129,7 +129,7 @@
                                     <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
                                     </select>
                                 </div>
-                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}" minlength="15" maxlength="18"/>
+                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}" minlength="5" maxlength="18"/>
                                 <div class="input-group-append">
                                     <span class="input-group-text"><a id="idCardRead" href="javascript:;">读卡</a></span>
                                 </div>
@@ -173,7 +173,7 @@
                                     <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
                                 </td>
                                 <td>
-                                    <input _log="关系/职务" type="text" id="position_${contactsLP.dataIndex}" name="position_${contactsLP.dataIndex}" value="${contacts.position!}" class="form-control">
+                                    <input _log="关系/职务" type="text" id="position_${contactsLP.dataIndex}" name="position_${contactsLP.dataIndex}" value="${contacts.position!}" class="form-control" maxlength="100">
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <input _log="名称" type="text" id="name_${contactsLP.dataIndex}" name="name_${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
@@ -182,7 +182,7 @@
                                     <#bcomboProvider _log="性别" _id="gender_${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input _log="电话" type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" required>
+                                    <input _log="电话" type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" maxlength="11" required>
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <select name="nation_${contactsLP.dataIndex}"  id="nation_${contactsLP.dataIndex}"  class="form-control"></select>
@@ -203,7 +203,7 @@
                                     </div>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input _log="备注" type="text" id="notes_${contactsLP.dataIndex}" name="notes_${contactsLP.dataIndex}" value="${contacts.notes!}" class="form-control">
+                                    <input _log="备注" type="text" id="notes_${contactsLP.dataIndex}" name="notes_${contactsLP.dataIndex}" value="${contacts.notes!}" maxlength="20" class="form-control">
                                 </td>
                             </tr>
                             <%}}%>

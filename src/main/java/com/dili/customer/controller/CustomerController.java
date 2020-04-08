@@ -408,7 +408,10 @@ public class CustomerController {
      */
     @RequestMapping(value = "/doUpdate.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput doUpdate(@RequestBody CustomerUpdateInput input) {
+    public BaseOutput doUpdate(@Validated @RequestBody CustomerUpdateInput input, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
         input.setOperatorId(SessionContext.getSessionContext().getUserTicket().getId());
         return customerRpc.update(input);
     }
