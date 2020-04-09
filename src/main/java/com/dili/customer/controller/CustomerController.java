@@ -412,6 +412,9 @@ public class CustomerController {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
         }
+        if (Objects.nonNull(input.getCustomerCertificate())) {
+            input.getCustomerCertificate().setId(input.getId());
+        }
         input.setOperatorId(SessionContext.getSessionContext().getUserTicket().getId());
         return customerRpc.update(input);
     }

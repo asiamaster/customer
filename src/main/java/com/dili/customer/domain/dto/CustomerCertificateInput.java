@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
 
@@ -21,6 +22,11 @@ import java.io.Serializable;
 @ToString
 public class CustomerCertificateInput implements Serializable {
     private static final long serialVersionUID = -1109726068008219787L;
+
+    /**
+     * 客户ID
+     */
+    private Long id;
 
     /**
      * 证件有效期
