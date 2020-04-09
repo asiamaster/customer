@@ -1,91 +1,89 @@
 <#bs4Body>
-
 <div class="container-fluid">
     <#bs4nav>
-    <form id="customerQueryForm" role="form" >
-        <input type="hidden" name="organizationType" value="${organizationType!}">
-        <div class="row  row-cols-6">
-            <div class="form-group col">
-                <label for="">客户名称</label>
-                <input type="" class="form-control isNaturalNum" id="name" name="name" placeholder="">
-            </div>
-            <div class="form-group col">
-                <label for="">客户编号</label>
-                <input type="" class="form-control isNaturalNum" id="code" name="code" placeholder="">
-            </div>
-            <div class="form-group col">
-                <label for="">联系电话</label>
-                <input type="" class="form-control isNaturalNum" id="contactsPhone" name="contactsPhone" placeholder="">
-            </div>
-            <div class="form-group col">
-                <label for="">客户来源</label>
-                <select class="form-control" id="sourceChannel" name="sourceChannel"></select>
-                <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel", emptyText:"-- 全部 --"}'  _valueField="value" _textField="text" _value=""/>
-            </div>
-            <div class="form-group col">
-                <label for="">所属市场</label>
-                <select class="form-control" id="marketId" name="marketId"></select>
-                <#bcomboProvider _id="marketId" _provider="marketProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"}' />
-            </div>
-            <div class="form-group col">
-                <label for="">客户级别</label>
-                <select class="form-control" id="grade" name="grade"></select>
-                <#bcomboProvider _id="grade" _provider="gradeProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"}' />
-            </div>
-            <div class="form-group col-auto">
-                <label for="marketCreateTimeStart" class="justify-content-end">注册日期</label>
-                <div class="form-inline">
-                    <div class="input-group">
-                        <input type="text" name="marketCreateTimeStart" id="marketCreateTimeStart" class="form-control laydatetime"/>
-                        <div class="input-group-append">
-                            <label for="marketCreateTimeStart" class="input-group-text fa fa-calendar"></label>
-                        </div>
-                    </div>&nbsp;&nbsp;至&nbsp;&nbsp;
-                    <div class="input-group" id="datetimepicker3">
-                        <input type="text" name="marketCreateTimeEnd" id="marketCreateTimeEnd" class="form-control laydatetime" value=""/>
-                        <div class="input-group-append">
-                            <label for="marketCreateTimeEnd" class="input-group-text fa fa-calendar"></label>
+        <form id="customerQueryForm" role="form" >
+            <input type="hidden" name="organizationType" value="${organizationType!}">
+            <div class="row  row-cols-6">
+                <div class="form-group col">
+                    <label for="">客户名称</label>
+                    <input type="" class="form-control isNaturalNum" id="name" name="name" placeholder="">
+                </div>
+                <div class="form-group col">
+                    <label for="">客户编号</label>
+                    <input type="" class="form-control isNaturalNum" id="code" name="code" placeholder="">
+                </div>
+                <div class="form-group col">
+                    <label for="">联系电话</label>
+                    <input type="" class="form-control isNaturalNum" id="contactsPhone" name="contactsPhone" placeholder="">
+                </div>
+                <div class="form-group col">
+                    <label for="">客户来源</label>
+                    <select class="form-control" id="sourceChannel" name="sourceChannel"></select>
+                    <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel", emptyText:"-- 全部 --"}'  _valueField="value" _textField="text" _value=""/>
+                </div>
+                <div class="form-group col">
+                    <label for="">所属市场</label>
+                    <select class="form-control" id="marketId" name="marketId"></select>
+                    <#bcomboProvider _id="marketId" _provider="marketProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"}' />
+                </div>
+                <div class="form-group col">
+                    <label for="">客户级别</label>
+                    <select class="form-control" id="grade" name="grade"></select>
+                    <#bcomboProvider _id="grade" _provider="gradeProvider"  _valueField="value" _textField="text" _value="" _queryParams='{emptyText:"-- 全部 --"}' />
+                </div>
+                <div class="form-group col-auto">
+                    <label for="marketCreateTimeStart" class="justify-content-end">注册日期</label>
+                    <div class="form-inline">
+                        <div class="input-group">
+                            <input type="text" name="marketCreateTimeStart" id="marketCreateTimeStart" class="form-control laydatetime"/>
+                            <div class="input-group-append">
+                                <label for="marketCreateTimeStart" class="input-group-text fa fa-calendar"></label>
+                            </div>
+                        </div>&nbsp;&nbsp;至&nbsp;&nbsp;
+                        <div class="input-group" id="datetimepicker3">
+                            <input type="text" name="marketCreateTimeEnd" id="marketCreateTimeEnd" class="form-control laydatetime" value=""/>
+                            <div class="input-group-append">
+                                <label for="marketCreateTimeEnd" class="input-group-text fa fa-calendar"></label>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="form-group col">
-                <label for="">客户状态</label>
-                <div class="mt-2" id="stateRadioDiv">
-                    <#bradioGroupProvider _containerId="stateRadioDiv" _name="state" _provider="stateProvider"  />
+                <div class="form-group col">
+                    <label for="">客户状态</label>
+                    <div class="mt-2" id="stateRadioDiv">
+                        <#bradioGroupProvider _containerId="stateRadioDiv" _name="state" _provider="stateProvider"  />
+                    </div>
+                </div>
+                <div class="col align-self-center mt-3">
+                    <button type="button" class="btn btn-outline-primary mr-2" onclick="javascript:$('#customerQueryForm .form-control').val('');"><i class="fa fa-refresh"></i> 清空</button>
+                    <button type="button" class="btn btn-outline-primary" onclick="queryCustomerDataHandler()"><i class="fa fa-search"></i> 查询</button>
                 </div>
             </div>
-            <div class="col align-self-center mt-3">
-                <button type="button" class="btn btn-outline-primary mr-2" onclick="javascript:$('#customerQueryForm .form-control').val('');"><i class="fa fa-refresh"></i> 清空</button>
-                <button type="button" class="btn btn-outline-primary" onclick="queryCustomerDataHandler()"><i class="fa fa-search"></i> 查询</button>
-            </div>
-        </div>
-
-    </form>
-</#bs4nav>
+        </form>
+    </#bs4nav>
     <hr>
     <div class="">
         <div class="row">
             <div class="col-12">
                 <div id="toolbar" class="btn-group" role="group" aria-label="Toolbar with button groups">
+                    <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
+                        查看
+                    </button>
                     <#resource code="addEnterprise">
-                        <button id="btn_add" type="button" class="btn btn-primary" onclick="openInsertHandler('${organizationType!}')"><i
-                                class="fa fa-plus"></i> 新增
-                        </button>
+                    <button id="btn_add" type="button" class="btn btn-primary" onclick="openInsertHandler('${organizationType!}')"><i
+                            class="fa fa-plus"></i> 新增
+                    </button>
                     </#resource>
                     <#resource code="updateEnterprise">
-                        <button id="btn_edit" type="button" class="btn btn-primary" onclick="openUpdateHandler()"><i
-                                class="fa fa-pencil-square-o"></i> 更新
-                        </button>
+                    <button id="btn_edit" type="button" class="btn btn-primary" onclick="openUpdateHandler()"><i
+                            class="fa fa-pencil-square-o"></i> 更新
+                    </button>
                     </#resource>
                     <#resource code="securityEnterprise">
                      <!--   <button id="btn_security" type="button" class="btn btn-primary" onclick="openSecurityHandler()"><i
                                 class="fa fa-pencil-square-o"></i> 安全提升
                         </button>-->
                     </#resource>
-                    <button id="btn_view" type="button" class="btn btn-primary" onclick="openDetailHandler()"><i class="fa fa-eye"></i>
-                        查看
-                    </button>
                     <#resource code="exportEnterprise">
                     <button id="btn_export" type="button" class="btn btn-primary" onclick="bui.util.doExport('customerGrid','customerQueryForm')"><i
                             class="fa fa-file-excel-o"></i>导出
@@ -145,10 +143,6 @@
             </div>
         </div>
     </div>
-
-
 </div>
-
 </#bs4Body>
-
 <#customer_indexJs />
