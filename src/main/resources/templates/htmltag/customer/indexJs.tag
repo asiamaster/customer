@@ -78,17 +78,23 @@
 
     /**
      * 查看客户详情
+     * @param id 客户id
+     * @param marketId 所属市场
      */
-    function openDetailHandler() {
-        //获取选中行的数据
-        let rows = _customerGrid.bootstrapTable('getSelections');
-        if (null == rows || rows.length == 0) {
-            bs4pop.alert('请选中一条数据', {type: "warning"});
-            return;
+    function openDetailHandler(id,marketId) {
+        if (!id || !marketId){
+            //获取选中行的数据
+            let rows = _customerGrid.bootstrapTable('getSelections');
+            if (null == rows || rows.length == 0) {
+                bs4pop.alert('请选中一条数据', {type: "warning"});
+                return;
+            }
+            //table选择模式是单选时可用
+            let selectedRow = rows[0];
+            id = selectedRow.id;
+            marketId = selectedRow.$_marketId;
         }
-        //table选择模式是单选时可用
-        let selectedRow = rows[0];
-        let url = '/customer/detail.action?id=' + selectedRow.id + "&marketId=" + selectedRow.$_marketId;
+        let url = '/customer/detail.action?id=' + id + "&marketId=" + marketId;
         dia = bs4pop.dialog({
             title: '客户详情',
             content: url,
@@ -205,6 +211,13 @@
             $('#btn_disabled').attr('disabled', true);
         }
     });
+
+    /**
+     * 点击查询详情
+     */
+    function formatterView(value, row, index) {
+        return '<a class="like" href="javascript:void(0)" onclick="openDetailHandler(' + row.id + ','+row.$_marketId+')" title="详情">' + value + '</a>'
+    }
 
     /*****************************************自定义事件区 end**************************************/
     window.addEventListener('message', function (e) {

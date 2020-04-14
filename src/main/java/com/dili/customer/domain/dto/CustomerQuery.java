@@ -56,7 +56,7 @@ public class CustomerQuery extends Customer {
     private String keyword;
 
     /**
-     * 所在市场的创建人
+     * 客户所在市场的客户创建人
      */
     private Long marketCreatorId;
 

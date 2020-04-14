@@ -1,6 +1,7 @@
 package com.dili.customer.provider;
 
 import cn.hutool.core.collection.CollectionUtil;
+import com.alibaba.fastjson.JSONPath;
 import com.dili.customer.service.remote.UserRpcService;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.BatchProviderMeta;
@@ -35,7 +36,9 @@ public class UserProvider extends BatchDisplayTextProviderSupport {
 
     @Override
     public List<ValuePair<?>> getLookupList(Object obj, Map metaMap, FieldMeta fieldMeta) {
-        List<User> list = userService.getCurrentMarketUser(obj.toString());
+        //是否查询有权限的市场中的用户
+        Object showAuthMarket = JSONPath.read(String.valueOf(metaMap.get("queryParams")), "/showAuthMarket");
+        List<User> list = "true".equalsIgnoreCase(String.valueOf(showAuthMarket)) ? userService.getCurrentAuthMarketUsers(obj.toString()) : userService.getCurrentMarketUser(obj.toString());
         List<ValuePair<?>> resultList = list.stream().map(f -> {
             return (ValuePair<?>) new ValuePairImpl(f.getRealName(), f.getId());
         }).collect(Collectors.toList());

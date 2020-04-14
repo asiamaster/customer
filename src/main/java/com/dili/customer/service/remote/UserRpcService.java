@@ -4,8 +4,10 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
+import com.dili.uap.sdk.domain.Firm;
 import com.dili.uap.sdk.domain.User;
 import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.dto.UserQuery;
 import com.dili.uap.sdk.rpc.UserRpc;
 import com.dili.uap.sdk.session.SessionContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * <B>Description</B>
@@ -30,14 +33,35 @@ public class UserRpcService {
     @Autowired
     private UserRpc userRpc;
 
+    @Autowired
+    private FirmRpcService firmRpcService;
+
     /**
      * 根据条件查询用户信息
-     * @param user
+     * @param userQuery
      * @return
      */
-    public List<User> listByExample(User user) {
-        BaseOutput<List<User>> baseOutput = userRpc.listByExample(user);
+    public List<User> listByExample(UserQuery userQuery) {
+        BaseOutput<List<User>> baseOutput = userRpc.listByExample(userQuery);
         return baseOutput.isSuccess() ? baseOutput.getData() : Collections.emptyList();
+    }
+
+    /**
+     * 根据姓名模糊获取当前用户有权限的市场中的对应用户
+     * @param realName 真实姓名
+     * @return
+     */
+    public List<User> getCurrentAuthMarketUsers(String realName){
+        List<Firm> firms = firmRpcService.getCurrentUserFirms();
+        if (CollectionUtil.isNotEmpty(firms)){
+            UserQuery condition = DTOUtils.newInstance(UserQuery.class);
+            condition.setFirmCodes(firms.stream().distinct().map(Firm::getCode).collect(Collectors.toList()));
+            if (StrUtil.isNotBlank(realName)) {
+                condition.setRealName(realName);
+            }
+            return listByExample(condition);
+        }
+        return Collections.emptyList();
     }
 
     /**
@@ -50,13 +74,12 @@ public class UserRpcService {
         if (null == userTicket) {
             return Collections.emptyList();
         }
-        User condition = DTOUtils.newInstance(User.class);
+        UserQuery condition = DTOUtils.newInstance(UserQuery.class);
         condition.setFirmCode(userTicket.getFirmCode());
         if (StrUtil.isNotBlank(realName)) {
             condition.setRealName(realName);
         }
-        BaseOutput<List<User>> baseOutput = userRpc.listByExample(condition);
-        return baseOutput.isSuccess() ? baseOutput.getData() : Collections.emptyList();
+        return listByExample(condition);
     }
 
     /**

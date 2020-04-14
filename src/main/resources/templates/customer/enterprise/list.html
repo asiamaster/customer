@@ -17,6 +17,10 @@
                     <input type="" class="form-control isNaturalNum" id="contactsPhone" name="contactsPhone" placeholder="">
                 </div>
                 <div class="form-group col">
+                    <label for="_marketCreatorId" class="">创建人</label>
+                    <#bautoCompleteProvider _hiddenDomainClass="form-control" _hiddenDomainId="marketCreatorId" _hiddenDomainName="marketCreatorId" _displayDomainId="_marketCreatorId" _displayDomainName="_marketCreatorId" _placeholder="" _provider="userProvider" _queryParams='{showAuthMarket:"true"}' _validatorMethod="isSelected" _value="" _text="" />
+                </div>
+                <div class="form-group col">
                     <label for="">客户来源</label>
                     <select class="form-control" id="sourceChannel" name="sourceChannel"></select>
                     <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"source_channel", emptyText:"-- 全部 --"}'  _valueField="value" _textField="text" _value=""/>
@@ -113,13 +117,13 @@
                         <th data-width-unit="%" data-width="10" data-field="code" data-sortable="true" data-align="center">
                             客户编号
                         </th>
-                        <th data-width-unit="%" data-width="20" data-field="name" data-sortable="true" data-align="center">
+                        <th data-width-unit="%" data-width="20" data-field="name" data-sortable="true" data-align="center" data-formatter="formatterView">
                             客户名称
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="grade" data-sortable="true" data-align="center" data-provider="gradeProvider">
+                        <th data-width-unit="%" data-width="10" data-field="grade" data-sortable="true" data-sort-name="c.grade" data-align="center" data-provider="gradeProvider">
                             客户级别
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="sourceChannel" data-sortable="true" data-align="center" data-provider="dataDictionaryValueProvider" data-query-params='{dd_code:"source_channel"}'>
+                        <th data-width-unit="%" data-width="10" data-field="sourceChannel" data-sortable="true" data-sort-name="c.source_channel" data-align="center" data-provider="dataDictionaryValueProvider" data-query-params='{dd_code:"source_channel"}'>
                             来源渠道
                         </th>
                         <th data-width-unit="%" data-width="10" data-field="contactsPhone" data-sortable="true" data-align="center">
@@ -134,7 +138,7 @@
                         <th data-width-unit="%" data-width="10" data-field="marketCreatorId" data-sortable="true" data-sort-name="cm.creator_id" data-align="center" data-provider="userProvider">
                             创建人
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="state" data-sortable="true" data-align="center" data-provider="stateProvider">
+                        <th data-width-unit="%" data-width="10" data-field="state" data-sortable="true" data-sort-name="c.state" data-align="center" data-provider="stateProvider">
                             状态
                         </th>
                     </tr>
