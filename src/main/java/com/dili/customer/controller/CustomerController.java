@@ -139,9 +139,14 @@ public class CustomerController {
         if (Objects.nonNull(customer.getMarketCreateTimeEnd())) {
             customer.setMarketCreateTimeEnd(customer.getMarketCreateTimeEnd().plusDays(1));
         }
-        PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
-        List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
-        return new EasyuiPageOutput(listPage.getTotal(), results).toString();
+        try {
+            PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
+            List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
+            return new EasyuiPageOutput(listPage.getTotal(), results).toString();
+        } catch (Exception e) {
+            log.error("查询客户列表异常," + e.getMessage(), e);
+            return new EasyuiPageOutput(0, Collections.emptyList()).toString();
+        }
     }
 
     /**
