@@ -87,8 +87,6 @@ public class CustomerController {
     private UserResourceRedis userResourceRedis;
     @Autowired
     private UidRpc uidRpc;
-    @Autowired
-    protected HttpServletRequest request;
 
     /**
      * 跳转到企业客户管理页面
