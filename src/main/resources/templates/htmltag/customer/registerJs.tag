@@ -183,33 +183,21 @@
                             //如果userObj 有值，则表示是读卡读出的数据
                             if (userObj){
                                 $("#id").val('');
-                                var gender='2';
-                                if(userObj.Sex =="男"){
-                                    gender='1';
-                                }else{
-                                    gender='2';
-                                }
-                                var photo = "data:image/jpeg;base64,"+userObj.PhotoFileName;
-                                let name = userObj.Name;
-                                $('#name').val(name.trim());
-                                $('#gender').val(gender);
-                                $('#photo').val(photo);
-                                var address = userObj.Address;
-                                $('#certificateAddr').val(address.trim());
-                                $('#birthdate').val(userObj.Born);
-                                $('#certificateRange').val(userObj.UserLifeEnd);
-                                $(".form-control").attr("readonly",true);
-                                $("#certificateNumber").attr("readonly",false);
-                                $("#contactsPhone").attr("readonly",false);
+                                setCustomerValue(userObj);
                             }else{
                                 $(".form-control").attr("readonly",false);
                                 clearCustomerVal();
                             }
                         }
                     } else {
-                        $(".form-control").attr("readonly",false);
-                        clearCustomerVal();
-                        bs4pop.alert(ret.message, {width: 350,type: 'error'});
+                        if (userObj) {
+                            $("#id").val('');
+                            setCustomerValue(userObj);
+                        } else {
+                            $(".form-control").attr("readonly", false);
+                            clearCustomerVal();
+                            bs4pop.alert(ret.message, {width: 350, type: 'error'});
+                        }
                     }
                 },
                 error: function () {
@@ -217,6 +205,31 @@
                 }
             });
         }
+    }
+
+    /**
+     * 根据读卡操作读出的数据，设置客户基本信息
+     * @param userObj
+     */
+    function setCustomerValue(userObj) {
+        var gender='2';
+        if(userObj.Sex =="男"){
+            gender='1';
+        }else{
+            gender='2';
+        }
+        var photo = "data:image/jpeg;base64,"+userObj.PhotoFileName;
+        let name = userObj.Name;
+        $('#name').val(name.trim());
+        $('#gender').val(gender);
+        $('#photo').val(photo);
+        var address = userObj.Address;
+        $('#certificateAddr').val(address.trim());
+        $('#birthdate').val(userObj.Born);
+        $('#certificateRange').val(userObj.UserLifeEnd);
+        $(".form-control").attr("readonly",true);
+        $("#certificateNumber").attr("readonly",false);
+        $("#contactsPhone").attr("readonly",false);
     }
 
 </script>
