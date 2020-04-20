@@ -1,5 +1,10 @@
 <#bs4Body>
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css" />
+<style>
+    .table td, .table th {
+        padding: 0.25rem;
+    }
+</style>
 <div class="container-fluid">
    <%if (has(customer)){%>
         <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
