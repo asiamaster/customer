@@ -222,7 +222,8 @@
             <div class="text-left mt-2">
                 <input type="hidden" id="operatorId" value="${userTicket.id!}">
                 <input type="hidden" id="operatorMarket" value="${userTicket.firmId!}">
-                <span id="operatorName" class="red">${userTicket.realName!}</span>
+                <input type="hidden" id="operatorName" value="${userTicket.realName!}">
+                <span class="red">创建人:${customerMarket.creatorName!}</span>
             </div>
             <div class="text-right mt-2">
                 <button type="button" class="btn btn-secondary px-5" id="formCancel" onclick="javascript:parent.dia.hide()">取消</button>

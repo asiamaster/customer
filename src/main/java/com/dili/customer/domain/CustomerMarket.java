@@ -104,4 +104,9 @@ public class CustomerMarket extends BaseDomain {
      */
     private String departmentName;
 
+    /**
+     * 在本市场的初始创建人姓名
+     */
+    private String creatorName;
+
 }

@@ -481,6 +481,7 @@ public class CustomerController {
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
                     CustomerMarket customerMarket = marketOutput.getData();
                     customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
+                    customerMarket.setCreatorName(userService.getUserById(customerMarket.getCreatorId()).get().getRealName());
                     Optional<Firm> market = firmRpc.getFirmById(customerMarket.getMarketId());
                     customerMarket.setMarketName(market.get().getName());
                     if (Objects.nonNull(customerMarket.getDepartmentId())) {

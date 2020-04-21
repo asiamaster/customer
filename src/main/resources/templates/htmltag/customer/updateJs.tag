@@ -134,7 +134,7 @@
         logObj.operationType = "edit";
         logObj.marketId = $("#operatorMarket").val();
         logObj.operatorId = $("#operatorId").val();
-        logObj.operatorName = $("#operatorName").text()
+        logObj.operatorName = $("#operatorName").val()
         logObj.content = Log.buildUpdateContent();
         logObj.notes = "客户此次市场数据为：" + $("#marketName").val();
         Log.operatorLog(logObj);
