@@ -151,7 +151,7 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
-            <version>5.2.1</version>
+            <version>5.3.1</version>
         </dependency>
 
         <!-- 内部包  -->
