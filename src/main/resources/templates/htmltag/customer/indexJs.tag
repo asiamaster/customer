@@ -58,7 +58,7 @@
         //获取选中行的数据
         let rows = _customerGrid.bootstrapTable('getSelections');
         if (null == rows || rows.length == 0) {
-            bs4pop.alert('请选中一条数据', {type: "warning"});
+            bs4pop.alert('请选中一条数据');
             return;
         }
         //table选择模式是单选时可用
@@ -86,7 +86,7 @@
             //获取选中行的数据
             let rows = _customerGrid.bootstrapTable('getSelections');
             if (null == rows || rows.length == 0) {
-                bs4pop.alert('请选中一条数据', {type: "warning"});
+                bs4pop.alert('请选中一条数据');
                 return;
             }
             //table选择模式是单选时可用
@@ -118,36 +118,31 @@
             bs4pop.alert('请选中一条数据');
             return;
         }
-        //table选择模式是单选时可用
         let selectedRow = rows[0];
-        let msg = (enable || 'true' == enable) ? '请输入启用原因' : '请输入禁用原因<strong>(注意：禁用后，在所有市场中都将不可用)</strong>';
-        bs4pop.prompt(msg, "", {title: "系统提示"}, function (result, value) {
-            if (result) {
-                if (value) {
-                    bui.loading.show('努力提交中，请稍候。。。');
-                    $.ajax({
-                        type: "POST",
-                        url: "${contextPath}/customer/doEnable.action",
-                        data: {id: selectedRow.id, enable: enable, reason: value},
-                        processData: true,
-                        dataType: "json",
-                        async: true,
-                        success: function (ret) {
-                            bui.loading.hide();
-                            if (ret.success) {
-                                queryCustomerDataHandler();
-                            } else {
-                                bs4pop.alert(ret.message, {type: 'error'});
-                            }
-                        },
-                        error: function () {
-                            bui.loading.hide();
-                            bs4pop.alert('远程访问失败', {type: 'error'});
+        let msg = (enable || 'true' == enable) ? '确定要启用该客户吗？' : '确定要禁用该客户吗？';
+        bs4pop.confirm(msg, undefined, function (sure) {
+            if(sure){
+                bui.loading.show('努力提交中，请稍候。。。');
+                $.ajax({
+                    type: "POST",
+                    url: "${contextPath}/customer/doEnable.action",
+                    data: {id: selectedRow.id, enable: enable},
+                    processData:true,
+                    dataType: "json",
+                    async : true,
+                    success : function(ret) {
+                        bui.loading.hide();
+                        if(ret.success){
+                            queryCustomerDataHandler();
+                        }else{
+                            bs4pop.alert(ret.result, {type: 'error'});
                         }
-                    });
-                } else {
-                    return false;
-                }
+                    },
+                    error : function() {
+                        bui.loading.hide();
+                        bs4pop.alert('远程访问失败', {type: 'error'});
+                    }
+                });
             }
         });
     }

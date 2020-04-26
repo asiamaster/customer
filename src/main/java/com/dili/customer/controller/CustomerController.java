@@ -370,7 +370,7 @@ public class CustomerController {
     @RequestMapping(value = "/doEnable.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     @BusinessLogger(businessType = "customer", content = "${operatorName!} [${operationText!}] 客户 [${name!}] ${flag!}", systemCode = "CUSTOMER")
-    public BaseOutput doEnable(Long id, Boolean enable,String reason) {
+    public BaseOutput doEnable(Long id, Boolean enable) {
         if (Objects.isNull(id) || Objects.isNull(enable)) {
             return BaseOutput.failure("必要参数丢失");
         }
@@ -399,7 +399,6 @@ public class CustomerController {
             LoggerContext.put(LoggerConstant.LOG_MARKET_ID_KEY, userTicket.getFirmId());
             LoggerContext.put(LoggerConstant.LOG_OPERATOR_NAME_KEY, userTicket.getRealName());
         }
-        LoggerContext.put("notes", reason);
         return output;
     }
 
