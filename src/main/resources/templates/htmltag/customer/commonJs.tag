@@ -109,7 +109,6 @@
             async: false,
             success: function (ret) {
                 if (ret.success) {
-                    debugger;
                     //获取 ret.data
                     ret.data.forEach(function (el, index) {
                         if (el.code === currentValue) {
