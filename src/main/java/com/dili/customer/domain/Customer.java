@@ -227,6 +227,11 @@ public class Customer extends BaseDomain {
     private String sourceChannelValue;
 
     /**
+     * 客户证件号打码加*显示
+     */
+    private String certificateNumberMask;
+
+    /**
      * 获取客户级别显示
      * @return
      */

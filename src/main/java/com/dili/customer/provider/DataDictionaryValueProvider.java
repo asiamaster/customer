@@ -1,5 +1,6 @@
 package com.dili.customer.provider;
 
+import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.dto.DTOUtils;
@@ -15,8 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * <B>Description</B>
@@ -41,19 +45,13 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderSupport
         if(queryParams == null) {
             return Lists.newArrayList();
         }
-
-        String ddCode = getDdCode(queryParams.toString());
-        DataDictionaryValue dataDictionaryValue = DTOUtils.newDTO(DataDictionaryValue.class);
-        dataDictionaryValue.setDdCode(ddCode);
-        BaseOutput<List<DataDictionaryValue>> output = dataDictionaryRpc.listDataDictionaryValue(dataDictionaryValue);
-        if(!output.isSuccess()){
-            return null;
-        }
         List<ValuePair<?>> valuePairs = Lists.newArrayList();
-        List<DataDictionaryValue> dataDictionaryValues = output.getData();
-        for(int i=0; i<dataDictionaryValues.size(); i++) {
-            DataDictionaryValue dataDictionaryValue1 = dataDictionaryValues.get(i);
-            valuePairs.add(i, new ValuePairImpl(dataDictionaryValue1.getName(), dataDictionaryValue1.getCode()));
+        BaseOutput<List<DataDictionaryValue>> output = dataDictionaryRpc.listDataDictionaryValueByDdCode(getDdCode(queryParams.toString()));
+        if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
+            valuePairs = output.getData().stream().filter(Objects::nonNull).sorted(Comparator.comparing(DataDictionaryValue::getId)).map(t -> {
+                ValuePairImpl<?> vp = new ValuePairImpl<>(t.getName(), t.getCode());
+                return vp;
+            }).collect(Collectors.toList());
         }
         return valuePairs;
     }
@@ -64,11 +62,11 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderSupport
         if(queryParams == null) {
             return Lists.newArrayList();
         }
-        String ddCode = getDdCode(queryParams.toString());
-        DataDictionaryValue dataDictionaryValue = DTOUtils.newDTO(DataDictionaryValue.class);
-        dataDictionaryValue.setDdCode(ddCode);
-        BaseOutput<List<DataDictionaryValue>> output = dataDictionaryRpc.listDataDictionaryValue(dataDictionaryValue);
-        return output.isSuccess() ? output.getData() : null;
+        BaseOutput<List<DataDictionaryValue>> output = dataDictionaryRpc.listDataDictionaryValueByDdCode(getDdCode(queryParams.toString()));
+        if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
+            return output.getData();
+        }
+        return Lists.newArrayList();
     }
 
     @Override
@@ -89,10 +87,10 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderSupport
      * 获取数据字典编码
      * @return
      */
-    public String getDdCode(String queryParams){
+    public String getDdCode(String queryParams) {
         //清空缓存
         String ddCode = JSONObject.parseObject(queryParams).getString(DD_CODE_KEY);
-        if(ddCode == null){
+        if (ddCode == null) {
             throw new RuntimeException("dd_code属性为空");
         }
         return ddCode;
