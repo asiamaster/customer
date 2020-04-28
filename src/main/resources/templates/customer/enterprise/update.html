@@ -113,7 +113,7 @@
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
                                 <input _log="证件有效期" type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
-                                <input _log="证件有效期" type="text" class="form-control laydate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}"  readonly />
+                                <input _log="证件有效期" type="text" class="form-control laydate certificateRangeDate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}"  readonly />
                                 <div class="input-group-append">
                                     <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
                                 </div>
@@ -265,11 +265,11 @@
             let certificateLongTerm = $('#certificateLongTerm').val();
             //是否为长期
             if(certificateLongTerm === '1'){
-                $('.laydate').attr('disabled', true).val('').hide();
+                $('.certificateRangeDate').attr('disabled', true).val('').hide();
                 $('.inputdate').show();
             } else {
                 $('.inputdate').attr('disabled', true).val('').hide();
-                $('.laydate').show();
+                $('.certificateRangeDate').show();
                 laydateInt();
             }
         <%}%>
