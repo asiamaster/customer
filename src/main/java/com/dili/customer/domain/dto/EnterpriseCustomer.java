@@ -28,7 +28,7 @@ public class EnterpriseCustomer extends IndividualCustomer implements Serializab
      * 联系人
      */
     @NotBlank(message = "联系人不能为空", groups = {AddView.class})
-    @Size(max = 40, message = "联系人请保持在250个字以内", groups = {AddView.class})
+    @Size(max = 40, message = "联系人请保持在40个字以内", groups = {AddView.class})
     private String contactsName;
 
     /**
