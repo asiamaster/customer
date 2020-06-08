@@ -113,6 +113,17 @@ public class CustomerController {
     }
 
     /**
+     * 个人客户导入
+     *
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value = "/individual/import.html", method = RequestMethod.GET)
+    public String individualImport(ModelMap modelMap) {
+        return "customer/individual/import";
+    }
+
+    /**
      * 分页查询客户列表信息
      *
      * @param customer
