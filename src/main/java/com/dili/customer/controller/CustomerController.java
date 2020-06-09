@@ -448,10 +448,13 @@ public class CustomerController {
      * @param marketId
      * @param type
      */
-    public void doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType){
+    @RequestMapping(value = "/doImport.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public BaseOutput doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType){
         if (file.isEmpty()){
             System.out.println("接收到的文件");
         }
+        return BaseOutput.success();
     }
 
     /**
