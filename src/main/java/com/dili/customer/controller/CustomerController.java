@@ -44,10 +44,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
@@ -120,6 +118,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/individual/import.html", method = RequestMethod.GET)
     public String individualImport(ModelMap modelMap) {
+        modelMap.put("organizationType", INDIVIDUAL.getCode());
         return "customer/individual/import";
     }
 
@@ -441,6 +440,18 @@ public class CustomerController {
     @ResponseBody
     public BaseOutput listNationality() {
         return BaseOutput.success().setData(EnumUtil.toObject(NationalityEnum.class));
+    }
+
+    /**
+     * 客户导入
+     * @param file
+     * @param marketId
+     * @param type
+     */
+    public void doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType){
+        if (file.isEmpty()){
+            System.out.println("接收到的文件");
+        }
     }
 
     /**
