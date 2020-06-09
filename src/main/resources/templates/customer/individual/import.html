@@ -6,12 +6,22 @@
         <input type="hidden" id="organizationType" name="organizationType" value="${organizationType!}">
         <div class="row row-cols-6">
             <div class="form-group col">
-                <label for="">选择市场</label>
+                <label for="">选择市场<i class="red">*</i></label>
                 <select class="form-control" id="marketId" name="marketId" required></select>
                 <#bcomboProvider _id="marketId" _provider="marketProvider"  _onLoadSuccess="" />
             </div>
             <div class="form-group col">
-                <label for="">客户数据</label>
+                <label for="">客户渠道<i class="red">*</i></label>
+                <select class="form-control" id="sourceChannel" name="sourceChannel" required></select>
+                <#bcomboProvider _id="sourceChannel" _provider="dataDictionaryValueProvider" _queryParams='{dd_code:"source_channel", required:true}'  _onLoadSuccess="" />
+            </div>
+            <div class="form-group col">
+                <label for="">归属人/操作人<i class="red">*</i></label>
+                <input type="text" name="operatorId" class="form-control digits" placeholder="请输入归属人(或操作人)的ID" required>
+
+            </div>
+            <div class="form-group col">
+                <label for="">客户数据<i class="red">*</i></label>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" name="file" id="customFileupload" >
                     <label class="custom-file-label" for="customFileupload" data-browse="打开" id="showFileName">选择文件</label>
@@ -61,13 +71,14 @@
                 fileData = data;
             },
             done: function (e, data) {
-                if (data.result.code != '200') {
+                debugger;
+                if (!data.result.success) {
                     bs4pop.alert(data.result.message, {type: 'error'});
                     return false;
                 }
                 bui.loading.hide();
                 bs4pop.alert('客户导入成功', {type: 'success'}, function () {
-                    window.location.reload();
+                    console.info("错误数据:"+data.result.data);
                 });
             },
         });

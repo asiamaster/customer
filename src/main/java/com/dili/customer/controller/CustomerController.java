@@ -1,7 +1,10 @@
 package com.dili.customer.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.poi.excel.ExcelReader;
+import cn.hutool.poi.excel.ExcelUtil;
 import com.dili.commons.glossary.YesOrNoEnum;
 import com.dili.customer.domain.Contacts;
 import com.dili.customer.domain.Customer;
@@ -37,8 +40,10 @@ import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.rpc.DataDictionaryRpc;
 import com.dili.uap.sdk.rpc.DepartmentRpc;
 import com.dili.uap.sdk.session.SessionContext;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -49,6 +54,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -445,16 +451,62 @@ public class CustomerController {
     /**
      * 客户导入
      * @param file
-     * @param marketId
-     * @param type
+     * @param marketId 所属市场
+     * @param organizationType 组织类型
+     * @param operatorId 操作人ID
      */
     @RequestMapping(value = "/doImport.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType){
-        if (file.isEmpty()){
-            System.out.println("接收到的文件");
+    public BaseOutput doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType,Long operatorId,String sourceChannel){
+        ExcelReader reader = null;
+        try {
+            reader = ExcelUtil.getReader(file.getInputStream());
+            List<IndividualCustomer> dataList = reader.readAll(IndividualCustomer.class);
+            List<IndividualCustomer> r_dataList = Lists.newArrayList();
+            if (CollectionUtil.isNotEmpty(dataList)) {
+                r_dataList = dataList.parallelStream()
+                        .filter(t -> !t.getName().contains("公司") && !t.getName().contains("商行"))
+                        .filter(t -> StringUtils.isNotBlank(t.getCertificateNumber()))
+                        .collect(Collectors.groupingBy(IndividualCustomer::getCertificateNumber)).entrySet()
+                        .parallelStream()
+                        .map(e -> {
+                            return e.getValue().parallelStream().findFirst().orElse(null);
+                        })
+                        .filter(Objects::nonNull)
+                        .collect(Collectors.toList());
+            }
+            dataList.removeAll(r_dataList);
+            if (CollectionUtil.isNotEmpty(r_dataList)) {
+                for (IndividualCustomer data : r_dataList) {
+                    try {
+                        data.setCertificateType("ID");
+                        data.setSourceSystem("CUSTOMER");
+                        data.setSourceChannel(sourceChannel);
+                        data.setOrganizationType(organizationType);
+                        data.setCode(getCustomerCode(OrganizationType.getInstance(organizationType)));
+                        data.setOperatorId(operatorId);
+                        data.setMarketId(marketId);
+                        data.setOwnerId(operatorId);
+                        data.setState(CustomerEnum.State.NORMAL.getCode());
+                        data.setGrade(CustomerEnum.Grade.GENERAL.getCode());
+                        data.setIsDelete(YesOrNoEnum.NO.getCode());
+                        BaseOutput<Customer> output = customerRpc.registerIndividual(data);
+                        if (!output.isSuccess()){
+                            data.setCertificateAddr(output.getMessage());
+                            dataList.add(data);
+                        }
+                    }catch (Throwable t){
+                        log.error("导入客户失败"+t.getMessage(),t);
+                        dataList.add(data);
+                    }
+                }
+            }
+            return BaseOutput.success().setData(dataList);
+        } catch (Exception e) {
+            log.error("文件转换异常",e);
+            return BaseOutput.failure("解析文件失败");
         }
-        return BaseOutput.success();
+
     }
 
     /**
