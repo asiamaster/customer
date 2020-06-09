@@ -17,7 +17,7 @@
             </div>
             <div class="form-group col">
                 <label for="">归属人/操作人<i class="red">*</i></label>
-                <input type="text" name="operatorId" class="form-control digits" placeholder="请输入归属人(或操作人)的ID" required>
+                <input type="text" name="operatorId" class="form-control digits" placeholder="请输入归属人(或操作人)的ID" value="58" required>
 
             </div>
             <div class="form-group col">
@@ -33,6 +33,26 @@
         </div>
     </form>
     </#bs4nav>
+    <div class="row">
+        <div class="col-12">
+            <table id="customerUploadResultGrid" data-toggle="table" data-undefined-text="数据错误" >
+                <thead>
+                    <tr>
+                        <th data-width-unit="%" data-width="10" data-field="name" data-align="center">
+                            姓名
+                        </th>
+                        <th data-width-unit="%" data-width="20" data-field="certificateNumber" data-align="center" >
+                            证件号
+                        </th>
+                        <th data-width-unit="%" data-width="10" data-field="certificateAddr" data-align="center">
+                            处理结果
+                        </th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
 </#bs4Body>
 
@@ -71,14 +91,13 @@
                 fileData = data;
             },
             done: function (e, data) {
-                debugger;
                 if (!data.result.success) {
                     bs4pop.alert(data.result.message, {type: 'error'});
                     return false;
                 }
                 bui.loading.hide();
                 bs4pop.alert('客户导入成功', {type: 'success'}, function () {
-                    console.info("错误数据:"+data.result.data);
+                    $('#customerUploadResultGrid').bootstrapTable('refreshOptions', {data: data.result.data});
                 });
             },
         });
@@ -98,6 +117,8 @@
         }
         bui.util.debounce(saveOrUpdateHandler,1000,true)(fileData)
     })
+
+
 </script>
 
 
