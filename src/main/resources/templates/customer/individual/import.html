@@ -35,13 +35,13 @@
     </#bs4nav>
     <div class="row">
         <div class="col-12">
-            <table id="customerUploadResultGrid" data-toggle="table" data-undefined-text="数据错误" >
+            <table id="customerUploadResultGrid" data-toggle="table" data-undefined-text="数据错误" data-show-export="true" data-export-types="excel" >
                 <thead>
                     <tr>
                         <th data-width-unit="%" data-width="10" data-field="name" data-align="center">
                             姓名
                         </th>
-                        <th data-width-unit="%" data-width="20" data-field="certificateNumber" data-align="center" >
+                        <th data-width-unit="%" data-width="20" data-field="certificateNumber" data-align="center" data-tableexport-msonumberformat="\@" data-tableexport-xlsxformatid="49" >
                             证件号
                         </th>
                         <th data-width-unit="%" data-width="10" data-field="certificateAddr" data-align="center">
@@ -56,12 +56,16 @@
 
 </#bs4Body>
 
-<script type="text/javascript" src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.ui.widget.js"></script>
-<script type="text/javascript"
-        src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.iframe-transport.js"></script>
-<script type="text/javascript" src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.fileupload.js"></script>
+<script src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.ui.widget.js"></script>
+<script src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.iframe-transport.js"></script>
+<script src="${contextPath}/resources/bui/lib/jquery-fileupload/jquery.fileupload.js"></script>
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+<!--<script src="${contextPath}/resources/bui/lib/bootstrap-table/dist/extensions/export/tableExport.min.js"></script>-->
+<script  src="${contextPath}/resources/bui/lib/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js"></script>
 <script>
+
     var fileData;
+
     $(function () {
         $("#customerQueryForm").validate();
         $('#customFileupload').fileupload({
@@ -98,24 +102,43 @@
                 bui.loading.hide();
                 bs4pop.alert('客户导入成功', {type: 'success'}, function () {
                     $('#customerUploadResultGrid').bootstrapTable('refreshOptions', {data: data.result.data});
+
                 });
             },
         });
+
+
     });
 
-    function saveOrUpdateHandler(fileData) {
-        if (!fileData) {
-            bs4pop.alert("未选择客户文件!", {type: 'error'});
-            return;
-        }
-        bui.loading.show();
-        fileData.submit();
-    }
+    // 导出excel
+    $('#customerUploadResultGrid').on('export-saved.bs.table', function(){
+        $('#customerUploadResultGrid').tableExport({
+            type:'excel',
+            fileName: '客户数据导入处理结果',
+            mso: {
+                fileFormat: 'xlshtml',
+                onMsoNumberFormat:function(cell,row,col) {
+                    debugger
+                    if(col==1) {
+                        return "\\@";
+                    }
+                }
+            }
+        })
+    })
+
     $(document).on('click', '#formSubmit', function(){
         if (!$("#customerQueryForm").validate().form()) {
             return false;
         }
-        bui.util.debounce(saveOrUpdateHandler,1000,true)(fileData)
+        bui.util.debounce(function(){
+            if (!fileData) {
+                bs4pop.alert("未选择客户文件!", {type: 'error'});
+                return false;
+            }
+            bui.loading.show();
+            fileData.submit();
+        }, 1000, true)(fileData)
     })
 
 
