@@ -153,7 +153,12 @@
             <artifactId>hutool-all</artifactId>
             <version>5.3.7</version>
         </dependency>
-
+        <!-- 对jdk8中的stream 操作的扩展-->
+        <dependency>
+            <groupId>one.util</groupId>
+            <artifactId>streamex</artifactId>
+            <version>0.7.2</version>
+        </dependency>
         <!-- 内部包  -->
         <dependency>
             <groupId>com.dili</groupId>
