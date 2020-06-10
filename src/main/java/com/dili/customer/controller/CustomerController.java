@@ -1,6 +1,8 @@
 package com.dili.customer.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.IdUtil;
+import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
@@ -43,6 +45,7 @@ import com.dili.uap.sdk.session.SessionContext;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import one.util.streamex.StreamEx;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -461,44 +464,51 @@ public class CustomerController {
         ExcelReader reader = null;
         try {
             reader = ExcelUtil.getReader(file.getInputStream());
-            List<IndividualCustomer> dataList = reader.readAll(IndividualCustomer.class);
-            List<IndividualCustomer> r_dataList = Lists.newArrayList();
+            List<EnterpriseCustomer> dataList = reader.readAll(EnterpriseCustomer.class);
             if (CollectionUtil.isNotEmpty(dataList)) {
-                r_dataList = dataList.parallelStream()
-                        .filter(t -> !t.getName().contains("公司") && !t.getName().contains("商行"))
-                        .filter(t -> StringUtils.isNotBlank(t.getCertificateNumber()))
-                        .collect(Collectors.groupingBy(IndividualCustomer::getCertificateNumber)).entrySet()
-                        .parallelStream()
-                        .map(e -> {
-                            return e.getValue().parallelStream().findFirst().orElse(null);
-                        })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-            }
-            dataList.removeAll(r_dataList);
-            if (CollectionUtil.isNotEmpty(r_dataList)) {
-                for (IndividualCustomer data : r_dataList) {
-                    try {
-                        data.setCertificateType("ID");
-                        data.setSourceSystem("CUSTOMER");
-                        data.setSourceChannel(sourceChannel);
-                        data.setOrganizationType(organizationType);
-                        data.setCode(getCustomerCode(OrganizationType.getInstance(organizationType)));
-                        data.setOperatorId(operatorId);
-                        data.setMarketId(marketId);
-                        data.setOwnerId(operatorId);
-                        data.setState(CustomerEnum.State.NORMAL.getCode());
-                        data.setGrade(CustomerEnum.Grade.GENERAL.getCode());
-                        data.setIsDelete(YesOrNoEnum.NO.getCode());
-                        BaseOutput<Customer> output = customerRpc.registerIndividual(data);
-                        if (!output.isSuccess()){
-                            data.setCertificateAddr(output.getMessage());
-                            dataList.add(data);
-                        }
-                    }catch (Throwable t){
-                        log.error("导入客户失败"+t.getMessage(),t);
-                        dataList.add(data);
-                    }
+                //根据组织类型等条件去掉文档中的重复数据
+                OrganizationType type = getInstance(organizationType);
+                if (Objects.isNull(type)) {
+                    return BaseOutput.failure("未知的客户类型");
+                }
+                switch (type) {
+                    case ENTERPRISE:
+                        List<EnterpriseCustomer> enterpriseList =  StreamEx.of(dataList).filter(t -> StringUtils.isNotBlank(t.getCertificateNumber())).distinct(EnterpriseCustomer::getCertificateNumber)
+                                .filter(t-> !IdcardUtil.isValidCard(t.getCertificateNumber()))
+                                .collect(Collectors.toList());
+                        dataList.removeAll(enterpriseList);
+
+                        break;
+                    case INDIVIDUAL:
+                        List<IndividualCustomer> individualList =  StreamEx.of(dataList).filter(t -> StringUtils.isNotBlank(t.getCertificateNumber())).distinct(EnterpriseCustomer::getCertificateNumber)
+                                .filter(t-> IdcardUtil.isValidCard(t.getCertificateNumber()))
+                                .collect(Collectors.toList());
+                        dataList.removeAll(individualList);
+                        StreamEx.of(CollectionUtil.emptyIfNull(individualList)).forEach(t->{
+                            try {
+                                t.setCertificateType("ID");
+                                t.setSourceSystem("CUSTOMER");
+                                t.setSourceChannel(sourceChannel);
+                                t.setOrganizationType(organizationType);
+                                t.setCode(getCustomerCode(OrganizationType.getInstance(organizationType)));
+                                t.setOperatorId(operatorId);
+                                t.setMarketId(marketId);
+                                t.setOwnerId(operatorId);
+                                t.setState(CustomerEnum.State.NORMAL.getCode());
+                                t.setGrade(CustomerEnum.Grade.GENERAL.getCode());
+                                t.setIsDelete(YesOrNoEnum.NO.getCode());
+                                BaseOutput<Customer> output = customerRpc.registerIndividual(t);
+                                if (!output.isSuccess()){
+                                    t.setCertificateAddr(output.getMessage());
+                                    dataList.add((EnterpriseCustomer) t);
+                                }
+                            }catch (Throwable throwable){
+                                log.error("导入客户失败"+throwable.getMessage(),throwable);
+                                dataList.add((EnterpriseCustomer) t);
+                            }
+                        });
+                        break;
+                    default:
                 }
             }
             return BaseOutput.success().setData(dataList);
