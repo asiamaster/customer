@@ -31,6 +31,7 @@ public class Application extends SpringBootServletInitializer {
     }
 
     public static void main(String[] args) {
+//        System.out.println(IdcardUtil.isValidCard("342501197904061777"));
         SpringApplication.run(Application.class, args);
     }
 

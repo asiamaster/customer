@@ -1,9 +1,7 @@
 package com.dili.customer.controller;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.IdcardUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
@@ -43,6 +41,7 @@ import com.dili.uap.sdk.rpc.DataDictionaryRpc;
 import com.dili.uap.sdk.rpc.DepartmentRpc;
 import com.dili.uap.sdk.session.SessionContext;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
@@ -57,7 +56,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -465,27 +463,105 @@ public class CustomerController {
         try {
             reader = ExcelUtil.getReader(file.getInputStream());
             List<EnterpriseCustomer> dataList = reader.readAll(EnterpriseCustomer.class);
+            /**
+             * 以下代码反正是在处理数据，代码有点low，，赶时间，后面再优化吧。。。。
+             */
+            //用于存储处理结果数据
+            List<EnterpriseCustomer> resultDataList = Lists.newArrayList();
+            //用于存储证件号为空但当前名称重复的数据，只需要添加一次就好
+            Set<String> nameSet = Sets.newHashSet();
             if (CollectionUtil.isNotEmpty(dataList)) {
-                //根据组织类型等条件去掉文档中的重复数据
+                dataList.removeIf(t -> {
+                    if (StrUtil.isBlank(t.getCertificateNumber())) {
+                        //同姓名的数据，添加一次到list就好，不需要重新添加，所以直接判断名称有没有存在
+                        if (!nameSet.contains(t.getName().trim())) {
+                            t.setCertificateNumber("证件号为空");
+                            resultDataList.add(t);
+                        } else {
+                            nameSet.add(t.getName().trim());
+                        }
+                        return true;
+                    } else {
+                        return false;
+                    }
+                });
+                /**
+                 * 临时存放客户数据
+                 * 存储证件号重复的数据
+                 */
+                Map<String, EnterpriseCustomer> tempData = Maps.newHashMap();
+                //存放证件号一致，但姓名不一致的重复客户数据
+                Map<String, EnterpriseCustomer> error_map = Maps.newHashMap();
+                //存放需要删除的客户的证件号
+                Set<String> removeData = Sets.newHashSet();
+                for (EnterpriseCustomer customer : dataList) {
+                    //当临时对象中，存在该证件号客户时，判断名称是否一致
+                    if (tempData.containsKey(customer.getCertificateNumber().trim())) {
+                        EnterpriseCustomer t = tempData.get(customer.getCertificateNumber().trim());
+                        //证件号相同，名称不同的情况，则标记为错误数据，否则忽略
+                        if (!t.getName().trim().equals(customer.getName().trim())) {
+                            t.setCertificateAddr("存在证件号相同，名称不同的数据，请核实");
+                            customer.setCertificateAddr("存在证件号相同，名称不同的数据，请核实");
+                            error_map.put(customer.getCertificateNumber().trim() + customer.getName().trim(), customer);
+                            error_map.put(t.getCertificateNumber().trim() + t.getName().trim(), t);
+                            removeData.add(t.getCertificateNumber().trim());
+                        }
+                    } else {
+                        tempData.put(customer.getCertificateNumber().trim(), customer);
+                    }
+                }
+                resultDataList.addAll(Lists.newArrayList(error_map.values()));
+                dataList = tempData.values().stream().filter(t -> !removeData.contains(t.getCertificateNumber().trim())).collect(Collectors.toList());
                 OrganizationType type = getInstance(organizationType);
                 if (Objects.isNull(type)) {
                     return BaseOutput.failure("未知的客户类型");
                 }
                 switch (type) {
                     case ENTERPRISE:
-                        List<EnterpriseCustomer> enterpriseList =  StreamEx.of(dataList).filter(t -> StringUtils.isNotBlank(t.getCertificateNumber())).distinct(EnterpriseCustomer::getCertificateNumber)
-                                .filter(t-> !IdcardUtil.isValidCard(t.getCertificateNumber()))
+                        List<EnterpriseCustomer> enterpriseList =  StreamEx.of(dataList)
+                                .filter(t-> !IdcardUtil.isValidCard(t.getCertificateNumber().trim()))
                                 .collect(Collectors.toList());
+                        enterpriseList = CollectionUtil.emptyIfNull(enterpriseList);
                         dataList.removeAll(enterpriseList);
+                        dataList.forEach(t -> t.setCertificateAddr("证件号可能是个人身份证"));
+                        resultDataList.addAll(dataList);
+                        StreamEx.of(enterpriseList).forEach(t->{
+                            try {
+                                t.setSourceSystem("CUSTOMER");
+                                t.setSourceChannel(sourceChannel);
+                                t.setOrganizationType(organizationType);
+                                t.setCode(getCustomerCode(OrganizationType.getInstance(organizationType)));
+                                t.setOperatorId(operatorId);
+                                t.setMarketId(marketId);
+                                t.setOwnerId(operatorId);
+                                t.setState(CustomerEnum.State.NORMAL.getCode());
+                                t.setGrade(CustomerEnum.Grade.GENERAL.getCode());
+                                t.setIsDelete(YesOrNoEnum.NO.getCode());
+                                BaseOutput<Customer> output = customerRpc.registerEnterprise(t);
+                                if (!output.isSuccess()) {
+                                    t.setCertificateAddr(output.getMessage());
+                                    resultDataList.add(t);
+                                }
+                            } catch (Throwable throwable) {
+                                log.error("导入客户失败" + throwable.getMessage(), throwable);
+                                resultDataList.add(t);
+                            }
+                        });
 
                         break;
                     case INDIVIDUAL:
                         List<IndividualCustomer> individualList =  StreamEx.of(dataList).filter(t -> StringUtils.isNotBlank(t.getCertificateNumber())).distinct(EnterpriseCustomer::getCertificateNumber)
-                                .filter(t-> IdcardUtil.isValidCard(t.getCertificateNumber()))
+                                .filter(t-> IdcardUtil.isValidCard(t.getCertificateNumber().trim()))
                                 .collect(Collectors.toList());
+                        individualList = CollectionUtil.emptyIfNull(individualList);
                         dataList.removeAll(individualList);
-                        StreamEx.of(CollectionUtil.emptyIfNull(individualList)).forEach(t->{
+                        dataList.forEach(t -> t.setCertificateAddr("身份证号码验证不通过"));
+                        resultDataList.addAll(dataList);
+                        StreamEx.of(individualList).forEach(t->{
                             try {
+                                t.setName(t.getName().trim());
+                                t.setCertificateNumber(t.getCertificateNumber().trim());
+                                t.setContactsPhone(t.getContactsPhone().trim());
                                 t.setCertificateType("ID");
                                 t.setSourceSystem("CUSTOMER");
                                 t.setSourceChannel(sourceChannel);
@@ -498,20 +574,20 @@ public class CustomerController {
                                 t.setGrade(CustomerEnum.Grade.GENERAL.getCode());
                                 t.setIsDelete(YesOrNoEnum.NO.getCode());
                                 BaseOutput<Customer> output = customerRpc.registerIndividual(t);
-                                if (!output.isSuccess()){
+                                if (!output.isSuccess()) {
                                     t.setCertificateAddr(output.getMessage());
-                                    dataList.add((EnterpriseCustomer) t);
+                                    resultDataList.add((EnterpriseCustomer) t);
                                 }
-                            }catch (Throwable throwable){
-                                log.error("导入客户失败"+throwable.getMessage(),throwable);
-                                dataList.add((EnterpriseCustomer) t);
+                            } catch (Throwable throwable) {
+                                log.error("导入客户失败" + throwable.getMessage(), throwable);
+                                resultDataList.add((EnterpriseCustomer) t);
                             }
                         });
                         break;
                     default:
                 }
             }
-            return BaseOutput.success().setData(dataList);
+            return BaseOutput.success().setData(resultDataList);
         } catch (Exception e) {
             log.error("文件转换异常",e);
             return BaseOutput.failure("解析文件失败");
