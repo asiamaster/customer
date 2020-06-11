@@ -475,7 +475,7 @@ public class CustomerController {
                     if (StrUtil.isBlank(t.getCertificateNumber())) {
                         //同姓名的数据，添加一次到list就好，不需要重新添加，所以直接判断名称有没有存在
                         if (!nameSet.contains(t.getName().trim())) {
-                            t.setCertificateNumber("证件号为空");
+                            t.setCertificateAddr("证件号为空");
                             resultDataList.add(t);
                         } else {
                             nameSet.add(t.getName().trim());
@@ -544,6 +544,7 @@ public class CustomerController {
                                 }
                             } catch (Throwable throwable) {
                                 log.error("导入客户失败" + throwable.getMessage(), throwable);
+                                t.setCertificateAddr("系统异常,请重新导入该部分数据");
                                 resultDataList.add(t);
                             }
                         });
@@ -580,6 +581,7 @@ public class CustomerController {
                                 }
                             } catch (Throwable throwable) {
                                 log.error("导入客户失败" + throwable.getMessage(), throwable);
+                                t.setCertificateAddr("系统异常,请重新导入该部分数据");
                                 resultDataList.add((EnterpriseCustomer) t);
                             }
                         });
