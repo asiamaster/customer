@@ -32,10 +32,7 @@ import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.domain.PageOutput;
 import com.dili.ss.dto.DTOUtils;
 import com.dili.ss.metadata.ValueProviderUtils;
-import com.dili.uap.sdk.domain.DataDictionaryValue;
-import com.dili.uap.sdk.domain.Department;
-import com.dili.uap.sdk.domain.Firm;
-import com.dili.uap.sdk.domain.UserTicket;
+import com.dili.uap.sdk.domain.*;
 import com.dili.uap.sdk.redis.UserResourceRedis;
 import com.dili.uap.sdk.rpc.DataDictionaryRpc;
 import com.dili.uap.sdk.rpc.DepartmentRpc;
@@ -45,7 +42,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
 import one.util.streamex.StreamEx;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -119,14 +115,24 @@ public class CustomerController {
 
     /**
      * 个人客户导入
-     *
      * @param modelMap
      * @return String
      */
     @RequestMapping(value = "/individual/import.html", method = RequestMethod.GET)
     public String individualImport(ModelMap modelMap) {
         modelMap.put("organizationType", INDIVIDUAL.getCode());
-        return "customer/individual/import";
+        return "customer/import";
+    }
+
+    /**
+     * 企业客户导入
+     * @param modelMap
+     * @return String
+     */
+    @RequestMapping(value = "/enterprise/import.html", method = RequestMethod.GET)
+    public String enterpriseImport(ModelMap modelMap) {
+        modelMap.put("organizationType", ENTERPRISE.getCode());
+        return "customer/import";
     }
 
     /**
@@ -461,6 +467,11 @@ public class CustomerController {
     public BaseOutput doImport(@RequestParam("file") MultipartFile file,Long marketId,String organizationType,Long operatorId,String sourceChannel){
         ExcelReader reader = null;
         try {
+            Optional<User> userOptional = userService.getUserById(operatorId);
+            if (userOptional.isEmpty()){
+                return BaseOutput.failure("传入的用户不存在？");
+            }
+            User user = userOptional.get();
             reader = ExcelUtil.getReader(file.getInputStream());
             List<EnterpriseCustomer> dataList = reader.readAll(EnterpriseCustomer.class);
             /**
@@ -527,13 +538,18 @@ public class CustomerController {
                         resultDataList.addAll(dataList);
                         StreamEx.of(enterpriseList).forEach(t->{
                             try {
+                                t.setName(t.getName().trim());
+                                t.setCertificateNumber(t.getCertificateNumber().trim());
+                                t.setContactsPhone(t.getContactsPhone().trim());
                                 t.setSourceSystem("CUSTOMER");
+                                //企业客户证件类型，统一设置为 统一社会信用代码
                                 t.setSourceChannel(sourceChannel);
                                 t.setOrganizationType(organizationType);
                                 t.setCode(getCustomerCode(OrganizationType.getInstance(organizationType)));
                                 t.setOperatorId(operatorId);
                                 t.setMarketId(marketId);
                                 t.setOwnerId(operatorId);
+                                t.setDepartmentId(user.getDepartmentId());
                                 t.setState(CustomerEnum.State.NORMAL.getCode());
                                 t.setGrade(CustomerEnum.Grade.GENERAL.getCode());
                                 t.setIsDelete(YesOrNoEnum.NO.getCode());
@@ -551,7 +567,7 @@ public class CustomerController {
 
                         break;
                     case INDIVIDUAL:
-                        List<IndividualCustomer> individualList =  StreamEx.of(dataList).filter(t -> StringUtils.isNotBlank(t.getCertificateNumber())).distinct(EnterpriseCustomer::getCertificateNumber)
+                        List<IndividualCustomer> individualList =  StreamEx.of(dataList)
                                 .filter(t-> IdcardUtil.isValidCard(t.getCertificateNumber().trim()))
                                 .collect(Collectors.toList());
                         individualList = CollectionUtil.emptyIfNull(individualList);
@@ -563,7 +579,6 @@ public class CustomerController {
                                 t.setName(t.getName().trim());
                                 t.setCertificateNumber(t.getCertificateNumber().trim());
                                 t.setContactsPhone(t.getContactsPhone().trim());
-                                t.setCertificateType("ID");
                                 t.setSourceSystem("CUSTOMER");
                                 t.setSourceChannel(sourceChannel);
                                 t.setOrganizationType(organizationType);
@@ -571,6 +586,7 @@ public class CustomerController {
                                 t.setOperatorId(operatorId);
                                 t.setMarketId(marketId);
                                 t.setOwnerId(operatorId);
+                                t.setDepartmentId(user.getDepartmentId());
                                 t.setState(CustomerEnum.State.NORMAL.getCode());
                                 t.setGrade(CustomerEnum.Grade.GENERAL.getCode());
                                 t.setIsDelete(YesOrNoEnum.NO.getCode());
