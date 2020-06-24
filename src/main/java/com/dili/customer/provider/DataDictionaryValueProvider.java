@@ -48,7 +48,7 @@ public class DataDictionaryValueProvider extends BatchDisplayTextProviderSupport
         List<ValuePair<?>> valuePairs = Lists.newArrayList();
         BaseOutput<List<DataDictionaryValue>> output = dataDictionaryRpc.listDataDictionaryValueByDdCode(getDdCode(queryParams.toString()));
         if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
-            valuePairs = output.getData().stream().filter(Objects::nonNull).sorted(Comparator.comparing(DataDictionaryValue::getId)).map(t -> {
+            valuePairs = output.getData().stream().filter(Objects::nonNull).sorted(Comparator.comparing(DataDictionaryValue::getOrderNumber)).map(t -> {
                 ValuePairImpl<?> vp = new ValuePairImpl<>(t.getName(), t.getCode());
                 return vp;
             }).collect(Collectors.toList());

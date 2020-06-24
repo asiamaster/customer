@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="${contextPath}/resources/css/main.css" />
 <div class="container-fluid">
     <%if (has(customer)){%>
-    <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
+    <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customerMarket.gradeValue!}</span></h4>
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-baseInfo-tab" data-toggle="tab" href="#nav-baseInfo"
@@ -35,15 +35,20 @@
                     <div class="form-group col">
                         <label for="" class="">客户行业</label>
                         <select id="profession"  name="profession" class="form-control select-no-down"  ></select>
-                        <#bcomboProvider _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business",emptyText:""}'  _valueField="value" _textField="text" _value="${customer.profession!}" />
+                        <#bcomboProvider _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business",emptyText:""}'  _valueField="value" _textField="text" _value="${customerMarket.profession!}" />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户级别</label>
-                        <input type="text" class="form-control" name="" value="${customer.gradeValue!}"  />
+                        <input type="text" class="form-control" name="" value="${customerMarket.gradeValue!}"  />
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户注册时间</label>
-                        <input type="text" class="form-control" name=""  value="${customer.marketCreateTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}" />
+                        <input type="text" class="form-control" name=""  value="${customerMarket.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}" />
+                    </div>
+                    <div class="form-group col">
+                        <label for="" class="">客户身份</label>
+                        <select id="customerType" name="customerMarket[type]" class="form-control select-no-down"></select>
+                        <#bcomboProvider _id="customerType" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"cus_customer_type", emptyText:""}' _valueField="value" _textField="text" _value="${customerMarket.type!}"/>
                     </div>
                     <div class="form-group col">
                         <label for="" class="">客户状态</label>

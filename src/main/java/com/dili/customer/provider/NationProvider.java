@@ -1,7 +1,6 @@
 package com.dili.customer.provider;
 
-import com.dili.customer.enums.CustomerEnum;
-import com.dili.customer.enums.NationalityEnum;
+import com.dili.customer.sdk.enums.NationEnum;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
@@ -26,13 +25,13 @@ import java.util.stream.Stream;
  */
 @Component
 @Scope("prototype")
-public class NationalityProvider implements ValueProvider {
+public class NationProvider implements ValueProvider {
 
     private static final List<ValuePair<?>> BUFFER;
 
     static {
         BUFFER = Lists.newArrayList();
-        BUFFER.addAll(Stream.of(NationalityEnum.values())
+        BUFFER.addAll(Stream.of(NationEnum.values())
                 .map(e -> new ValuePairImpl<String>(e.getValue(), String.valueOf(e.getCode())))
                 .collect(Collectors.toList()));
     }
@@ -47,7 +46,7 @@ public class NationalityProvider implements ValueProvider {
         if (obj == null || "".equals(obj)) {
             return null;
         }
-        NationalityEnum instance = NationalityEnum.getInstance(Integer.valueOf(obj.toString()));
+        NationEnum instance = NationEnum.getInstance(Integer.valueOf(obj.toString()));
         if (Objects.nonNull(instance)) {
             return instance.getValue();
         }

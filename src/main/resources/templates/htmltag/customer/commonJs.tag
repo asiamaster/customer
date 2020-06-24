@@ -94,7 +94,7 @@
      * @param currentValue 当前值
      * @param nullValue 空值显示的名称
      */
-    function listNationality(targetId, currentValue, nullValue) {
+    function listNation(targetId, currentValue, nullValue) {
         $("#" + targetId).empty();
         let data = [];
         if (nullValue) {
@@ -103,7 +103,7 @@
         //根据类型，加载不同的证件类型
         $.ajax({
             type: "POST",
-            url: "${contextPath}/customer/listNationality.action",
+            url: "${contextPath}/customer/listNation.action",
             processData: true,
             dataType: "json",
             async: false,

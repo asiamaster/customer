@@ -166,7 +166,7 @@
                             }
                             bs4pop.confirm('已存在客户基本信息，本次将沿用客户已有信息?', {width: 400,type: 'warning'}, function (flag) {
                                 if (flag) {
-                                    $(".form-control").attr("readonly",true);
+                                    $(".no-edit").attr("readonly",true);
                                     $("#certificateNumber").attr("readonly",false);
                                     $('#id').val(data.id);
                                     $('#certificateType').val(data.certificateType);
@@ -185,7 +185,7 @@
                                 $("#id").val('');
                                 setCustomerValue(userObj);
                             }else{
-                                $(".form-control").attr("readonly",false);
+                                $(".no-edit").attr("readonly",false);
                                 clearCustomerVal();
                             }
                         }
@@ -194,7 +194,7 @@
                             $("#id").val('');
                             setCustomerValue(userObj);
                         } else {
-                            $(".form-control").attr("readonly", false);
+                            $(".no-edit").attr("readonly", false);
                             clearCustomerVal();
                             bs4pop.alert(ret.message, {width: 350, type: 'error'});
                         }
@@ -227,7 +227,7 @@
         $('#certificateAddr').val(address.trim());
         $('#birthdate').val(userObj.Born);
         $('#certificateRange').val(userObj.UserLifeEnd);
-        $(".form-control").attr("readonly",true);
+        $(".no-edit").attr("readonly",true);
         $("#certificateNumber").attr("readonly",false);
         $("#contactsPhone").attr("readonly",false);
     }

@@ -1,7 +1,7 @@
 package com.dili.customer.controller;
 
-import com.dili.customer.domain.Contacts;
-import com.dili.customer.rpc.ContactsRpc;
+import com.dili.customer.sdk.domain.Contacts;
+import com.dili.customer.sdk.rpc.ContactsRpc;
 import com.dili.ss.domain.BaseOutput;
 import com.dili.ss.domain.EasyuiPageOutput;
 import com.dili.ss.metadata.ValueProviderUtils;

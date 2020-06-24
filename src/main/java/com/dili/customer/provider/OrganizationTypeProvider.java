@@ -1,6 +1,6 @@
 package com.dili.customer.provider;
 
-import com.dili.customer.enums.CustomerEnum;
+import com.dili.customer.sdk.enums.CustomerEnum;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
@@ -9,7 +9,6 @@ import com.google.common.collect.Lists;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

@@ -1,6 +1,6 @@
 package com.dili.customer.provider;
 
-import com.dili.customer.enums.CustomerEnum;
+import com.dili.customer.sdk.enums.CustomerEnum;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;

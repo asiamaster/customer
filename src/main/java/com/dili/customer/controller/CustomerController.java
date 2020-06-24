@@ -1,25 +1,28 @@
 package com.dili.customer.controller;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
 import com.dili.commons.glossary.YesOrNoEnum;
-import com.dili.customer.domain.Contacts;
-import com.dili.customer.domain.Customer;
-import com.dili.customer.domain.CustomerMarket;
-import com.dili.customer.domain.dto.CustomerQuery;
-import com.dili.customer.domain.dto.CustomerUpdateInput;
-import com.dili.customer.domain.dto.EnterpriseCustomer;
-import com.dili.customer.domain.dto.IndividualCustomer;
-import com.dili.customer.enums.CustomerEnum;
-import com.dili.customer.enums.CustomerEnum.OrganizationType;
-import com.dili.customer.enums.NationalityEnum;
-import com.dili.customer.rpc.ContactsRpc;
-import com.dili.customer.rpc.CustomerMarketRpc;
-import com.dili.customer.rpc.CustomerRpc;
+import com.dili.customer.domain.vo.CustomerMarketVo;
+import com.dili.customer.domain.vo.CustomerVo;
 import com.dili.customer.rpc.UidRpc;
+import com.dili.customer.sdk.domain.Contacts;
+import com.dili.customer.sdk.domain.Customer;
+import com.dili.customer.sdk.domain.CustomerMarket;
+import com.dili.customer.sdk.domain.dto.CustomerQueryInput;
+import com.dili.customer.sdk.domain.dto.CustomerUpdateInput;
+import com.dili.customer.sdk.domain.dto.EnterpriseCustomer;
+import com.dili.customer.sdk.domain.dto.IndividualCustomer;
+import com.dili.customer.sdk.enums.CustomerEnum;
+import com.dili.customer.sdk.enums.CustomerEnum.OrganizationType;
+import com.dili.customer.sdk.enums.NationEnum;
+import com.dili.customer.sdk.rpc.ContactsRpc;
+import com.dili.customer.sdk.rpc.CustomerMarketRpc;
+import com.dili.customer.sdk.rpc.CustomerRpc;
 import com.dili.customer.service.remote.FirmRpcService;
 import com.dili.customer.service.remote.UserRpcService;
 import com.dili.customer.utils.EnumUtil;
@@ -55,7 +58,7 @@ import javax.validation.constraints.NotNull;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.dili.customer.enums.CustomerEnum.OrganizationType.*;
+import static com.dili.customer.sdk.enums.CustomerEnum.OrganizationType.*;
 
 /**
  * <B>Description</B>
@@ -145,7 +148,7 @@ public class CustomerController {
      */
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String listPage(CustomerQuery customer, HttpServletRequest request) throws Exception {
+    public String listPage(CustomerQueryInput customer, HttpServletRequest request) throws Exception {
         if (Objects.isNull(customer.getMarketId())) {
             List<Firm> userFirms = firmRpc.getCurrentUserFirms();
             if (CollectionUtil.isEmpty(userFirms)) {
@@ -261,7 +264,7 @@ public class CustomerController {
         String updatePath = "customer/enterprise/update";
         if (modelMap.containsKey("customer")) {
             Customer customer = (Customer) modelMap.get("customer");
-            OrganizationType instance = getInstance(customer.getOrganizationType());
+            CustomerEnum.OrganizationType instance = getInstance(customer.getOrganizationType());
             updatePath = "customer/" + instance.getCode() + "/update";
             if (ENTERPRISE.equals(instance)) {
                 BaseOutput<List<Contacts>> output = contactsRpc.listAllContacts(customerId,marketId);
@@ -313,6 +316,14 @@ public class CustomerController {
     public BaseOutput registerIndividual(@Validated({AddView.class}) IndividualCustomer customer, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return BaseOutput.failure(bindingResult.getAllErrors().get(0).getDefaultMessage());
+        }
+
+        //如果证件类型为 身份证类型，则需要验证证件号是否合法
+        if ("ID".equalsIgnoreCase(customer.getCertificateType()) && Objects.isNull(customer.getId())) {
+            boolean validCard = IdcardUtil.isValidCard(customer.getCertificateNumber());
+            if (!validCard) {
+                return BaseOutput.failure("请输入正确的证件号");
+            }
         }
         try {
             setDefaultStorageValue(customer);
@@ -449,10 +460,10 @@ public class CustomerController {
      *
      * @return BaseOutput
      */
-    @RequestMapping(value = "/listNationality.action", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "/listNation.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public BaseOutput listNationality() {
-        return BaseOutput.success().setData(EnumUtil.toObject(NationalityEnum.class));
+    public BaseOutput listNation() {
+        return BaseOutput.success().setData(EnumUtil.toObject(NationEnum.class));
     }
 
     /**
@@ -643,23 +654,27 @@ public class CustomerController {
     private void getCustomerDetail(Long customerId, Long marketId, ModelMap modelMap) {
         if (Objects.nonNull(customerId) && Objects.nonNull(marketId)) {
             modelMap.put("userTicket", getUserTicket());
-            CustomerQuery query = new CustomerQuery();
+            CustomerQueryInput query = new CustomerQueryInput();
             query.setId(customerId);
             query.setMarketId(marketId);
             //获取客户基本信息
             BaseOutput<List<Customer>> output = customerRpc.list(query);
             if (output.isSuccess() && CollectionUtil.isNotEmpty(output.getData())) {
                 Customer customer = output.getData().stream().findFirst().orElse(new Customer());
+                //构造页面显示对象
+                CustomerVo customerVo = new CustomerVo();
+                BeanUtil.copyProperties(customer, customerVo);
                 DataDictionaryValue dataDictionaryValue = DTOUtils.newInstance(DataDictionaryValue.class);
                 dataDictionaryValue.setDdCode("source_channel");
                 dataDictionaryValue.setCode(customer.getSourceChannel());
                 BaseOutput<List<DataDictionaryValue>> listDataDictionaryValue = dataDictionaryRpc.listDataDictionaryValue(dataDictionaryValue);
                 if (listDataDictionaryValue.isSuccess() && CollectionUtil.isNotEmpty(listDataDictionaryValue.getData())) {
-                    customer.setSourceChannelValue(listDataDictionaryValue.getData().get(0).getName());
+                    customerVo.setSourceChannelValue(listDataDictionaryValue.getData().get(0).getName());
                 }
                 BaseOutput<CustomerMarket> marketOutput = customerMarketRpc.getByCustomerAndMarket(customerId, marketId);
                 if (marketOutput.isSuccess() && Objects.nonNull(marketOutput.getData())) {
-                    CustomerMarket customerMarket = marketOutput.getData();
+                    CustomerMarketVo customerMarket = new CustomerMarketVo();
+                    BeanUtil.copyProperties(marketOutput.getData(), customerMarket);
                     customerMarket.setOwnerName(userService.getUserById(customerMarket.getOwnerId()).get().getRealName());
                     customerMarket.setCreatorName(userService.getUserById(customerMarket.getCreatorId()).get().getRealName());
                     Optional<Firm> market = firmRpc.getFirmById(customerMarket.getMarketId());
@@ -672,7 +687,7 @@ public class CustomerController {
                     }
                     modelMap.put("customerMarket", customerMarket);
                 }
-                modelMap.put("customer", customer);
+                modelMap.put("customer", customerVo);
             }
         }
     }

@@ -23,7 +23,7 @@
     function addCustomerItem(){
         $('#customerTable tbody').append(HTMLDecode(template('customerItem', {index: ++itemIndex})));
         let targetId = "nation_" + itemIndex;
-        listNationality(targetId, '', '-- 请选择 --');
+        listNation(targetId, '', '-- 请选择 --');
     }
 
     /**
@@ -57,8 +57,8 @@
     // 提交保存
     $('#formSubmit').on('click', function (e) {
         let _formDataObj = {};
-        let cardData = {};
-        let contactsData = [];
+        // let cardData = {};
+        // let contactsData = [];
 
         if (!$('#baseInfoForm').validate({ignore:''}).form()) {
             $('#nav-baseInfo-tab').tab('show');
@@ -75,27 +75,31 @@
             }
         }
        bui.loading.show('努力提交中，请稍候。。。');
-       $.each($('#baseInfoForm').serializeArray(), function(index, value){
-           _formDataObj[value.name] = value.value;
-       });
-       $.each($('#cardInfoForm').serializeArray(), function(index, value){
-           cardData[value.name] = value.value;
-       });
-
-        if ($('#resourceInfoForm').length) {
-            $.each($('#resourceInfoForm tbody tr'), function(index, value){
-                let itemObj = {};
-                $(value).find('input, select').each(function (i, el) {
-                    itemObj[el.name.split('_')[0]] = el.value;
-                });
-                contactsData.push(itemObj);
-            });
-            _formDataObj['contactsList'] = contactsData;
-        }
-        _formDataObj['customerCertificate'] = cardData;
-       $.ajax({
-           type: "POST",
-           url: "${contextPath}/customer/doUpdate.action",
+       // $.each($('#baseInfoForm').serializeArray(), function(index, value){
+       //     _formDataObj[value.name] = value.value;
+       // });
+       // $.each($('#cardInfoForm').serializeArray(), function(index, value){
+       //     cardData[value.name] = value.value;
+       // });
+       //
+       //  if ($('#resourceInfoForm').length) {
+       //      $.each($('#resourceInfoForm tbody tr'), function(index, value){
+       //          let itemObj = {};
+       //          $(value).find('input, select').each(function (i, el) {
+       //              itemObj[el.name.split('_')[0]] = el.value;
+       //          });
+       //          contactsData.push(itemObj);
+       //      });
+       //      _formDataObj['contactsList'] = contactsData;
+       //  }
+       //  _formDataObj['customerCertificate'] = cardData;
+        let baseInfo = $('#baseInfoForm').serializeJSON();
+        let cardInfoForm = $('#cardInfoForm').serializeJSON();
+        let resourceInfoForm = $('#resourceInfoForm').serializeJSON({useIntKeysAsArrayIndex: true});
+        _formDataObj = $.extend(baseInfo, cardInfoForm, resourceInfoForm);
+        $.ajax({
+            type: "POST",
+            url: "${contextPath}/customer/doUpdate.action",
             data: JSON.stringify(_formDataObj),
             processData: false,
             contentType: false,
@@ -105,7 +109,7 @@
                 if (res.success) {
                     bs4pop.alert('更新成功', {type: 'success'}, function () {
                         sendUpdateLog();
-                        window.parent.postMessage('操作成功','/');
+                        window.parent.postMessage('操作成功', '/');
                         parent.dia.hide();
                     });
                 } else {

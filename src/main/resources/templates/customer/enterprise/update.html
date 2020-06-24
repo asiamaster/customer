@@ -7,7 +7,7 @@
 </style>
 <div class="container-fluid">
    <%if (has(customer)){%>
-        <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customer.gradeValue!}</span></h4>
+        <h4 class="red"><span class="px-3">${customer.name!}</span><span class="px-3">${customer.code!}</span><span class="px-3">${customerMarket.gradeValue!}</span></h4>
         <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
                 <a class="nav-item nav-link active" id="nav-baseInfo-tab" data-toggle="tab" href="#nav-baseInfo"
@@ -42,16 +42,21 @@
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户行业</label>
-                            <select id="profession" name="profession" class="form-control"></select>
-                            <#bcomboProvider _log="客户行业" _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business"}'  _valueField="value" _textField="text" _value="${customer.profession!}" />
+                            <select id="profession" name="customerMarket[profession]" class="form-control"></select>
+                            <#bcomboProvider _log="客户行业" _id="profession" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"customer_business"}'  _valueField="value" _textField="text" _value="${customerMarket.profession!}" />
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户级别<i class="red">*</i></label>
-                            <input type="text" class="form-control" required disabled value="${customer.gradeValue!}"/>
+                            <input type="text" class="form-control" required disabled value="${customerMarket.gradeValue!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户注册时间<i class="red">*</i></label>
-                            <input type="text" class="form-control" required disabled value="${customer.marketCreateTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}"/>
+                            <input type="text" class="form-control" required disabled value="${customerMarket.createTime!,localDateTimeFormat='yyyy-MM-dd HH:mm:ss'}"/>
+                        </div>
+                        <div class="form-group col">
+                            <label for="" class="">客户身份<i class="red">*</i></label>
+                            <select id="customerType" name="customerMarket[type]" class="form-control" required></select>
+                            <#bcomboProvider _id="customerType" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"cus_customer_type", emptyText:"-- 请选择 --"}' _valueField="value" _textField="text" _value="${customerMarket.type!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="" class="">客户状态<i class="red">*</i></label>
@@ -67,22 +72,23 @@
                         aria-controls="customerInfo">
                         归属信息
                     </div>
+                    <input type="hidden" name="customerMarket[id]" value="${customerMarket.id!}">
                     <div class="row row-cols-4" id="customerInfo">
                         <div class="form-group col">
                             <label for="_ownerId" class="">归属人<i class="red">*</i></label>
                             <div class="col-10">
-                                <#bautoCompleteProvider _log="归属人" _hiddenDomainId="ownerId" _hiddenDomainName="ownerId" _displayDomainId="_ownerId"  _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
+                                <#bautoCompleteProvider _log="归属人" _hiddenDomainId="ownerId" _hiddenDomainName="customerMarket[ownerId]" _displayDomainId="_ownerId"  _placeholder="" _provider="userProvider" _validatorMethod="isSelected" _value="${customerMarket.ownerId!}" _text="${customerMarket.ownerName!}"  _required="true" />
                             </div>
                         </div>
                         <div class="form-group col">
                             <label for="" class="">归属组织<i class="red">*</i></label>
-                            <input type="hidden" id="marketId" name="marketId" value="${customerMarket.marketId!}">
+                            <input type="hidden" id="marketId" name="customerMarket[marketId]" value="${customerMarket.marketId!}">
                             <input type="text" class="form-control" id="marketName" name="" required disabled value="${customerMarket.marketName!}"/>
                         </div>
                         <div class="form-group col">
-                            <input type="hidden" id="currentDepartmentId" value="${customerMarket.departmentId}">
+                            <input type="hidden" id="currentDepartmentId" value="${customerMarket.departmentId!}">
                             <label for="departmentId" class="" _log>归属部门</label>
-                            <select id="departmentId" name="departmentId" class="form-control">
+                            <select id="departmentId" name="customerMarket[departmentId]" class="form-control">
                             </select>
                         </div>
                     </div>
@@ -112,29 +118,29 @@
                         <div class="form-group col">
                             <label for="" class="">证件有效期</label>
                             <div class="input-group">
-                                <input _log="证件有效期" type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}" readonly />
-                                <input _log="证件有效期" type="text" class="form-control laydate certificateRangeDate" style="display: block;" id="certificateRange" name="certificateRange" value="${customer.certificateRange!}"  readonly />
+                                <input _log="证件有效期" type="text" class="form-control inputdate" style="display: block;" id="certificateRange" name="customerCertificate[certificateRange]" value="${customer.certificateRange!}" readonly />
+                                <input _log="证件有效期" type="text" class="form-control laydate certificateRangeDate" style="display: block;" id="certificateRange" name="customerCertificate[certificateRange]" value="${customer.certificateRange!}"  readonly />
                                 <div class="input-group-append">
                                     <label for="certificateRange"  class="input-group-text fa fa-calendar"></label>
                                 </div>
                                 <div class="input-group-append">
-                                    <span class="input-group-text"><a id="longTerm" href="javascript:;"><input type="checkbox" id="certificateLongTerm" name="certificateLongTerm" value="${customer.certificateLongTerm!}" <%if(customer.certificateLongTerm == 1){ %> checked <%}%>>长期</a></span>
+                                    <span class="input-group-text"><a id="longTerm" href="javascript:;"><input type="checkbox" id="certificateLongTerm" name="customerCertificate[certificateLongTerm]" value="${customer.certificateLongTerm!}" <%if(customer.certificateLongTerm == 1){ %> checked <%}%>>长期</a></span>
                                 </div>
                             </div>
                         </div>
                         <div class="form-group col">
                             <label for="certificateAddr" class="" _log>证件地址</label>
-                            <input type="text" class="form-control" name="certificateAddr" id="certificateAddr" maxlength="50" value="${customer.certificateAddr!}"/>
+                            <input type="text" class="form-control" name="customerCertificate[certificateAddr]" id="certificateAddr" maxlength="50" value="${customer.certificateAddr!}"/>
                         </div>
                         <div class="form-group col">
                             <label for="corporationCertificateType" class="" _log>法人证件</label>
                             <div class="input-group">
                                 <input type="hidden" id="corporationCertificateTypeCode" value="${customer.corporationCertificateType}">
                                 <div class="input-group-prepend">
-                                    <select id="corporationCertificateType" name="corporationCertificateType" class="form-control">
+                                    <select id="corporationCertificateType" name="customerCertificate[corporationCertificateType]" class="form-control">
                                     </select>
                                 </div>
-                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="corporationCertificateNumber" value="${customer.corporationCertificateNumber!}" minlength="5" maxlength="18"/>
+                                <input _log="法人证件号" type="text" class="form-control" id="corporationCertificateNumber" name="customerCertificate[corporationCertificateNumber]" value="${customer.corporationCertificateNumber!}" minlength="5" maxlength="18"/>
                                 <div class="input-group-append">
                                     <span class="input-group-text"><a id="idCardRead" href="javascript:;">读卡</a></span>
                                 </div>
@@ -142,7 +148,7 @@
                         </div>
                         <div class="form-group col">
                             <label for="corporationName" class="" _log>法人姓名<i class="red">*</i></label>
-                            <input type="text" class="form-control" name="corporationName" id="corporationName" required maxlength="20" value="${customer.corporationName!}"/>
+                            <input type="text" class="form-control" name="customerCertificate[corporationName]" id="corporationName" required maxlength="20" value="${customer.corporationName!}"/>
                         </div>
                     </div>
                 </form>
@@ -161,7 +167,7 @@
                                 </th>
                                 <th style="width: 10%;font-weight:normal; " >关系/职务</th>
                                 <th style="width: 10%;font-weight:normal; " >名称<i class="red">*</i></th>
-                                <th style="width: 5%;font-weight:normal; " >性别</th>
+                                <th style="width: 8%;font-weight:normal; " >性别</th>
                                 <th style="width: 10%;font-weight:normal; " >电话<i class="red">*</i></th>
                                 <th style="width: 10%;font-weight:normal; " >民族</th>
                                 <th style="width: 10%;font-weight:normal; " >出生日期</th>
@@ -178,24 +184,24 @@
                                     <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
                                 </td>
                                 <td>
-                                    <input _log="关系/职务" type="text" id="position_${contactsLP.dataIndex}" name="position_${contactsLP.dataIndex}" value="${contacts.position!}" class="form-control" maxlength="100">
+                                    <input _log="关系/职务" type="text" id="position_${contactsLP.dataIndex}" name="contactsList[${contactsLP.dataIndex}][position]" value="${contacts.position!}" class="form-control" maxlength="100">
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input _log="名称" type="text" id="name_${contactsLP.dataIndex}" name="name_${contactsLP.dataIndex}" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
+                                    <input _log="名称" type="text" id="name_${contactsLP.dataIndex}" name="contactsList[${contactsLP.dataIndex}][name]" value="${contacts.name!}" class="form-control" maxlength="20" required></td>
                                 <td style="padding: .1rem!important;">
-                                    <select name="gender_${contactsLP.dataIndex}"  id="gender_${contactsLP.dataIndex}"  class="form-control"></select>
+                                    <select name="contactsList[${contactsLP.dataIndex}][gender]"  id="gender_${contactsLP.dataIndex}"  class="form-control"></select>
                                     <#bcomboProvider _log="性别" _id="gender_${contactsLP.dataIndex}" _provider="genderProvider"  _valueField="value" _textField="text" _value="${contacts.gender!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input _log="电话" type="text" id="phone_${contactsLP.dataIndex}" name="phone_${contactsLP.dataIndex}" value="${contacts.phone!}" class="form-control isMobile" maxlength="11" required>
+                                    <input _log="电话" type="text" id="phone_${contactsLP.dataIndex}" name="contactsList[${contactsLP.dataIndex}][phone]" value="${contacts.phone!}" class="form-control isMobile" maxlength="11" required>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <select name="nation_${contactsLP.dataIndex}"  id="nation_${contactsLP.dataIndex}"  class="form-control"></select>
-                                    <#bcomboProvider _log="民族" _id="nation_${contactsLP.dataIndex}" _provider="nationalityProvider"  _valueField="value" _textField="text" _value="${contacts.nation!}"/>
+                                    <select name="contactsList[${contactsLP.dataIndex}][nation]"  id="nation_${contactsLP.dataIndex}"  class="form-control"></select>
+                                    <#bcomboProvider _log="民族" _id="nation_${contactsLP.dataIndex}" _provider="nationProvider"  _valueField="value" _textField="text" _value="${contacts.nation!}"/>
                                 </td>
                                 <td style="padding: .1rem!important;">
                                     <div class="input-group">
-                                        <input _log="出生日期" type="text" name="birthdate_${contactsLP.dataIndex}" id="birthdate_${contactsLP.dataIndex}" value="${contacts.birthdate!}" class="form-control laydate layend"/>
+                                        <input _log="出生日期" type="text" name="contactsList[${contactsLP.dataIndex}][birthdate]" id="birthdate_${contactsLP.dataIndex}" value="${contacts.birthdate!}" class="form-control laydate layend"/>
                                         <div class="input-group-append">
                                             <label for="birthdate_${contactsLP.dataIndex}"  class="input-group-text fa fa-calendar"></label>
                                         </div>
@@ -203,12 +209,12 @@
                                 </td>
                                 <td class="align-middle" style="padding: .05rem!important;">
                                     <div class="form-check">
-                                        <input _log="是否默认" class="form-check-input" type="radio" id="isDefault_${contactsLP.dataIndex}" name="isDefault" <%if(contacts.isDefault==1){ %> checked <%}%> value="${contacts.isDefault!}">是
+                                        <input _log="是否默认" class="form-check-input" type="radio" id="isDefault_${contactsLP.dataIndex}" name="contactsList[${contactsLP.dataIndex}][isDefault]" <%if(contacts.isDefault==1){ %> checked <%}%> value="${contacts.isDefault!}">是
                                         <label class="form-check-label" for="isDefault_${contactsLP.dataIndex}"></label>
                                     </div>
                                 </td>
                                 <td style="padding: .1rem!important;">
-                                    <input _log="备注" type="text" id="notes_${contactsLP.dataIndex}" name="notes_${contactsLP.dataIndex}" value="${contacts.notes!}" maxlength="20" class="form-control">
+                                    <input _log="备注" type="text" id="notes_${contactsLP.dataIndex}" name="contactsList[${contactsLP.dataIndex}][notes]" value="${contacts.notes!}" maxlength="20" class="form-control">
                                 </td>
                             </tr>
                             <%}}%>
@@ -240,7 +246,7 @@
 </div>
 
 </#bs4Body>
-<script type="text/javascript" src="${contextPath}/resources/js/bui/common.js"></script>
+<script type="text/javascript" src="${contextPath}/resources/bui/js/jquery.serializejson-2.9.0.min.js"></script>
 <#customer_commonJs />
 <#customer_updateJs />
 
@@ -282,28 +288,28 @@
             <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>
         </td>
         <td>
-            <input _log="关系/职务" type="text" id="position_{{index}}" name="position_{{index}}" value="" maxlength="100" class="form-control">
+            <input _log="关系/职务" type="text" id="position_{{index}}" name="contactsList[{{index}}][position]" value="" maxlength="100" class="form-control">
         </td>
         <td style="padding: .1rem!important;">
-            <input _log="姓名" type="text" id="name_{{index}}" name="name_{{index}}"value="{{name}}" class="form-control" maxlength="20" required>
+            <input _log="姓名" type="text" id="name_{{index}}" name="contactsList[{{index}}][name]" value="" class="form-control" maxlength="20" required>
         </td>
         <td style="padding: .1rem!important;">
-            <select name="gender_{{index}}"  id="gender_{{index}}" class="form-control" _log="姓名">
+            <select name="contactsList[{{index}}][gender]"  id="gender_{{index}}" class="form-control" _log="姓名">
                 <option value="">请选择</option>
                 <option value="1">男</option>
                 <option value="2">女</option>
             </select>
         </td>
         <td style="padding: .1rem!important;">
-            <input _log="电话" type="text" id="phone_{{index}}" name="phone_{{index}}"  class="form-control isMobile" maxlength="11" required>
+            <input _log="电话" type="text" id="phone_{{index}}" name="contactsList[{{index}}][phone]"  class="form-control isMobile" maxlength="11" required>
         </td>
         <td style="padding: .1rem!important;">
-            <select name="nation_{{index}}"  id="nation_{{index}}" value="{{nation}}" class="form-control" _log="民族">
+            <select name="nation_{{index}}"  id="contactsList[{{index}}][nation]" value="{{nation}}" class="form-control" _log="民族">
             </select>
         </td>
         <td style="padding: .1rem!important;">
             <div class="input-group">
-                <input _log="出生日期" type="text" name="birthdate_{{index}}" id="birthdate_{{index}}" value="" class="form-control laydate"/>
+                <input _log="出生日期" type="text" name="contactsList[{{index}}][birthdate]" id="birthdate_{{index}}" value="" class="form-control laydate"/>
                 <div class="input-group-append">
                     <label for="birthdate_{{index}}"  class="input-group-text fa fa-calendar"></label>
                 </div>
@@ -311,12 +317,57 @@
         </td>
         <td class="align-middle" style="padding: .05rem!important;">
             <div class="form-check">
-                <input _log="是否默认" class="form-check-input" type="radio" id="isDefault_{{index}}" name="isDefault" value="1">是
+                <input _log="是否默认" class="form-check-input" type="radio" id="isDefault_{{index}}" name="contactsList[{{index}}][isDefault]" value="1">是
                 <label class="form-check-label" for="isDefault_{{index}}"></label>
             </div>
         </td>
         <td style="padding: .1rem!important;">
-            <input _log="备注" type="text" id="notes_{{index}}" name="notes_{{index}}" maxlength="20" class="form-control">
+            <input _log="备注" type="text" id="notes_{{index}}" name="contactsList[{{index}}][notes]" maxlength="20" class="form-control">
         </td>
     </tr>
 </script>
+
+<!--<script  id="customerItem"  type="text/html">-->
+<!--    <tr data-index="{{index}}">-->
+<!--        <td class="align-middle">-->
+<!--            <a href="javascript:;" class="item-del" style="padding: 8px 18px;"><i class="fa fa-minus-square fa-lg"></i></a>-->
+<!--        </td>-->
+<!--        <td>-->
+<!--            <input _log="关系/职务" type="text" id="position_{{index}}" name="position_{{index}}" value="" maxlength="100" class="form-control">-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <input _log="姓名" type="text" id="name_{{index}}" name="name_{{index}}"value="{{name}}" class="form-control" maxlength="20" required>-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <select name="gender_{{index}}"  id="gender_{{index}}" class="form-control" _log="姓名">-->
+<!--                <option value="">请选择</option>-->
+<!--                <option value="1">男</option>-->
+<!--                <option value="2">女</option>-->
+<!--            </select>-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <input _log="电话" type="text" id="phone_{{index}}" name="phone_{{index}}"  class="form-control isMobile" maxlength="11" required>-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <select name="nation_{{index}}"  id="nation_{{index}}" value="{{nation}}" class="form-control" _log="民族">-->
+<!--            </select>-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <div class="input-group">-->
+<!--                <input _log="出生日期" type="text" name="birthdate_{{index}}" id="birthdate_{{index}}" value="" class="form-control laydate"/>-->
+<!--                <div class="input-group-append">-->
+<!--                    <label for="birthdate_{{index}}"  class="input-group-text fa fa-calendar"></label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </td>-->
+<!--        <td class="align-middle" style="padding: .05rem!important;">-->
+<!--            <div class="form-check">-->
+<!--                <input _log="是否默认" class="form-check-input" type="radio" id="isDefault_{{index}}" name="isDefault" value="1">是-->
+<!--                <label class="form-check-label" for="isDefault_{{index}}"></label>-->
+<!--            </div>-->
+<!--        </td>-->
+<!--        <td style="padding: .1rem!important;">-->
+<!--            <input _log="备注" type="text" id="notes_{{index}}" name="notes_{{index}}" maxlength="20" class="form-control">-->
+<!--        </td>-->
+<!--    </tr>-->
+<!--</script>-->

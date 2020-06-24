@@ -14,6 +14,10 @@
                     <input type="" class="form-control isNaturalNum" id="code" name="code" placeholder="">
                 </div>
                 <div class="form-group col">
+                    <label for="">证件号</label>
+                    <input type="" class="form-control" id="certificateNumber" name="certificateNumber" placeholder="">
+                </div>
+                <div class="form-group col">
                     <label for="">联系电话</label>
                     <input type="" class="form-control isNaturalNum" id="contactsPhone" name="contactsPhone" placeholder="">
                 </div>
@@ -118,10 +122,13 @@
                         <th data-width-unit="%" data-width="10" data-field="code" data-sortable="true" data-align="center">
                             客户编号
                         </th>
-                        <th data-width-unit="%" data-width="20" data-field="name" data-sortable="true" data-sort-name="convert(c.name using gbk)" data-align="center" data-formatter="formatterView">
+                        <th data-width-unit="%" data-width="10" data-field="certificateNumber" data-sortable="true" data-align="center">
+                            证件号
+                        </th>
+                        <th data-width-unit="%" data-width="10" data-field="name" data-sortable="true" data-sort-name="convert(c.name using gbk)" data-align="center" data-formatter="formatterView">
                             客户名称
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="grade" data-sortable="true" data-sort-name="c.grade" data-align="center" data-provider="gradeProvider">
+                        <th data-width-unit="%" data-width="10" data-field="customerMarket.grade" data-sortable="true" data-sort-name="cm.grade" data-align="center" data-provider="gradeProvider">
                             客户级别
                         </th>
                         <th data-width-unit="%" data-width="10" data-field="sourceChannel" data-sort-name="c.source_channel" data-sortable="true" data-align="center" data-provider="dataDictionaryValueProvider" data-query-params='{dd_code:"source_channel"}'>
@@ -130,13 +137,13 @@
                         <th data-width-unit="%" data-width="10" data-field="contactsPhone" data-sortable="true" data-align="center">
                             联系电话
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="marketId" data-sortable="true" data-sort-name="cm.market_id" data-align="center" data-provider="marketProvider">
+                        <th data-width-unit="%" data-width="10" data-field="customerMarket.marketId" data-fk-field="customerMarket.marketId" data-sortable="true" data-sort-name="cm.market_id" data-align="center" data-provider="marketProvider">
                             所属市场
                         </th>
-                        <th data-width-unit="%" data-width="15" data-field="marketCreateTime" data-sortable="true" data-sort-name="cm.create_time" data-align="center" data-provider="datetimeProvider">
+                        <th data-width-unit="%" data-width="15" data-field="customerMarket.createTime" data-fk-field="customerMarket.createTime" data-sortable="true" data-sort-name="cm.create_time" data-align="center">
                             注册时间
                         </th>
-                        <th data-width-unit="%" data-width="10" data-field="marketCreatorId" data-sortable="true" data-sort-name="cm.creator_id" data-align="center" data-provider="userProvider">
+                        <th data-width-unit="%" data-width="10" data-field="customerMarket.creatorId" data-fk-field="customerMarket.creatorId" data-sortable="true" data-sort-name="cm.creator_id" data-align="center" data-provider="userProvider">
                             创建人
                         </th>
                         <th data-width-unit="%" data-width="10" data-field="state" data-sortable="true" data-sort-name="c.state" data-align="center" data-provider="stateProvider">

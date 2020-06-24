@@ -1,6 +1,7 @@
 package com.dili.customer.provider;
 
-import com.dili.customer.enums.CustomerEnum;
+import com.dili.customer.sdk.domain.CustomerMarket;
+import com.dili.customer.sdk.enums.CustomerEnum;
 import com.dili.ss.metadata.FieldMeta;
 import com.dili.ss.metadata.ValuePair;
 import com.dili.ss.metadata.ValuePairImpl;
@@ -46,7 +47,14 @@ public class GradeProvider implements ValueProvider {
         if (obj == null || "".equals(obj)) {
             return null;
         }
-        CustomerEnum.Grade instance = CustomerEnum.Grade.getInstance(Integer.valueOf(obj.toString()));
+        Integer code = null;
+        if (obj instanceof CustomerMarket) {
+            CustomerMarket customerMarket = (CustomerMarket) obj;
+            code = customerMarket.getGrade();
+        } else {
+            code = Integer.valueOf(obj.toString());
+        }
+        CustomerEnum.Grade instance = CustomerEnum.Grade.getInstance(code);
         if (Objects.nonNull(instance)) {
             return instance.getValue();
         }

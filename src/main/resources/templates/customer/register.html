@@ -9,27 +9,27 @@
             <input type="hidden" id="sourceSystem" name="sourceSystem" value="${sourceSystem!}">
             <input type="hidden" id="sourceChannel" name="sourceChannel" value="${sourceChannel!}">
             <!-- 以下数据为身份证件读取出来的数据 start -->
-            <input type="hidden" id="gender" name="gender" class="form-control">
-            <input type="hidden" id="photo" name="photo" class="form-control">
-            <input type="hidden" id="birthdate" name="birthdate" class="form-control">
-            <input type="hidden" id="certificateAddr" name="certificateAddr" class="form-control">
-            <input type="hidden" id="certificateRange" name="certificateRange" class="form-control">
+            <input type="hidden" id="gender" name="gender" class="form-control no-edit">
+            <input type="hidden" id="photo" name="photo" class="form-control no-edit">
+            <input type="hidden" id="birthdate" name="birthdate" class="form-control no-edit">
+            <input type="hidden" id="certificateAddr" name="certificateAddr" class="form-control no-edit">
+            <input type="hidden" id="certificateRange" name="certificateRange" class="form-control no-edit">
             <!-- 以下数据为身份证件读取出来的数据 end -->
-            <input type="hidden" id="id" name="id" value="" class="form-control">
+            <input type="hidden" id="id" name="id" value="" class="form-control no-edit">
             <div class="row row-cols-1">
                 <div class="form-group col" id="organizationTypeDiv">
                     <label for="organizationType" class="">客户类型<i class="red">*</i></label>
-                    <select id="organizationType" name="organizationType" class="form-control" required onchange="organizationTypeChange()"></select>
+                    <select id="organizationType" name="organizationType" class="form-control no-edit" required onchange="organizationTypeChange()"></select>
                     <#bcomboProvider _id="organizationType" _provider="organizationTypeProvider" _queryParams='{required:true}' _valueField="value" _textField="text" _value="" _onLoadSuccess="organizationTypeLoadSuccess" />
                 </div>
                 <div class="form-group col">
                     <label for="" class="">证件<i class="red">*</i></label>
                     <div class="input-group">
                         <div class="input-group-prepend">
-                            <select id="certificateType" name="certificateType" class="form-control" required>
+                            <select id="certificateType" name="certificateType" class="form-control no-edit" required>
                             </select>
                         </div>
-                        <input type="text" class="form-control" id="certificateNumber" name="certificateNumber" required minlength="5" maxlength="18"/>
+                        <input type="text" class="form-control no-edit" id="certificateNumber" name="certificateNumber" required minlength="5" maxlength="18"/>
                         <div class="input-group-append">
                             <span class="input-group-text"><a id="idCardRead" href="javascript:;">读卡</a></span>
                         </div>
@@ -38,19 +38,24 @@
                 </div>
                 <div class="form-group col">
                     <label for="" class="">客户名称<i class="red">*</i></label>
-                    <input type="text" class="form-control" id="name" name="name" maxlength="40" required/>
+                    <input type="text" class="form-control no-edit" id="name" name="name" maxlength="40" required/>
                 </div>
                 <div class="form-group col" data-type="company">
                     <label for="" class="">法人代表<i class="red">*</i></label>
-                    <input type="text" class="form-control" id="corporationName" name="corporationName"  maxlength="20" required/>
+                    <input type="text" class="form-control no-edit" id="corporationName" name="corporationName"  maxlength="20" required/>
                 </div>
                 <div class="form-group col" data-type="company">
                     <label for="" class="">联系人<i class="red">*</i></label>
-                    <input type="text" class="form-control" id="contactsName" name="contactsName" maxlength="20" required/>
+                    <input type="text" class="form-control no-edit" id="contactsName" name="contactsName" maxlength="20" required/>
                 </div>
                 <div class="form-group col">
                     <label for="" class="">联系电话<i class="red">*</i></label>
-                    <input type="text" class="form-control isMobile" id="contactsPhone" name="contactsPhone" maxlength="11" required/>
+                    <input type="text" class="form-control no-edit isMobile" id="contactsPhone" name="contactsPhone" maxlength="11" required/>
+                </div>
+                <div class="form-group col">
+                    <label for="" class="">客户身份<i class="red">*</i></label>
+                    <select id="customerType" name="customerType" class="form-control" required></select>
+                    <#bcomboProvider _id="customerType" _provider="dataDictionaryValueProvider"  _queryParams='{dd_code:"cus_customer_type", emptyText:"-- 请选择 --"}' _valueField="value" _textField="text" _value=""/>
                 </div>
             </div>
 

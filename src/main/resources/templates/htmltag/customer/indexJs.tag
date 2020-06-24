@@ -63,7 +63,7 @@
         }
         //table选择模式是单选时可用
         let selectedRow = rows[0];
-        let url = "/customer/update.html?customerId=" + selectedRow.id + "&marketId=" + selectedRow.$_marketId;
+        let url = "/customer/update.html?customerId=" + selectedRow.id + "&marketId=" + selectedRow.customerMarket.marketId;
         dia = bs4pop.dialog({
             title: '更新客户',
             content: url,
@@ -211,7 +211,7 @@
      * 点击查询详情
      */
     function formatterView(value, row, index) {
-        return '<a class="like" href="javascript:void(0)" onclick="openDetailHandler(' + row.id + ','+row.$_marketId+')" title="详情">' + value + '</a>'
+        return '<a class="like" href="javascript:void(0)" onclick="openDetailHandler(' + row.id + ','+row.customerMarket.marketId+')" title="详情">' + value + '</a>'
     }
 
     /*****************************************自定义事件区 end**************************************/
