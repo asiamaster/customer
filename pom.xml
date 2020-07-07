@@ -26,7 +26,7 @@
     <parent>
         <artifactId>dili-parent</artifactId>
         <groupId>com.dili</groupId>
-        <version>3.6.7-SNAPSHOT</version>
+        <version>3.6.8-SNAPSHOT</version>
     </parent>
 
     <build>
@@ -248,9 +248,26 @@
                     <groupId>com.alibaba</groupId>
                     <artifactId>druid</artifactId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>ss-beetl</artifactId>
+                    <groupId>com.dili</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>ss-redis</artifactId>
+                    <groupId>com.dili</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
-
+        <dependency>
+            <groupId>com.dili</groupId>
+            <artifactId>ss-beetl</artifactId>
+            <version>${sharp-sword.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.dili</groupId>
+            <artifactId>ss-redis</artifactId>
+            <version>${sharp-sword.version}</version>
+        </dependency>
     </dependencies>
 
 

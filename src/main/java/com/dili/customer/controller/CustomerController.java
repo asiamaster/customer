@@ -6,6 +6,7 @@ import cn.hutool.core.util.IdcardUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.poi.excel.ExcelReader;
 import cn.hutool.poi.excel.ExcelUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.dili.commons.glossary.YesOrNoEnum;
 import com.dili.customer.domain.vo.CustomerMarketVo;
 import com.dili.customer.domain.vo.CustomerVo;
@@ -149,15 +150,10 @@ public class CustomerController {
     @RequestMapping(value = "/listPage.action", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public String listPage(CustomerQueryInput customer, HttpServletRequest request) throws Exception {
-        if (Objects.isNull(customer.getMarketId())) {
-            List<Firm> userFirms = firmRpc.getCurrentUserFirms();
-            if (CollectionUtil.isEmpty(userFirms)) {
-                return new EasyuiPageOutput(0, Collections.emptyList()).toString();
-            } else {
-                List<Long> idList = userFirms.stream().map(Firm::getId).distinct().collect(Collectors.toList());
-                customer.setMarketIdList(idList);
-            }
+        if (Objects.isNull(customer)){
+            customer = new CustomerQueryInput();
         }
+        customer.setMarketId(getUserTicket().getFirmId());
         customer.setIsDelete(YesOrNoEnum.NO.getCode());
         //传入的查询时间处理，如传入的是2020-01-01 则默认加1天，不然当天的数据查询不到
         if (Objects.nonNull(customer.getMarketCreateTimeEnd())) {
@@ -165,8 +161,13 @@ public class CustomerController {
         }
         try {
             PageOutput<List<Customer>> listPage = customerRpc.listPage(customer);
-            List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
-            return new EasyuiPageOutput(listPage.getTotal(), results).toString();
+            if (listPage.isSuccess()) {
+                List results = true ? ValueProviderUtils.buildDataByProvider(customer, listPage.getData()) : listPage.getData();
+                return new EasyuiPageOutput(listPage.getTotal(), results).toString();
+            } else {
+                log.warn(String.format("根据条件[%s]查询客户结果失败[%s]", JSONObject.toJSONString(customer), JSONObject.toJSONString(listPage)));
+                return new EasyuiPageOutput(0, Collections.emptyList()).toString();
+            }
         } catch (Exception e) {
             log.error("查询客户列表异常," + e.getMessage(), e);
             return new EasyuiPageOutput(0, Collections.emptyList()).toString();
